@@ -23,7 +23,7 @@
         .content ul.list1 {
             position: absolute;
             left:11%;
-            top: 12%;
+            top: 10%;
             width: 13%;
         }
         .content ul.list1>li{
@@ -34,12 +34,20 @@
             height: 100%;
             display: block;
         }
-        .content a.next{
+        .content ul.list2{
             position: absolute;
-            right: 29.7%;
-            top: 40%;
-            width: 21%;
-            height: 70px;
+            left:31%;
+            top: 5.5%;
+            width: 50%;
+            text-align: left;
+        }
+        .content ul.list2 li{
+            display: inline-block;
+        }
+        .content ul.list2 li>a{
+            font-size: 20px;
+            padding-right: 43px;
+            color: transparent;
         }
     </style>
 </head>
@@ -62,7 +70,7 @@
     </div>
 </header>
     <div class="content">
-        <img src="./../../image/security1.png" alt="homepage">
+        <img src="./../../image/hosts-published.png" alt="homepage">
         <ul class="list1">
             <li class="mytrips"><a href="/user/mytrips"></a></li>
             <li class="hosts"><a href="/user/hosts"></a></li>
@@ -70,8 +78,12 @@
             <li class="messages"><a href="/user/messages"></a></li>
             <li class="editProfile"><a href="/user/editprofile"></a></li>
             <li class="security"><a href="/user/security"></a></li>
+            <li class="wallet"><a href="/user/wallet"></a></li>
         </ul>
-        <a href="/user/security/1" class="next"></a>
+        <ul class="list2">
+            <li class="all"><a href="/user/hosts">Published</a></li>
+            <li class="pending"><a href="/user/hosts/Drafts">Drafts</a></li>
+        </ul>
     </div>
 </body>
 </html>
