@@ -148,6 +148,8 @@ export default {
       list: '',
       listName: [],
       viewCount: [],
+      oad: '',
+      what: '',
       list1: [
         { img: list1, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
         { img: list2, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
