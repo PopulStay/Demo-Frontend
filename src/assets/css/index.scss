@@ -1,0 +1,384 @@
+
+@font-face{
+    font-family: 'Roboto-Black';
+    src : url('../fonts/Roboto-Black.ttf');
+}
+@font-face{
+    font-family: 'Roboto-BlackItalic';
+    src : url('../fonts/Roboto-BlackItalic.ttf');
+}
+@font-face{
+    font-family: 'Roboto-Bold';
+    src : url('../fonts/Roboto-Bold.ttf');
+}
+@font-face{
+    font-family: 'Roboto-BoldItalic';
+    src : url('../fonts/Roboto-BoldItalic.ttf');
+}
+@font-face{
+    font-family: 'Roboto-Italic';
+    src : url('../fonts/Roboto-Italic.ttf');
+}
+@font-face{
+    font-family: 'Roboto-Light';
+    src : url('../fonts/Roboto-Light.ttf');
+}
+@font-face{
+    font-family: 'Roboto-LightItalic';
+    src : url('../fonts/Roboto-LightItalic.ttf');
+}
+@font-face{
+    font-family: 'Roboto-Medium';
+    src : url('../fonts/Roboto-Medium.ttf');
+}
+@font-face{
+    font-family: 'Roboto-MediumItalic';
+    src : url('../fonts/Roboto-MediumItalic.ttf');
+}
+@font-face{
+    font-family: 'Roboto-Regular';
+    src : url('../fonts/Roboto-Regular.ttf');
+}
+@font-face{
+    font-family: 'Roboto-Thin';
+    src : url('../fonts/Roboto-Thin.ttf');
+}
+@font-face{
+    font-family: 'Roboto-ThinItalic';
+    src : url('../fonts/Roboto-ThinItalic.ttf');
+}
+body {
+    margin: 0
+}
+a {
+    color: inherit;
+    text-decoration: none
+}
+ul {
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    -webkit-padding-start: 0;
+}
+p {
+    margin: 0
+}
+input:focus{
+    outline:none;
+}
+li {
+    list-style: none;
+}
+.flex-wrap {
+    display: flex
+}
+.flex-wrap-wrap{
+    flex-wrap: wrap;
+}
+.flex-1 {
+    flex: 1
+}
+.flex-2 {
+    flex: 2
+}
+.flex-3{
+    flex: 3
+}
+.flex-center {
+    align-items: center;
+    justify-content: center
+}
+.flex-center-between {
+    align-items: center;
+    justify-content: space-between
+}
+.flex-center-around{
+    align-items: center;
+    justify-content: space-around
+}
+.flex-align-center {
+    align-items: center;
+}
+.flex-column-center {
+    flex-direction: column;
+    justify-content: center;
+}
+.flex-content-center {
+    justify-content: center
+}
+.flex-content-between {
+    justify-content: space-between
+}
+.flex-content-end {
+    justify-content: flex-end
+}
+.clear-align {
+    align-items: flex-start;
+}
+.r-button {
+    color: #FFFFFF;
+    background: #F4436C;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 3px;
+    font-family: Roboto-Medium;
+}
+
+.RobotoM{font-family: Roboto-Medium;}
+.XY-fz30{font-size: 30px !important;}.XY-fz18{font-size: 18px !important;}.XY-fz16{font-size: 16px !important;}.XY-fz24{font-size: 24px !important;}.XY-fz20{font-size: 20px !important;}.XY-fz14{font-size: 14px !important;}
+.XY-center{text-align: center}.XY-left{text-align: left}.XY-right{text-align: right}
+.XY-colf{color: #fff !important;}.XY-col0{color: #000 !important;}
+.XY-cursorp{cursor: pointer;}
+
+.becomeHost-header .title {
+    color: $red-color;
+    font-family: Roboto-Regular;
+    font-size: 14px;
+    color: #F4436C;
+    letter-spacing: 0.88px;
+    padding-bottom: 3px;
+}
+.becomeHost-header h3 {
+    font-weight: 100;
+    font-family: Roboto-Medium;
+    font-size: 28px;
+    color: #4A4A4A;
+    letter-spacing: 1px;
+    margin: 0;
+    padding-bottom: 30px;
+}
+::-webkit-input-placeholder {
+    color:#B1B3B6;
+}
+:-moz-placeholder{
+    color:#B1B3B6;
+}
+::-moz-placeholder{
+    color:#B1B3B6;
+}           
+:-ms-input-placeholder{
+    color:#B1B3B6;
+}
+textarea::-webkit-input-placeholder { 
+    color:#B1B3B6;
+}
+textarea:-moz-placeholder {
+    color: #B1B3B6;
+}
+textarea::-moz-placeholder {
+    color: #B1B3B6;
+}
+textarea::-ms-input-placeholder {
+    color: #B1B3B6;
+}
+:focus {
+    outline: none;
+}
+/***********element样式修改****************/
+.el-dialog {
+    border-radius: 3px;
+}
+.el-icon-close {
+    font-size: 30px;
+}
+.el-dialog__body {
+    padding: 30px;
+}
+.el-select .el-input__inner:focus, .el-select .el-input.is-focus .el-input__inner {
+    border-color: #dcdfe6
+}
+.el-select-dropdown__item.selected{
+    color: #F4436C;
+}
+.el-input-number__decrease:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled),.el-input-number__increase:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled){
+    border: 0
+}
+.el-input-number__decrease:hover, .el-input-number__increase:hover {
+    color: #606266
+}
+.el-input-number__decrease,.el-input-number__increase {
+    background: #fff;
+    border: 0
+}
+.el-input-number {
+    width: 120px;
+}
+.el-popover {
+    padding: 30px;
+    box-shadow: 2px 10px 20px 0 rgba(0,0,0,0.15);
+    font-family: Roboto-Regular;
+    font-size: 16px;
+    color: #4A4A4A;
+}
+.el-input.is-active .el-input__inner, .el-input__inner:focus {
+    border-color: #dcdfe6
+}
+.el-checkbox__inner:hover{
+    border-color: #F4436C;
+}
+.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+    background: #F4436C;
+    border-color: #F4436C!important;
+}
+.el-checkbox__input.is-checked+.el-checkbox__label {
+    color: #4a4a4a;
+}
+.el-checkbox__input.is-focus .el-checkbox__inner {
+    border-color: #dcdfe6
+}
+.el-checkbox__inner {
+    border-color: #F4436C!important;
+    border-radius: 3px;
+    width: 20px;
+    height: 20px;
+}
+.el-checkbox__inner::after {
+    height: 14px;
+    left: 6px;
+    width: 6px;
+    top: -1px;
+}
+.el-checkbox__label {
+    font-family: Roboto-Regular;
+    font-size: 16px;
+    color: #4A4A4A;
+    padding-left: 15px;
+}
+.step .el-input__inner:hover, .rooms .el-input__inner:hover{
+    border: 0
+}
+.step .el-input__inner, .rooms .el-input__inner{
+    border: 0;
+    font-family: Roboto-Regular;
+    font-size: 16px;
+    color: #4A4A4A;
+}
+.el-icon-minus {
+    font-size: 14px;
+    color: #4A4A4A;
+}
+.el-icon-plus {
+    font-size: 14px;
+    color: #F4436C;
+}
+.r-title p {
+    font-family: Roboto-Regular;
+    font-size: 12px;
+    color: #B1B3B6
+}
+.el-popover {
+    min-width: 0;
+}
+.el-popper[x-placement^=bottom] .popper__arrow {
+    display: none;
+}
+.el-popper[x-placement^=bottom] {
+    margin-top: 3px;
+}
+.el-slider__button {
+    background-color: #F4436C;
+    border: 0;
+    width: 12px;
+    height: 12px;
+}
+.el-slider__bar {
+    background-color: #F4436C;
+    height: 1px; 
+}
+.el-slider__runway {
+    height: 1px;
+}
+.el-slider__button-wrapper {
+    top: -18px;
+}
+.el-message-box .el-message-box__title {
+    font-family: Roboto-Regular;
+}
+.el-message-box .el-message-box__message {
+    font-family: Roboto-Regular;
+    font-size: 14px;
+    color: #585858;
+    letter-spacing: 0.35px;
+}
+
+.el-message-box .el-button--primary{
+    background-color: #F4436C;
+    border-color: #F4436C;
+    font-family: Roboto-Regular;
+    font-size: 12px;
+    letter-spacing: 0.35px;
+}
+.el-picker-panel__body-wrapper {
+    font-family: Roboto-Regular;
+}
+.el-scrollbar {
+    font-family: Roboto-Regular;
+    font-size: 16px;
+    color: #585858;
+    letter-spacing: 0;
+}
+.el-textarea__inner:focus {
+    border-color: #dcdfe6
+}
+.el-radio__input.is-checked .el-radio__inner{
+    background: #fff;
+}
+.el-radio__inner{
+    border-radius:5px;
+    width: 20px;
+    height: 20px;
+    border-color: #F4436C!important;
+}
+.el-radio__inner::after{
+    height: 14px;
+    left: 6px;
+    width: 6px;
+    top: -1px;
+    box-sizing: content-box;
+    content: "";
+    border: 1px solid #fff;
+    border-left: 0;
+    border-top: 0;
+    position: absolute;
+    transform: rotate(45deg) scaleY(0);
+    transition: transform .15s ease-in .05s,-webkit-transform .15s ease-in .05s;
+    transform-origin: center;
+}
+
+@media only screen and (max-width: 700px) {
+  .el-date-range-picker {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .sign-up-model-out .el-dialog {
+    width: 90%;
+    max-height: 500px;
+    overflow-y: auto;  
+  }
+  .el-dialog {
+    width: 90%!important;
+    max-height: 500px;
+    overflow-y: auto; 
+  }
+  .el-dialog__body {
+    padding: 30px 15px;
+  }
+  .el-dialog__header {
+    padding: 20px 15px;
+  }
+  .el-select-dropdown__list {
+    padding: 6px 0 20px 0;
+  }
+  .el-message-box__wrapper {
+    top: 5%;
+  }
+  .el-message-box {
+    width: 90%;
+  }
+  .el-checkbox {
+    display: flex;
+  }
+  .el-checkbox__label {
+    word-wrap: break-word;
+    white-space: initial;
+  }
+}

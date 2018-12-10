@@ -1,0 +1,905 @@
+<template>
+  <div>
+    <e-header></e-header>
+    <!-- price.show = false,rating.show = false,guests.show = false,more.show = false -->
+    <div class="middle search">
+      <div class="m-header flex-wrap">
+        <div class="item select-time">
+          <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
+          </el-date-picker>
+          <div class="startTime text">
+            <p>{{startTextTime[2]}} {{startTextTime[1]}} {{startTextTime[3]}} </p>
+            <span> {{startTextTime[0]}}</span>
+          </div>
+        </div>
+        <div class="item select-time">
+          <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
+          <div class="endTime text">
+            <p>{{endTextTime[2]}} {{endTextTime[1]}} {{endTextTime[3]}}</p>
+            <span>{{endTextTime[0]}}</span>
+          </div>
+        </div>
+
+        <el-popover placement="bottom-start" width="300" trigger="manual" v-model="price.show" popper-class="s-popover">
+          <div slot="reference" class="item" @click="price.show = !price.show,rating.show = false,guests.show = false,more.show = false">{{price.text === '' ? 'Price per night' : price.text}}</div>
+          <div class="popover">
+             <el-slider
+              v-model="price.value"
+              range
+              :max="5000">
+            </el-slider>
+            <div class="price flex-wrap">
+              <div class="flex-1" style="margin-right: 10px;">
+                <p>Min</p>
+                <div class="price-text flex-wrap flex-center-between">
+                  <span>PPS</span>
+                  <span>{{price.value[0]}}</span>
+                </div>
+              </div>
+              <div class="flex-1" style="margin-left: 10px;">
+                 <p>Max</p>
+                 <div class="price-text flex-wrap flex-center-between">
+                  <span>PPS</span>
+                  <span>{{price.value[1]}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="popover-button flex-wrap flex-center-between">
+              <span @click="prices(price,'hide')">Clear</span>
+              <span class="red"  @click="prices(price)">Apply</span>
+            </div>
+          </div>
+        </el-popover>
+
+        <el-popover placement="bottom-start" width="300" trigger="manual" v-model="rating.show" popper-class="s-popover">
+          <div slot="reference" class="item" @click="rating.show = !rating.show,price.show = false,guests.show = more.show = false">{{rating.text === '' ? 'Star rating' : rating.text}}</div>
+          <div class="popover">
+            <ul class="level flex-wrap flex-center">
+              <li class="flex-1" :class="rating.level === 1 ? 'active' : ''" @click="handlevel(1)">1</li>
+              <!-- <li class="flex-1" :class="rating.level === '≤ 2' ? 'active' : ''" @click="handlevel('≤ 2')">≤ 2</li> -->
+              <li class="flex-1" :class="rating.level === 2 ? 'active' : ''" @click="handlevel(2)">2</li>
+              <li class="flex-1" :class="rating.level === 3 ? 'active' : ''" @click="handlevel(3)">3</li>
+              <li class="flex-1" :class="rating.level === 4 ? 'active' : ''" @click="handlevel(4)">4</li>
+              <li class="flex-1" :class="rating.level === 5 ? 'active' : ''" @click="handlevel(5)">5</li>
+            </ul>
+            <div class="popover-button flex-wrap flex-center-between">
+              <span @click="ratings('','hide')">Clear</span>
+              <span class="red" @click="ratings(rating)">Apply</span>
+            </div>
+          </div>
+        </el-popover>
+
+        <el-popover placement="bottom-start" width="300" trigger="manual" v-model="guests.show" popper-class="s-popover">
+          <div slot="reference" class="item" @click="guests.show = !guests.show,rating.show = false,price.show = false,more.show = false">
+            {{guests.adults + guests.children == 0 ? 'Guests' : guests.adults + guests.children + ' Guests' }}
+          </div>
+          <div class="popover">
+            <ul class="rooms guests search-guests">
+              <li class="flex-wrap flex-center-between">
+                <span class="r-title">Adults</span>
+                <el-input-number v-model="guests.adults" :min="0" :max="10"></el-input-number>
+              </li>
+              <li class="flex-wrap flex-center-between">
+                <span class="r-title">
+                  Children
+                  <p>Ages 2-12</p>
+                </span>
+                <el-input-number v-model="guests.children" :min="0" :max="10"></el-input-number>
+              </li>
+              <li class="flex-wrap flex-center-between">
+                <span class="r-title">Infants
+                  <p>Under 2</p>
+                </span>
+                <el-input-number v-model="guests.infants" :min="0" :max="10"></el-input-number>
+              </li>
+            </ul>
+            <div class="popover-button flex-wrap flex-center-between">
+              <span @click="guestss(guests, 'hide')">Clear</span>
+              <span class="red" @click="guestss(guests)">Apply</span>
+            </div>
+          </div>
+        </el-popover>
+
+        <el-popover placement="bottom-end" width="675" trigger="manual" v-model="more.show" popper-class="s-popover s-select">
+          <div slot="reference" class="item filter" @click="more.show = !more.show,guests.show = false,rating.show = false,price.show = false">More filters</div>
+          <div class="popover filters">
+            <div class="item flex-wrap">
+              <div class="title">Home type</div>
+              <div class="content">
+                <el-checkbox-group v-model="more.home" @change="changeTap">
+                  <!-- more.home.length !== 0 ? more.home = [more.home[more.home.length - 1]] : '' -->
+                <ul class="flex-wrap flex-wrap" style="width: 80%">
+                  <li><el-checkbox label="0">Entire place</el-checkbox></li>
+                  <li><el-checkbox label="1">Private room</el-checkbox></li>
+                  <li><el-checkbox label="2">Share room</el-checkbox></li>
+                </ul>
+                </el-checkbox-group>
+              </div>
+            </div>
+            <!-- 暂时删除此选项 -->
+            <!-- <div class="item flex-wrap">
+              <div class="title">Trip type</div>
+              <div class="content">
+                <ul class="trip-type">
+                  <el-checkbox-group v-model="more.trip" @change="more.trip.length !== 0 ? more.trip = [more.trip[more.trip.length - 1]] : ''">
+                    <li>
+                    <el-checkbox label="0">For families</el-checkbox>
+                    <p>Explore entire homes with 5-star reviews from families<br>and essentials like a kitchen and TV</p>
+                  </li>
+                  <li>
+                    <el-checkbox label="1">For work</el-checkbox>
+                    <p>Explore top-rated homes with essentials like a workspace, wifi,<br>and self check-in</p>
+                  </li>
+                  </el-checkbox-group>
+                </ul>
+              </div>
+            </div> -->
+            <div class="item flex-wrap" style="margin-bottom: 8px">
+              <div class="title flex-wrap flex-align-center">Beds</div>
+              <div class="content rooms" style="padding-left: 20px;">
+                <el-input-number v-model="more.beds" :min="0" :max="10"></el-input-number>
+              </div>
+            </div>
+            <div class="item flex-wrap" style="margin-bottom: 8px">
+              <div class="title flex-wrap flex-align-center">Bedrooms</div>
+              <div class="content rooms" style="padding-left: 20px;">
+                <el-input-number v-model="more.bedrooms" :min="0" :max="10"></el-input-number>
+              </div>
+            </div>
+            <div class="item flex-wrap">
+              <div class="title flex-wrap flex-align-center">Bathrooms</div>
+              <div class="content rooms" style="padding-left: 20px;">
+                <el-input-number v-model="more.bathrooms" :min="0" :max="10"></el-input-number>
+              </div>
+            </div>
+            <div class="item flex-wrap">
+              <div class="title">Amenities</div>
+              <div class="content flex-wrap amenities">
+                <ul class="flex-1">
+                  <el-checkbox-group v-model="more.Amenities" style="top:200px !important;" @change="changeAment">
+                    <li v-for="(item,index) in amenitiesList" :key="index"><el-checkbox :label="index">{{item.amenity}}</el-checkbox></li>
+                    <!-- <li><el-checkbox label="1">Air conditioning</el-checkbox></li>
+                    <li><el-checkbox label="2">Washer</el-checkbox></li>
+                    <li><el-checkbox label="3">Dryer</el-checkbox></li>
+                    <li><el-checkbox label="4">Breakfast</el-checkbox></li>
+                    <li><el-checkbox label="5">Indoor fireplace</el-checkbox></li>
+                    <li><el-checkbox label="6">Buzzer/wireless intercom</el-checkbox></li> -->
+                  </el-checkbox-group>
+                </ul>
+                <!-- <ul class="flex-1">
+                  <el-checkbox-group v-model="more.Amenities">
+                    <li><el-checkbox label="7">Laptop friendly workspace</el-checkbox></li>
+                    <li><el-checkbox label="8">Crib</el-checkbox></li>
+                    <li><el-checkbox label="9">High chair</el-checkbox></li>
+                    <li><el-checkbox label="10">Self check-in</el-checkbox></li>
+                    <li><el-checkbox label="11">Smoke detector</el-checkbox></li>
+                    <li><el-checkbox label="12">Carbon monoxide detector</el-checkbox></li>
+                    <li><el-checkbox label="13">Private bathroom</el-checkbox></li>
+                  </el-checkbox-group>
+                </ul> -->
+              </div>
+            </div>
+            <div class="item flex-wrap">
+              <div class="title">safeAmenity</div>
+              <div class="content flex-wrap amenities">
+                <ul class="flex-1">
+                  <el-checkbox-group v-model="more.safeAmenities" style="top:200px !important;" @change="changeSafeAment">
+                    <li v-for="(item,index) in safeAmenitiesList" :key="index"><el-checkbox :label="index">{{item.safeAmenity}}</el-checkbox></li>
+                  </el-checkbox-group>
+                </ul>
+              </div>
+            </div>
+            <div class="item flex-wrap">
+              <div class="title">spaceI</div>
+              <div class="content flex-wrap amenities">
+                <ul class="flex-1">
+                  <el-checkbox-group v-model="more.spaceids" style="top:200px !important;" @change="changeSpace">
+                    <li v-for="(item,index) in spaceids" :key="index"><el-checkbox :label="index">{{item.space}}</el-checkbox></li>
+                  </el-checkbox-group>
+                </ul>
+              </div>
+            </div>
+            <div class="popover-button flex-wrap flex-center-between">
+              <span @click="more.show = false">Clear</span>
+              <span class="red" @click="moreFilters(more)">Apply</span>
+            </div>
+          </div>
+        </el-popover>
+      </div>
+      <div class="m-content flex-wrap" v-if="isList === true">
+        <div class="left">
+            <ul>
+              <li v-for="(item, index) in list" :key="index"  @click="toListing(item.placeId)">
+                <img :src="item.picture.length>0 ? item.picture[0].smallPictureUrl : ''" alt="">
+                <p class="title">{{ listName[index] }}</p>
+                <p class="text">{{ item.placeName ? item.placeName : '' }}</p>
+                <p class="number">{{ item.prices[0].bestPrice }} pps per night</p>
+                <el-rate v-model="item.review" disabled show-score
+                :colors="['#99A9BF', '#f4436C', '#FF9900']" text-color="#4A4A4A" score-template="{value}">
+                </el-rate>
+              </li>
+            </ul>
+        </div>
+        <div class="right flex-1">
+          <el-amap vid="amapDemo" :zoom="zoom" :center="center" class="amap">
+            <el-amap-marker v-for="(item, index) in list" :key="index"
+            :position="[item.lng, item.lat]"
+            :clickable="true"
+            :template="marck(item)"
+            animation="AMAP_ANIMATION_DROP">
+            </el-amap-marker>
+          </el-amap>
+        </div>
+      </div>
+      <div class="m-content nodata" v-else>
+        <p class="nodata-title">no result</p>
+        <p class="nodata-content">To see more results, try adjusting your search criteria. You can change the check-in date and delete the filter criteria.</p>
+        <!-- <button class="nodata-btn" @click="clear()">Delete all filter conditions</button> -->
+      </div>
+    </div>
+    <e-footer></e-footer>
+  </div>
+</template>
+
+<script>
+import header from '../common/header'
+import footer from '../common/footer'
+import formatdata from '../../utils/formatdata.js'
+
+export default {
+  components: {
+    'e-header': header,
+    'e-footer': footer
+  },
+  data () {
+    return {
+      list: [],
+      listName: [],
+      time: '',
+      startTextTime: [],
+      endTextTime: [],
+      cityCode: '',
+      isList: true,
+      guests: {
+        show: false,
+        isfilter: false,
+        adults: 0,
+        children: 0,
+        infants: 0
+      },
+      price: {
+        show: false,
+        isfilter: false,
+        value: [0, 5000],
+        text: ''
+      },
+      rating: {
+        show: false,
+        isfilter: false,
+        level: 1,
+        text: ''
+      },
+      more: {
+        show: false,
+        home: [],
+        isfilter: false,
+        beds: 0,
+        bedrooms: 0,
+        bathrooms: 0,
+        Amenities: [],
+        safeAmenities: [],
+        spaceids: []
+      },
+      zoom: 8,
+      center: [139.73456, 35.694135],
+      pickerOptions: {
+        disabledDate (time) {
+          return time.getTime() < Date.now() - 8.64e7
+        }
+      },
+      amenitiesList: [],
+      safeAmenitiesList: [],
+      spaceids: []
+    }
+  },
+  created () {
+    console.log(this.more.beds)
+    let data = this.$route.query
+    this.startTextTime = JSON.parse(data.time)[0]
+    this.endTextTime = JSON.parse(data.time)[1]
+    this.startTime = data.startTime
+    this.endTime = data.endTime
+    console.log(this.startTextTime, this.endTextTime)
+    let guests = JSON.parse(data.guests)
+    this.guests.adults = guests.adults
+    this.guests.children = guests.children
+    this.guests.infants = guests.infants
+    this.cityCode = data.cityCode
+    // 搜索请求
+    this.search()
+    this.getAmenityids()
+    this.getSafe_amenities()
+    this.getSpaces()
+  },
+  methods: {
+    changeTap (e) {
+      if (this.more.home.length !== 0) {
+        this.more.home = [this.more.home[this.more.home.length - 1]]
+      } else {
+        this.more.home = []
+      }
+    },
+    changeAment (e) {
+      if (this.more.Amenities.length !== 0) {
+        this.more.Amenities = this.more.Amenities
+        console.log(this.more.Amenities.join(''))
+      } else {
+        this.more.Amenities = []
+        console.log(this.more.Amenities.join(''))
+      }
+    },
+    changeSafeAment () {
+      if (this.more.safeAmenities.length !== 0) {
+        this.more.safeAmenities = this.more.safeAmenities
+        console.log(this.more.safeAmenities)
+      } else {
+        this.more.safeAmenities = []
+      }
+    },
+    changeSpace () {
+      if (this.more.spaceids.length !== 0) {
+        this.more.spaceids = this.more.spaceids
+        console.log(this.more.spaceids)
+      } else {
+        this.more.spaceids = []
+      }
+    },
+    selectTime (e) {
+      this.timeStart = e[0]
+      this.timeEnd = e[1]
+      this.startTextTime = String(this.timeStart).split(' ')
+      this.endTextTime = String(this.timeEnd).split(' ')
+      this.startTime = formatdata.timestampToTime(Date.parse(this.timeStart))
+      this.endTime = formatdata.timestampToTime(Date.parse(this.timeEnd))
+      this.search()
+    },
+    handlevel (val) {
+      this.rating.level = val
+    },
+    // hideTheShow () {
+    //   let guests = this.guests.show
+    //   let price = this.price.show
+    //   let rating = this.rating.show
+    //   let more = this.more.show
+    //   console.log('sss')
+    //   if (guests || price || rating || more) {
+    //     this.guests.show = false
+    //     this.price.show = false
+    //     this.rating.show = false
+    //     this.more.show = false
+    //   }
+    // },
+    ClearFilter () {
+    },
+    // 搜索请求
+    search () {
+      var that = this
+      let formdata = {
+        startDate: this.startTime,
+        endData: this.endTime,
+        cityCode: this.cityCode,
+        minPrice: this.price.value[0] === 0 & this.price.isfilter !== false ? '' : this.price.value[0],
+        maxPrice: this.price.value[1] === 5000 & this.price.isfilter !== false ? '' : this.price.value[1],
+        placeScore: this.rating.isfilter !== false ? this.rating.level : '',
+        minGuestNumber: this.guests.isfilter !== false ? this.guests.adults + this.guests.children : 0,
+        category: this.more.home[0] === '0' & this.more.isfilter !== false ? 'Entire place' : this.more.home[0] === '1' & this.more.isfilter !== false ? 'Private Room' : this.more.home[0] === '2' & this.more.isfilter !== false ? 'Share room' : [],
+        minBedNumber: this.more.isfilter !== false ? this.more.beds : 0,
+        minBedroomNumber: this.more.isfilter !== false ? this.more.bedrooms : 0,
+        minBathNumber: this.more.isfilter !== false ? this.more.bathrooms : 0,
+        amenityIds: this.more.isfilter !== false ? this.more.spaceids.join('') : [],
+        safeAmenityIds: this.more.isfilter !== false ? this.more.safeAmenities.join('') : [],
+        spaceIds: this.more.isfilter !== false ? this.more.spaceids.join('') : [],
+        pageNo: 1,
+        pageSize: 20
+      }
+      this.$get(this.placeUrl + '/places', formdata).then((res) => {
+        if (res.code === 200) {
+          res.data.dataList.forEach((val, key) => {
+            if (val.review.length === 0) {
+              val.review = 5
+            } else if (val.review.length === 1) {
+              val.review = val.review[0]
+            } else {
+              val.review = 5
+            }
+            var citycode = val.citycode
+            that.getName(citycode)
+          })
+          this.list = res.data.dataList
+          if (res.data.dataList.length > 0) {
+            console.log('false')
+            this.isList = true
+          } else {
+            console.log('true')
+            this.isList = false
+          }
+        }
+      })
+    },
+    // 获取名字
+    getName (val) {
+      let listName = this.listName
+      // viewCount = this.viewCount
+      this.$get(this.cityUrl + '/city', {
+        code: val
+      }).then((res) => {
+        if (res.code === 200) {
+          listName.push(res.data.fullAddress)
+          this.listName = listName
+        }
+      })
+    },
+    // 价格弹窗确认
+    prices (val, type) {
+      if (type === 'hide') {
+        this.price = {
+          show: false,
+          text: '',
+          value: [0, 5000],
+          isfilter: false
+        }
+        return false
+      } else {
+        if (val.value[0] !== 0 || val.value[0] !== 5000) {
+          val.text = '￥' + val.value[0] + ' - ￥' + val.value[1]
+        } else {
+          val.text = ''
+        }
+        val.show = false
+        val.isfilter = true
+        this.search()
+      }
+    },
+    // 星级
+    ratings (val, type) {
+      if (type === 'hide') {
+        this.rating = {
+          show: false,
+          text: '',
+          isfilter: false,
+          level: 1
+        }
+        return false
+      } else {
+        val.text = val.level + ' Star'
+        val.show = false
+        val.isfilter = true
+        this.search()
+      }
+    },
+    // 星级
+    guestss (val, type) {
+      if (type === 'hide') {
+        this.guests = {
+          show: false,
+          adults: 0,
+          children: 0,
+          infants: 0,
+          isfilter: false
+        }
+        return false
+      } else {
+        val.show = false
+        val.isfilter = true
+        this.search()
+      }
+    },
+    moreFilters (val, type) {
+      if (type === 'hide') {
+        this.more = {
+          show: false,
+          home: [],
+          beds: 0,
+          bedrooms: 0,
+          bathrooms: 0,
+          Amenities: [],
+          safeAmenities: [],
+          spaceids: [],
+          isfilter: false
+        }
+        return false
+      } else {
+        val.show = false
+        val.isfilter = true
+        this.search()
+      }
+    },
+    toListing (id) {
+      this.$router.push({path: 'listing/lstHome', query: {id: id}})
+    },
+    marck (item) {
+      const content = `
+      <el-popover placement="top" width="230" trigger="click" popper-class="map-popover">
+        <div slot="reference" class="amap-overlay-text-container">
+          <div>￥${item.prices.length !== 0 ? item.prices[0].bestPrice : ''} </div>
+        </div>
+        <div class="map">
+        
+              <img src="${item.picture.length !== 0 ? item.picture[0].smallPictureUrl : ''}" alt="">
+          <div class="map-info">
+            <p class="title">${item.citycode}</p>
+            <p class="text">${item.cancellationPolicy ? item.cancellationPolicy.title : ''}</p>
+            <p class="number">${item.prices[0].bestPrice} pps per night</p>
+            <el-rate :value="${item.review}" disabled show-score
+            :colors="['#99A9BF', '#f4436C', '#FF9900']" text-color="#4A4A4A" score-template="{value}">
+            </el-rate>
+          </div>
+        </div>
+      </el-popover>`
+      return content
+    },
+    getAmenityids () {
+      // let formdata = {
+      // }
+      this.$get(this.placeUrl + '/place/amenities').then((res) => {
+        if (res.code === 200) {
+          this.amenitiesList = res.data.dataList
+        }
+      })
+    },
+    getSafe_amenities () {
+      // let formdata = {
+      // }
+      this.$get(this.placeUrl + '/place/safe_amenities').then((res) => {
+        this.safeAmenitiesList = res.data.dataList
+      })
+    },
+    getSpaces () {
+      // let formdata = {
+      // }
+      this.$get(this.placeUrl + '/place/spaces').then((res) => {
+        this.spaceids = res.data.dataList
+      })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+$red-color: #F4436C;
+.middle {
+  width: 1500px;
+  margin: 0 auto;
+  // z-index: 10;
+  // position: relative;
+  .m-header {
+    padding: 50px 0;
+    .item {
+      padding: 0 25px;
+      height: 46px;
+      line-height: 46px;
+      text-align: center;
+      border: 1px solid #E6E7E8;
+      margin-right: 20px;
+      border-radius: 4px;
+      position: relative;
+      font-family: Roboto-Regular;
+      font-size: 16px;
+      cursor: pointer;
+      color: #4A4A4A;
+      // z-index: 20;
+      // position: relative;
+      .text {
+        width: 100%;
+        height: 46px;
+        padding-top: 8px;
+        line-height: 16px;
+        box-sizing: border-box;
+        p {
+          font-family: Roboto-Regular;
+          font-size: 16px;
+          color: #4a4a4a;
+        }
+        span {
+          font-family: Roboto-Regular;
+          font-size: 14px;
+          color: #B1B3B6;
+        }
+      }
+      &:focus {
+        border-color: $red-color;
+      }
+    }
+  }
+  .nodata{
+    border-top: 1px solid #eee;
+    .nodata-title{
+      font-size: 30px;
+      margin-top: 20px;
+    }
+    .nodata-content{
+      padding: 5px 0 20px 0;
+      max-width: 350px;
+      box-sizing: border-box;
+    }
+    .nodata-btn{
+      background: #fff;
+      border: 1px solid #E6E7E8;
+      text-align: center;
+      color: #4A4A4A;
+      padding: 0 25px;
+      border-radius: 4px;
+      height: 46px;
+      font-size: 16px;
+      line-height: 46px;
+      outline: none;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+  }
+  .left {
+    flex: 1.2;
+    ul {
+    overflow: hidden;
+    li {
+      float: left;
+      margin: 20px 25px 20px 0;
+      width: 350px;
+      font-size: 16px;
+      img{
+        width: 100%;
+        height: 260px;
+        border-radius: 3px;
+      }
+      .title {
+        color: $red-color;
+        margin-top: 5px;
+        letter-spacing: 0.62px;
+        font-family: Roboto-Medium;
+        text-align: left;
+      }
+      .text {
+        font-size: 18px;
+        color: #000000;
+        letter-spacing: 0.62px;
+        font-family: Roboto-Medium;
+        text-align: left;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .number {
+        font-family: Roboto-Light;
+        font-size: 16px;
+        color: #4a4a4a;
+        margin-top: 8px;
+        margin-bottom: 3px;
+        letter-spacing: 0.62px;
+        text-align: left;
+      }
+    }
+    }
+  }
+  .right {
+    max-height: 900px;
+    padding-top: 20px;
+    box-sizing: border-box
+  }
+}
+.popover {
+  font-family: Roboto-Regular;
+  font-size: 16px;
+  color: #4A4A4A;
+}
+.price {
+  margin: 20px 0 30px 0;
+  p {
+    margin-bottom: 3px;
+  }
+  .price-text {
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #E6E7E8;
+    padding: 2px 10px;
+    box-sizing: border-box;
+    border-radius: 3px;
+  }
+}
+.level {
+  border: 1px solid #E6E7E8;
+  margin: 30px 0;
+  li {
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    border-right: 1px solid #E6E7E8;
+    &:last-child {
+      border-right: 0
+    }
+  }
+  .active {
+    background: $red-color;
+    color: #fff;
+    border-color: $red-color;
+  }
+}
+.guests {
+  li {
+    margin-bottom: 20px;
+  }
+}
+.filters {
+  .item {
+     margin-bottom: 25px;
+    .title {
+      font-family: Roboto-Medium;
+      font-size: 16px;
+      color: $red-color;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+    .content {
+      flex: 4;
+      li{
+        margin-right: 5px;
+        :first-child{
+          margin-right: 0;
+        }
+      }
+      .trip-type {
+        li {
+          margin-bottom: 20px;
+        }
+        p {
+          font-size: 14px;
+          padding-left: 35px;
+        }
+      }
+    }
+    .amenities {
+      li {
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
+.popover-button {
+  span {
+    cursor: pointer;
+  }
+}
+.red {
+  color: $red-color
+}
+@media only screen and (max-width: 1500px) {
+  .middle {
+    width: auto;
+    padding: 0 30px
+  }
+}
+@media only screen and (max-width: 1000px) {
+  .middle {
+    .m-header {
+
+      flex-wrap: wrap;
+      div {
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
+@media only screen and (max-width: 760px) {
+  .middle {
+    padding: 0 10px;
+   .m-content {
+     display: block;
+     .right {
+       width: 100%;
+       height: 500px;
+     }
+   }
+  }
+}
+@media only screen and (max-width: 500px) {
+  .middle {
+    .m-header {
+      .select-time {
+        width: 48%;
+        margin: 0% 1% 1% 1%;
+        box-sizing: border-box;
+      }
+      >span {
+        width: 48%;
+        margin: 0 1% 1% 1%;
+        box-sizing: border-box;
+        display: inline-block;
+        .item {
+          margin: 0;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.select-time .el-input__inner {
+  height: 46px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+}
+.s-popover {
+  padding: 20px 30px;
+  box-sizing: border-box;
+}
+.search-guests .el-input__inner {
+  height: 40px!important;
+}
+@media only screen and (max-width: 700px) {
+  .s-popover {
+    max-width: 100%!important;
+    overflow: auto;
+    max-height: 400px;
+    padding: 20px 15px;
+  }
+  .filters {
+    max-height: 300px;
+    min-width: 300px;
+  }
+  .filters .amenities {
+    display: block;
+    margin-left:20px;
+  }
+}
+.amap-overlay-text-container {
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 3px 5px;
+  font-family: Roboto-Regular;
+  font-size: 16px;
+  color: #4A4A4A;
+  box-shadow: 0 2px 4px 0 var(--color-map-price-marker-shadow, rgba(0,0,0,0.15)) !important;
+  position: relative;
+}
+.map-popover {
+  padding: 0;
+}
+.map {
+  font-size: 14px;
+  img {
+    width: 100%;
+  }
+  .map-info {
+    padding: 10px;
+  }
+  .text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .el-rate__icon {
+    font-size: 14px;
+  }
+}
+.s-select{
+  top:200px !important;
+}
+.s-select .el-checkbox__label{
+  max-width: 200px;
+  white-space: pre-line;
+}
+.s-select .el-checkbox__input{
+  vertical-align: top;
+}
+.s-select {
+  overflow: auto;
+  max-height: 600px;
+}
+.amenities {
+}
+</style>
