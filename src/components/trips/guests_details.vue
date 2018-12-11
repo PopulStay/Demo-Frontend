@@ -25,9 +25,9 @@
                 <p class="check">Check-out</p>
               </div>
               <div class="text flex-2">
-                <p class="check">{{this.$route.query.guestsitem.strat_time}}</p>
-                <p class="check">{{this.$route.query.guestsitem.end_time}}</p>
-                <p class="check">{{parseInt(this.$route.query.guestsitem.cha_time)}} night</p>
+                <p class="check">{{strat_time}}</p>
+                <p class="check">{{end_time}}</p>
+                <!--<p class="check">{{parseInt(this.$route.query.guestsitem.cha_time)}} night</p>-->
               </div>
             </li>
             <li class="flex-wrap flex-align-center">
@@ -48,11 +48,11 @@
             <!--</li>-->
             <li class="flex-wrap flex-align-center">
               <div class="title flex-1">Payment details</div>
-              <div class="text flex-2 flex-wrap">
-                <span class="flex-2">{{parseInt(this.$route.query.guestsitem.cha_time)}} night</span>
-                <span class="flex-1">{{this.$route.query.guestsitem.currency}}</span>
-                <span class="flex-1">{{this.$route.query.guestsitem.price}}</span>
-              </div>
+              <!--<div class="text flex-2 flex-wrap">-->
+                <!--<span class="flex-2">{{parseInt(this.$route.query.guestsitem.cha_time)}} night</span>-->
+                <!--<span class="flex-1">{{this.$route.query.guestsitem.currency}}</span>-->
+                <!--<span class="flex-1">{{this.$route.query.guestsitem.price}}</span>-->
+              <!--</div>-->
             </li>
             <li class="flex-wrap flex-align-center">
               <div class="title flex-1"></div>
@@ -136,20 +136,23 @@ export default {
         value: '5',
         label: 'I’ve find a better place on another website'
       }],
-      user: ''
+      user: '',
+      strat_time:'',
+      end_time:''
     }
   },
   created () {
     this.user = this.$store.state.userInfo;
-    console.log(this.$route.query.guestsitem)
-
+    this.strat_time = moment(this.$route.query.guestsitem.strat_time).format('DD MMM YYYY');
+    this.end_time = moment(this.$route.query.guestsitem.end_time).format('DD MMM YYYY');
   },
   methods: {
     cancel () {
       this.pendingShow = true
     },
     submit () {
-      this.pendingShow = false
+
+      this.pendingShow = false;
       this.$router.push('/trips/guests')
     },
     guestsTabClick (item) {
