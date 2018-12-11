@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="wrap">
-      <div class="wrap-header">Verify your email address</div>
+      <div class="wrap-header">Change email address</div>
       <div class="content">
         <div class="step-content" v-if="step === 1">
           <div class="step-input step-input2">
@@ -14,7 +14,7 @@
         </div>
         <div class="step-content3" v-if="step === 2">
           <i class="icon iconfont icon-success"></i>
-          <p>Your email address has been verified successfully.</p>
+          <p>Your email address has been successfully changed.</p>
           <div class="r-button button"><router-link to="security">Back</router-link></div>
         </div>
       </div>

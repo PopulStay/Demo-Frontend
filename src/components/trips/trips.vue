@@ -10,9 +10,7 @@
           <!-- <p class="time">Booked on 25 October, 2018</p> -->
         </div>
         <div class="list-content flex-wrap">
-          <div class="list-img">
-            <img src="../../assets/images/trips/cancelled.png" alt="">
-          </div>
+          <div class="list-img"></div>
           <div class="list-text">
             <div>
               <!-- <p class="title flex-item">{{item.title1}}</p> -->
@@ -26,7 +24,7 @@
           </div>
           <div class="list-operation flex-wrap" :class="item.status == 'Pending' || item.status == 'Completed' ? 'flex-column-center flex-wrap' : ''">
             <div>
-              <p class="details"><router-link :to="{path:'/trips/trips_details',query: {title:item.title}}">View details</router-link></p>
+              <p class="details"><router-link :to="{path:'/trips/trips_details',query: {tripsitem:item,tripstitle:item.status}}">View details</router-link></p>
               <p class="cancel">Cancel</p>
             </div>
             <div class="checkout" v-if="item.status == 'Pending'" @click="checkoutShow = true">Checkout</div>
@@ -91,32 +89,61 @@ export default {
       islist: true,
       list: [],
       checkoutShow: false,
-      cancelShow: false
+      cancelShow: false,
+      user: ''
     }
   },
   created () {
-    this.getTripsList()
+    this.user = this.$store.state.userInfo;
+
     this.list = this.dataList
-    let title = this.$route.query.title
+    let title = this.$route.query.tripsitem
     if (title) this.tripsTabTitle = title
     else this.tripsTabTitle = 'All'
+
+    this.getTripsList()
   },
   methods: {
     getTripsList () {
       // let user = JSON.parse(localStorage.getItem('user'))
+
+      var status = '';
+
+      switch (this.tripsTabTitle) {
+        case 'Pending':
+          status = 'pending_for_payment'
+          break
+        case 'Upcoming':
+          status = 'pending_for_checking'
+          break
+        case 'Checked-in':
+          status = 'checked_in'
+          break
+        case 'Completed':
+          status = 'completed'
+          break
+        case 'Cancelled':
+          status = 'cancelled'
+          break
+        default:
+          status = ''
+          break
+      }
+
       this.$post(this.bookUrl + '/booking', {
         action: 'listGuestBookings',
         data: {
           // host_id: user.user_id,
-          guest_id: 2766,
-          page: 1
+          guest_id: this.user.user_id,
+          page: 0,
+          status:status
         }
       }).then((res) => {
-        if (res.data.length > 0) {
-          // if (res.data.status == 'pending for payment')
+        res.data.length > 0 ? this.islist = true : this.islist = false;
+
           for (let i in res.data) {
             switch (res.data[i].status) {
-              case 'pending for payment':
+              case 'pending_for_payment':
                 res.data[i].status = 'Pending'
                 break
               case 'pending_for_checking':
@@ -135,34 +162,21 @@ export default {
                 res.data[i].status = 'Pending'
                 break
             }
-            res.data[i].strat_time = moment(res.data[i].strat_time).format('DD MMM YYYY')
-            res.data[i].end_time = moment(res.data[i].end_time).format('DD MMM YYYY')
-            // console.log(moment.duration(res.data[i].end_time - res.data[i].strat_time), 'days')
+
+            res.data[i].strat_time = moment(res.data[i].strat_time).format('DD MMM YYYY');
+            res.data[i].end_time = moment(res.data[i].end_time).format('DD MMM YYYY');
             let m1 = moment(res.data[i].strat_time),
-              m2 = moment(res.data[i].end_time)
-            // console.log(m1)
-            // console.log(m2)
+              m2 = moment(res.data[i].end_time);
             res.data[i].cha_time = m2.diff(m1, 'day') + 'night'
-            // du = moment(res.data[i].end_time - res.data[i].strat_time).format('D night');
-            // console.log(res.data[i].strat_time.substring(7))
-            // res.data[i].time_cha = res.data[i].strat_time.substring(7) - res.data[i].end_time.substring(7)
           }
-          this.list = res.data
-          this.tripsList = res.data
-        }
+          this.tripsList = res.data;
+
       })
     },
     tripsTabClick (value, index) {
       this.tripsTabTitle = value
-      if (this.list.length > 0) {
-        if (value === 'All') {
-          this.tripsList = this.list
-          return false
-        }
-        let list = this.list.filter((item) => item.status === value)
-        list.length > 0 ? this.tripsList = list : this.tripsList = ''
-        list.length > 0 ? this.islist = true : this.islist = false
-      }
+      this.getTripsList()
+
     },
     next () {
       this.checkoutShow = false
@@ -215,11 +229,10 @@ $red-color: #F4436C;
     }
   }
   .list-img {
-    img {
-      width: 250px;
-      height: 100%;
-      min-height: 200px;
-    }
+    width: 250px;
+    height: 200px;
+    background: url("../../assets/images/trips/cancelled.png");
+    background-size: cover;
   }
   .list-text {
     flex: 2.5;
@@ -380,9 +393,6 @@ $red-color: #F4436C;
         display: block;
         border: none;
         .list-img {
-          img {
-            width: 100%;
-          }
         }
         .list-text {
           padding: 5px 0;
@@ -412,12 +422,12 @@ $red-color: #F4436C;
   }
 }
 .no-data{
-  height: 100px;
-  line-height: 100px;
+  height: 500px;
+  line-height: 500px;
   text-align: center;
-  color: #999;
-  font-size: 17px;
-  border: 1px solid;
+  color: $red-color;
+  font-size: 20px;
+  border: 1px solid #f8f8f8;
 }
 </style>
 <style>

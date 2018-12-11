@@ -1,23 +1,23 @@
 <template>
   <div>
     <ul class="tabList flex-wrap flex-wrap-wrap">
-        <li v-for="(item, index) in tripsTabList" :key="index" :class="$route.query.title == item ? 'active' : ''" @click="tripsTabClick(item, index)">{{item}}</li>
+        <li v-for="(item, index) in tripsTabList" :key="index" :class="$route.query.tripstitle == item ? 'active' : ''" @click="tripsTabClick(item, index)">{{item}}</li>
     </ul>
     <div class="wrap">
       <div class="header flex-wrap flex-content-between">
-        <p class="h3">{{this.$route.query.title}}</p>
-        <p class="time">Booked on 25 October, 2018</p>
+        <p class="h3">{{this.$route.query.tripstitle}}</p>
+        <!--<p class="time">Booked on 25 October, 2018</p>-->
       </div>
       <div class="content flex-wrap">
         <div class="flex-1 c-left">
           <img src="../../assets/images/trips/checked-in.png" alt="">
         </div>
         <div class="c-right">
-          <h3>Lorem ipsum dolor sit amet consectetur adipiscing elit</h3>
+          <!--<h3>Lorem ipsum dolor sit amet consectetur adipiscing elit</h3>-->
           <ul>
             <li class="flex-wrap flex-align-center">
               <div class="title flex-1">Booking ID</div>
-              <div class="text flex-2 flex-wrap">114693321</div>
+              <div class="text flex-2 flex-wrap">{{this.$route.query.tripsitem.booking_id}}</div>
             </li>
             <li class="flex-wrap">
               <div class="title flex-1">
@@ -25,33 +25,33 @@
                 <p class="check">Check-out</p>
               </div>
               <div class="text flex-2">
-                <p class="check">23 Sep 2018</p>
-                <p class="check">25 Sep 2018</p>
-                <p class="check">2 nights</p>
+                <p class="check">{{this.$route.query.tripsitem.strat_time}}</p>
+                <p class="check">{{this.$route.query.tripsitem.end_time}}</p>
+                <p class="check">{{parseInt(this.$route.query.tripsitem.cha_time)}} night</p>
               </div>
             </li>
             <li class="flex-wrap flex-align-center">
               <div class="title flex-1">Contact details</div>
-              <div class="text flex-2 flex-wrap">name@mail.com</div>
+              <div class="text flex-2 flex-wrap">{{this.user.email_address}}</div>
             </li>
-            <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Host name</div>
-              <div class="text flex-2 flex-wrap">Nunc Eget</div>
-            </li>
-            <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Guest name</div>
-              <div class="text flex-2 flex-wrap">Fusce Inibs, Sed Placerat</div>
-            </li>
-            <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Booked capacity</div>
-              <div class="text flex-2 flex-wrap">2 adults</div>
-            </li>
+            <!--<li class="flex-wrap flex-align-center">-->
+              <!--<div class="title flex-1">Host name</div>-->
+              <!--<div class="text flex-2 flex-wrap">en</div>-->
+            <!--</li>-->
+            <!--<li class="flex-wrap flex-align-center">-->
+              <!--<div class="title flex-1">Guest name</div>-->
+              <!--<div class="text flex-2 flex-wrap">Fusce Inibs, Sed Placerat</div>-->
+            <!--</li>-->
+            <!--<li class="flex-wrap flex-align-center">-->
+              <!--<div class="title flex-1">Booked capacity</div>-->
+              <!--<div class="text flex-2 flex-wrap">2 adults</div>-->
+            <!--</li>-->
             <li class="flex-wrap flex-align-center">
               <div class="title flex-1">Payment details</div>
               <div class="text flex-2 flex-wrap">
-                <span class="flex-2">PPS 100 x 2 nights</span>
-                <span class="flex-1">PPS</span>
-                <span class="flex-1">500</span>
+                <span class="flex-2">{{parseInt(this.$route.query.tripsitem.cha_time)}} night</span>
+                <span class="flex-1">{{this.$route.query.tripsitem.currency}}</span>
+                <span class="flex-1">{{this.$route.query.tripsitem.price}}</span>
               </div>
             </li>
             <li class="flex-wrap flex-align-center">
@@ -59,18 +59,18 @@
               <div class="text last-li flex-2">
                 <p class="flex-wrap">
                   <span class="flex-2">Cleaning fee</span>
-                  <span class="flex-1">PPS</span>
+                  <span class="flex-1">{{this.$route.query.tripsitem.currency}}</span>
                   <span class="flex-1">0</span>
                 </p>
                 <p class="flex-wrap">
                   <span class="flex-2">Service fee</span>
-                  <span class="flex-1">PPS</span>
-                  <span class="flex-1">7.5</span>
+                  <span class="flex-1">{{this.$route.query.tripsitem.currency}}</span>
+                  <span class="flex-1">{{this.$route.query.tripsitem.cleanup_service_fee}}</span>
                 </p>
                 <p class="flex-wrap">
                   <span class="flex-2 red">Total</span>
-                  <span class="flex-1 red">PPS</span>
-                  <span class="flex-1 red">507.5</span>
+                  <span class="flex-1 red">{{this.$route.query.tripsitem.currency}}</span>
+                  <span class="flex-1 red">{{this.$route.query.tripsitem.total_price}}</span>
                 </p>
               </div>
             </li>
@@ -111,6 +111,9 @@
 </template>
 
 <script>
+
+  var moment = require('moment')
+
 export default {
   data () {
     return {
@@ -132,8 +135,14 @@ export default {
       }, {
         value: '5',
         label: 'I’ve find a better place on another website'
-      }]
+      }],
+      user: ''
     }
+  },
+  created () {
+    this.user = this.$store.state.userInfo;
+    console.log(this.$route.query.tripsitem)
+
   },
   methods: {
     cancel () {
@@ -144,12 +153,14 @@ export default {
       this.$router.push('/trips/tripsList')
     },
     tripsTabClick (item) {
+
       this.$router.push({
         path: '/trips/tripsList',
         query: {
-          title: item
+          tripsitem: item
         }
       })
+
     }
   }
 }

@@ -67,16 +67,17 @@
           </div>
         </div> -->
         <p class="text" v-if="user.phone_number == '' || user.phone_number == null ">No phone number entered<br>We’ll send you booking requests, reminders, and other notifications.</p>
-        <p class="text red" v-if="user.phone_number == '' || user.phone_number == null"><router-link :to="{path:'VerifyPhone', query: {type: 'add'}}">Add a phone number</router-link></p>
+        <p class="text red" v-if="user.phone_number == '' || user.phone_number == null"><router-link :to="{path:'ChangePhone', query: {type: 'Add'}}">Add a phone number</router-link></p>
         <ul class="phone-list phone" v-else>
           <li class="flex-wrap flex-center-between">
             <div class="info flex-wrap flex-align-center">
-              <span class="number flex-2">{{ user.phone_number.substr(0,5) + "****" + user.phone_number.substr(9) }}</span>
-              <span class="red flex-1">Remove</span>
-              <span class="red flex-1"><router-link :to="{path:'ChangePhone'}">Change</router-link></span>
+              <span class="number flex-2">{{ user.phone_number.substr(0,6) + "****" + user.phone_number.substr(user.phone_number.length-4) }}</span>
+              <span class="red flex-1" @click="Remove = true; RemoveType = 1">Remove</span>
+              <span class="red flex-1"><router-link :to="{path:'ChangePhone', query: {type: 'Change'}}">Change</router-link></span>
             </div>
             <div class="r-button button" :class="user.user_identity_confirmation.phone_verified === 'true' ? 'verfied' : ''">
-              <div @click="showVerify === true">verification</div>
+              <div v-show="user.user_identity_confirmation.phone_verified === 'true'">Verified</div>
+              <div v-show="user.user_identity_confirmation.phone_verified != 'true'" @click="showVerify = true">verification</div>
               <!-- <router-link :to="{path:'ChangePhone'}" v-else>Change</router-link> -->
             </div>
           </li>
@@ -92,40 +93,59 @@
         <div class="flex-wrap flex-center-between flex-wrap-wrap" v-else>
           <div class="email-wrap flex-wrap flex-align-center">
            <p class="text flex-2">{{user.email_address}}</p>
-            <span class="red flex-1">Remove</span>
-            <span class="red flex-1"><router-link :to="{path:'ChangePhone'}">Change</router-link></span>
-            <!-- <span class="red flex-1"><router-link :to="{path:'VerifyEmail', query: {type: 'email'}}">verification</router-link></span> -->
+            <span class="red flex-1" @click="Remove = true; RemoveType = 2">Remove</span>
+            <!--<span class="red flex-1"><router-link :to="{path:'ChangePhone'}">Change</router-link></span>-->
+             <span class="red flex-1"><router-link :to="{path:'VerifyEmail', query: {type: 'email'}}">Change</router-link></span>
           </div>
-          <div class="r-button button" :class="user.user_identity_confirmation.phone_verified === 'true' ? 'verfied' : ''">
-            <div @click="showVerify === true">verification</div>
+          <div class="r-button button" :class="user.user_identity_confirmation.email_verified === 'true' ? 'verfied' : ''">
+            <div v-show="user.user_identity_confirmation.email_verified === 'true'">Verified</div>
+            <div v-show="user.user_identity_confirmation.email_verified != 'true'" @click="showVerify = true">verification</div>
             <!-- <router-link :to="{path:'ChangePhone'}">Change</router-link> -->
           </div>
         </div>
       </div>
     </div>
+
+    <!--验证手机/邮箱-->
     <el-dialog :visible.sync="showVerify" width="25%" class="checkoutWrap" :close-on-click-modal="true">
       <div class="verify-code">
-        验证码
+        Please enter verification code
       </div>
-       <div class="input-wrap">
+      <div class="input-wrap">
         <input type="text" placeholder="Verifiction Code">
       </div>
       <div class="flex-wrap flex-center-between">
-        <div class="button" @click="showVerify = false">取消</div>
-        <div class="button" @click="showVerify = false">确认</div>
+        <div class="button" @click="showVerify = false">Cancel</div>
+        <div class="button" @click="showVerify = false">Confirm</div>
       </div>
     </el-dialog>
+
+    <!--删除手机/邮箱-->
+    <el-dialog :visible.sync="Remove" width="25%" class="checkoutWrap" :close-on-click-modal="true">
+      <div class="verify-code">
+        Please enter your password
+      </div>
+      <div class="input-wrap">
+        <input type="password" placeholder="Password" v-model="UserPassword">
+      </div>
+      <div class="flex-wrap flex-center-between">
+        <div class="button" @click="Remove = false">Cancel</div>
+        <div class="button" @click="RemoveInfo">Confirm</div>
+      </div>
+    </el-dialog>
+
     <div class="wrap">
       <div class="wrap-header">Identity Card / Passport / Driver’s license</div>
       <div class="content password">
-        <div class="flex-wrap flex-align-center" v-if="this.$store.state.userInfo.user_identity_confirmation.document_verified === true">
+        <div class="flex-wrap flex-center-between flex-wrap-wrap" v-if="this.$store.state.userInfo.user_identity_confirmation.document_verified === 'true'">
           <p class="text">Your ID has been verified.</p>
+          <div class="r-button button verfied">verified</div>
         </div>
         <div class="flex-wrap flex-center-between flex-wrap-wrap" v-if="this.$store.state.userInfo.user_identity_confirmation.document_verified === 'pendding'">
           <p class="text">We're still reviewing your ID.</p>
           <div class="r-button button" style="cursor: initial;">Waiting</div>
         </div>
-        <div class="flex-wrap flex-center-between flex-wrap-wrap" v-else>
+        <div class="flex-wrap flex-center-between flex-wrap-wrap" v-if="this.$store.state.userInfo.user_identity_confirmation.document_verified === 'false'">
            <p class="text">You’ll need to provide identification before you book.</p>
            <div class="r-button button"><router-link to="VerifyIdentity">Verify</router-link></div>
         </div>
@@ -145,6 +165,8 @@ export default {
   data () {
     return {
       warningShow: false,
+      Remove:false,
+      RemoveType:0,
       select: '+1',
       phoneStep: '',
       password: {
@@ -160,7 +182,8 @@ export default {
         phoneNum: ''
       },
       showVerify: false,
-      user: ''
+      user: '',
+      UserPassword:''
     }
   },
   created () {
@@ -208,6 +231,54 @@ export default {
       } else {
         this.confirm_password = false
       }
+    },
+    RemoveInfo(){
+
+      var user_data = {};
+
+      if(this.RemoveType == 1){
+        user_data={
+          phone_number:''
+        }
+      }else{
+        user_data={
+          email_address:''
+        }
+      }
+
+      this.$post(this.userUrl + '/user', {
+        action: 'updateUserPrivateInfo',
+        data: {
+          user_id: this.$store.state.userInfo.user_id,
+          encrypted_password: sha256(this.UserPassword),
+          user_data : user_data
+        }
+      }).then((res) => {
+        if (res.msg.code === 200) {
+
+          this.UserPassword = '';
+          this.Remove = false;
+          let user = this.$store.state.userInfo
+
+          if(this.RemoveType == 1){
+            user.phone_number = null;
+          }else{
+            user.email_address = null;
+          }
+
+          this.$store.commit('userUpdate', user)
+          this.$message({
+            message: 'Operation is successful',
+            type: 'success'
+          })
+
+        } else if(res.msg.code === 952) {
+          this.$alert('Your password is entered incorrectly', 'Warning', {
+            confirmButtonText: 'Confirm'
+          })
+        }
+      })
+
     }
   },
   computed: {
