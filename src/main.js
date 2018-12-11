@@ -10,11 +10,11 @@ import store from './store'
 import axios from './axios'
 // import axios from 'axios'
 import AMap from 'vue-amap'
-import VueCookies from 'vue-cookies'
+
 import VueClipboard from 'vue-clipboard2'
 
 Vue.use(VueClipboard)
-Vue.use(VueCookies)
+
 Vue.use(AMap)
 
 // 初始化vue-amap
