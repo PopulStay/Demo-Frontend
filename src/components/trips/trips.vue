@@ -19,7 +19,7 @@
             </div>
             <div class="bottom flex-wrap flex-content-between flex-item">
               <span class="time">{{item.strat_time}} - {{item.end_time}} {{item.cha_time}}</span>
-              <span class="num">{{item.price}} PPS</span>
+              <span class="num">{{item.price}} {{item.currency}}</span>
             </div>
           </div>
           <div class="list-operation flex-wrap" :class="item.status == 'Pending' || item.status == 'Completed' ? 'flex-column-center flex-wrap' : ''">
@@ -27,7 +27,7 @@
               <p class="details"><router-link :to="{path:'/trips/trips_details',query: {tripsitem:item,tripstitle:item.status}}">View details</router-link></p>
               <p class="cancel">Cancel</p>
             </div>
-            <div class="checkout" v-if="item.status == 'Pending'" @click="checkoutShow = true">Checkout</div>
+            <div class="checkout" v-if="item.status == 'Pending'" @click="checkoutShow = true; PaymentHostID = item.booking_id">Payment</div>
             <div class="checkout" v-else-if="item.status == 'Completed'">Confirm</div>
             <div class="checkout Edit" v-else-if="item.status == 'Cancelled'">
               <p>Edit</p>
@@ -42,13 +42,24 @@
     </div>
     <!-- 待定结账弹窗  -->
     <el-dialog  :visible.sync="checkoutShow" class="checkoutWrap">
-      <div class="input-wrap">
-        <input type="text" placeholder="Login password">
-      </div>
+      <el-popover placement="bottom-start" width="300" trigger="manual" v-model="walletshow" popper-class="state-popover">
+        <div slot="reference" class="walletList flex-wrap flex-center-between" @click="walletshow = !walletshow">
+          <p>{{wallet}}</p>
+          <i class="icon iconfont" :class="walletshow ? 'icon-arrow-up' : 'icon-54'"></i>
+        </div>
+        <div class="popover">
+          <ul>
+            <li v-for="(item, index) in walletList" :key="index" @click="wallet = item.name; walletID = item.user_wallet_id; walletshow = false">
+              {{item.name}}
+            </li>
+          </ul>
+        </div>
+      </el-popover>
+
        <div class="input-wrap">
-        <input type="text" placeholder="Payment password">
+        <input type="password" placeholder="Payment password" v-model="userPassword">
       </div>
-      <div class="button" @click="next">Confirm and pay</div>
+      <div class="button" @click="paynext">Confirm and pay</div>
     </el-dialog>
     <!-- 扫码付款弹窗  -->
     <el-dialog  :visible.sync="cancelShow" width="22%" class="cancelWrap">
@@ -72,7 +83,7 @@ import completed from '../../assets/images/trips/completed.png'
 import pending from '../../assets/images/trips/pending.png'
 import upcoming from '../../assets/images/trips/upcoming.png'
 var moment = require('moment')
-
+const sha256 = require('js-sha256').sha256
 export default {
   data () {
     return {
@@ -90,7 +101,13 @@ export default {
       list: [],
       checkoutShow: false,
       cancelShow: false,
-      user: ''
+      user: '',
+      wallet:'Please choose a wallet',
+      walletID:0,
+      walletList:[],
+      walletshow:false,
+      userPassword:'',
+      PaymentHostID:0
     }
   },
   created () {
@@ -102,6 +119,7 @@ export default {
     else this.tripsTabTitle = 'All'
 
     this.getTripsList()
+    this.getWalletList()
   },
   methods: {
     getTripsList () {
@@ -168,9 +186,24 @@ export default {
             let m1 = moment(res.data[i].strat_time),
               m2 = moment(res.data[i].end_time);
             res.data[i].cha_time = m2.diff(m1, 'day') + 'night'
+
           }
           this.tripsList = res.data;
 
+      })
+
+    },
+    getWalletList(){
+
+      this.$post(this.userUrl + '/user', {
+        action: 'getUserWallets',
+        data: {
+          user_id: this.user.user_id
+        }
+      }).then((res) => {
+        if(res.msg.code == 200){
+          this.walletList = res.data.user_wallets
+        }
       })
     },
     tripsTabClick (value, index) {
@@ -178,9 +211,22 @@ export default {
       this.getTripsList()
 
     },
-    next () {
-      this.checkoutShow = false
-      this.cancelShow = true
+    paynext () {
+
+      // this.$post(this.paymentUrl + '/api/v1/payments/reserve ', {
+      //   bookingId: this.PaymentHostID,
+      //   userWalletId:this.walletID,
+      //   userWalletEncryptedPassword:sha256(this.userPassword)
+      // }).then((res) => {
+      //   console.log(res)
+      // })
+
+
+      // this.checkoutShow = false
+      // this.cancelShow = true
+    },
+    handleCommand(command) {
+      this.wallet = command
     }
   }
 }
@@ -354,6 +400,7 @@ $red-color: #F4436C;
   }
 }
 .cancelWrap {
+
   .text-wrap {
     padding: 10px 0;
     p {
@@ -429,8 +476,33 @@ $red-color: #F4436C;
   font-size: 20px;
   border: 1px solid #f8f8f8;
 }
+
+.walletList{
+  height: 60px;
+
+  p{
+    font-size: 18px;
+  }
+
+}
+
+.popover {
+  li {
+    letter-spacing: .83px;
+    padding: 5px 0;
+    cursor: pointer;
+    &:hover {
+      color: #F4436C
+    }
+    i {
+      font-style: normal;
+      margin-left: 5px;
+      color: #999;
+    }
+  }
+}
 </style>
-<style>
+<style lang="scss">
 .checkoutWrap .el-dialog__body {
   padding: 30px 40px;
 }
@@ -443,4 +515,5 @@ $red-color: #F4436C;
     padding: 30px 15px!important;
   }
 }
+
 </style>

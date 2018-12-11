@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul class="tabList flex-wrap flex-wrap-wrap">
-      <li v-for="(item, index) in guestsTabList" :key="index" :class="tripsTabTitle == item ? 'active' : ''" @click="guestsTabClick(item, index)">{{item}}</li>
+      <li v-for="(item, index) in guestsTabList" :key="index" :class="guestsTabTitle == item ? 'active' : ''" @click="guestsTabClick(item, index)">{{item}}</li>
     </ul>
     <ul class="dataList" v-if="islist == true">
       <li  v-for="(item, index) in guestsList" :key="index">
@@ -21,7 +21,7 @@
             </div>
             <div class="bottom flex-wrap flex-content-between flex-item">
               <span class="time">{{item.strat_time}} - {{item.end_time}} {{item.cha_time}}</span>
-              <span class="num">{{item.price}} PPS</span>
+              <span class="num">{{item.price}} {{item.currency}}</span>
             </div>
           </div>
           <div class="list-operation flex-wrap" :class="item.status == 'Pending' || item.status == 'Completed' ? 'flex-column-center flex-wrap' : ''">
@@ -78,7 +78,7 @@
   export default {
     data () {
       return {
-        tripsTabTitle: 'All',
+        guestsTabTitle: 'All',
         guestsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
         dataList: [
           {title: 'Pending', img: cancelled, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 0},
@@ -100,8 +100,8 @@
 
       this.list = this.dataList
       let title = this.$route.query.guestsitem
-      if (title) this.tripsTabTitle = title
-      else this.tripsTabTitle = 'All'
+      if (title) this.guestsTabTitle = title
+      else this.guestsTabTitle = 'All'
 
       this.getguestsList()
     },
@@ -111,7 +111,7 @@
 
         var status = '';
 
-        switch (this.tripsTabTitle) {
+        switch (this.guestsTabTitle) {
           case 'Pending':
             status = 'pending_for_payment'
             break
@@ -136,7 +136,7 @@
           action: 'listHostBookings',
           data: {
             // host_id: user.user_id,
-            host_id: 2766,
+            host_id: 2732,
             page: 0,
             status:status
           }
@@ -178,7 +178,7 @@
         })
       },
       guestsTabClick (value, index) {
-        this.tripsTabTitle = value
+        this.guestsTabTitle = value
         this.getguestsList()
 
       },
