@@ -89,6 +89,7 @@ export default {
   data () {
     return {
       tripsTabTitle: 'All',
+      webxiang: 'nb',
       tripsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
       dataList: [
         {title: 'Pending', img: cancelled, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 0},
