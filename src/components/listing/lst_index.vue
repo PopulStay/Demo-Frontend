@@ -150,21 +150,21 @@
           <p>Guests</p>
           <el-popover placement="bottom" width="300"  v-model="visible_xl" popper-class="c_guests">
               <div class="select flex-wrap flex-center-between" slot="reference" @click="visible_xl = !visible_xl">
-                <span>{{num1 + num2 + num3}} guests</span>
+                <span>{{num1 + num2}} guests {{num3 >=1 ? "," + num3 + "infants":''}}</span>
                 <i class="icon iconfont" :class="visible_xl ? 'icon-arrow-up' : 'icon-54'"></i>
               </div>
               <div class="placementbottom">
                 <ul class="rooms">
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">Adults</span>
-                    <el-input-number v-model="num1" :min="0" :max="10"></el-input-number>
+                    <el-input-number v-model="num1" :min="0" :max="data.guestNumber - num2" @change="handleChangeAdults"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">
                       Children
                       <p>Ages 2-12</p>
                     </span>
-                    <el-input-number v-model="num2" :min="0" :max="10"></el-input-number>
+                    <el-input-number v-model="num2" :min="0" :max="data.guestNumber - num1" @change="handleChangeChildren"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">Infants
@@ -183,14 +183,15 @@
         <div class="gus-wrap flex-wrap flex-center-between ">
           <div class="gus-div ">
             <!-- <div class="left">PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}} x {{time | days}} nights</div> -->
-            <div class="left">PPS {{days('days')}} nights</div>
+            <div class="left">PPS {{this.data.prices[0].bestPrice}} x {{bookInfo.night}} nights</div>
+            <!-- days('days') -->
             <div class="left">Cleaning fee</div>
             <div class="left">Service fee</div>
             <div class="left">Total</div>
           </div>
           <div class="gus-div ">
-            <div class="left">PPS {{days('result')}}</div>
-            <div class="left">0</div>
+            <div class="left">PPS {{bookInfo.clean}}</div>
+            <div class="left">{{bookInfo.service}}</div>
             <div class="left">0</div>
             <div class="left">PPS {{days('total')}}</div>
           </div>
@@ -291,6 +292,7 @@ import banner1 from '../../assets/images/index/banner-1.png'
 import banner2 from '../../assets/images/index/banner-2.png'
 import banner3 from '../../assets/images/index/banner-3.png'
 import banner4 from '../../assets/images/index/banner-4.png'
+var moment = require('moment')
 export default {
   name: 'listing-home',
   components: {
@@ -302,9 +304,19 @@ export default {
       isLogin: false,
       img: [banner1, banner2, banner3, banner4],
       time: '',
+      place_id: '',
       listName: '',
+      timeStart: '',
+      timeEnd: '',
       startTextTime: [],
       endTextTime: [],
+      startTimestamp: '',
+      endTimestamp: '',
+      bookInfo: {
+        night: '',
+        clean: '',
+        service: ''
+      },
       selectValue: '1 guest',
       hostName: '',
       num1: 0,
@@ -332,14 +344,23 @@ export default {
   },
   created () {
     this.getPlace(this.$route.query.id)
+    this.place_id = this.$route.query.id
     let date = new Date().getTime()
-    this.startTextTime = String(new Date()).split(' ')
-    this.endTextTime = String(new Date(date + (1000 * 60 * 60 * 24))).split(' ')
+    this.timeStart = new Date()
+    this.timeEnd = new Date(date + (1000 * 60 * 60 * 24))
+    this.startTextTime = String(this.timeStart).split(' ')
+    this.endTextTime = String(this.timeEnd).split(' ')
+    this.startTimestamp = Date.parse(this.timeStart)
+    this.endTimestamp = Date.parse(this.timeEnd)
   },
   methods: {
     selectTime (e) {
-      this.startTextTime = String(e[0]).split(' ')
-      this.endTextTime = String(e[1]).split(' ')
+      this.timeStart = e[0]
+      this.timeEnd = e[1]
+      this.startTextTime = String(this.timeStart).split(' ')
+      this.endTextTime = String(this.timeEnd).split(' ')
+      this.startTimestamp = Date.parse(this.timeStart)
+      this.endTimestamp = Date.parse(this.timeEnd)
     },
     Verify () {
       this.isVerify = !this.isVerify
@@ -384,7 +405,7 @@ export default {
         return 0
       }
       if (type === 'days') {
-        data = this.data.prices[0].bestPrice + ' x ' + day
+        this.bookInfo.night = day
       } else if (type === 'result') {
         data = this.data.prices[0].bestPrice * day
       } else if (type === 'total') {
@@ -425,6 +446,38 @@ export default {
       }).then((res) => {
         this.hostName = res.data.first_name + res.data.last_name
         console.log(this.hostName)
+      })
+    },
+    handleChangeAdults () {
+      this.$post(this.bookUrl + '/booking ', {
+        action: 'estimateBookingPrice',
+        data: {
+          place_id: this.place_id,
+          check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
+          check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
+          guest_number: this.num1 + this.num2,
+          currency: 'PPS'
+        }
+      }).then((res) => {
+        if (res.code === 200) {
+          // this.bookInfo.guests = res.data.guest_number
+        }
+      })
+    },
+    handleChangeChildren () {
+      this.$post(this.bookUrl + '/booking ', {
+        action: 'estimateBookingPrice',
+        data: {
+          place_id: this.place_id,
+          check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
+          check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
+          guest_number: this.num1 + this.num2,
+          currency: 'PPS'
+        }
+      }).then((res) => {
+        if (res.code === 200) {
+          // this.bookInfo.guests = res.data.guest_number
+        }
       })
     }
   },

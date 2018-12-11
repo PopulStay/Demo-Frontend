@@ -138,8 +138,8 @@ export default {
             res.data[i].strat_time = moment(res.data[i].strat_time).format('DD MMM YYYY')
             res.data[i].end_time = moment(res.data[i].end_time).format('DD MMM YYYY')
             // console.log(moment.duration(res.data[i].end_time - res.data[i].strat_time), 'days')
-            let m1 = moment(res.data[i].strat_time),
-              m2 = moment(res.data[i].end_time)
+            let m1 = moment(res.data[i].strat_time)
+            let m2 = moment(res.data[i].end_time)
             // console.log(m1)
             // console.log(m2)
             res.data[i].cha_time = m2.diff(m1, 'day') + 'night'
@@ -154,9 +154,12 @@ export default {
     },
     tripsTabClick (value, index) {
       this.tripsTabTitle = value
+      console.log('tab')
       if (this.list.length > 0) {
         if (value === 'All') {
+          console.log('all')
           this.tripsList = this.list
+          this.islist = true
           return false
         }
         let list = this.list.filter((item) => item.status === value)
