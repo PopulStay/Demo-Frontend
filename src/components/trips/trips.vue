@@ -228,13 +228,13 @@ export default {
     },
     paynext () {
 
-      // this.$post(this.paymentUrl + '/api/v1/payments/reserve ', {
-      //   bookingId: this.PaymentHostID,
-      //   userWalletId:this.walletID,
-      //   userWalletEncryptedPassword:sha256(this.userPassword)
-      // }).then((res) => {
-      //   console.log(res)
-      // })
+      this.$post(this.paymentUrl + '/api/v1/payments/reserve ', {
+        bookingId: this.PaymentHostID,
+        userWalletId:this.walletID,
+        userWalletEncryptedPassword:sha256(this.userPassword)
+      }).then((res) => {
+        console.log(res)
+      })
 
       // this.checkoutShow = false
       // this.cancelShow = true

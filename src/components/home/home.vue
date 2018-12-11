@@ -89,7 +89,7 @@
         <li v-for="(item, index) in list" :key="index" @click="toListing(item.placeId)">
             <img :src="item.picture.length>0 ? item.picture[0].smallPictureUrl : ''" alt="">
             <p class="title">{{ listName[index] }}</p>
-            <p class="text">{{ item.placeName ? item.placeName : '' }}</p>
+            <p class="text">{{ placeName[index] ? placeName[index] : '' }}</p>
             <!-- <p class="number">{{ item.prices.length !== 0 ? item.prices[0].smallPictureUrl : '' }} pps per night</p> -->
             <p class="number">{{ item.prices[0].bestPrice }} pps per night</p>
             <el-rate v-model="item.review" disabled show-score
@@ -147,6 +147,7 @@ export default {
     return {
       list: '',
       listName: [],
+      placeName: [],
       viewCount: [],
       list1: [
         { img: list1, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
@@ -236,7 +237,7 @@ export default {
     getHomeSearch () {
       let that = this
       this.$get(this.placeUrl + '/places', {
-        pageNo: 1,
+        pageNo: 7,
         pageSize: 12
       }).then((res) => {
         if (res.code === 200) {
@@ -250,8 +251,10 @@ export default {
             }
             var citycode = val.citycode
             that.getName(citycode)
+            this.translation(val.placeName)
           })
           this.list = res.data.dataList
+
         }
       })
     },
@@ -270,7 +273,6 @@ export default {
           // viewCount.push(count)
           this.listName = listName
           // this.viewCount = viewCount
-          // console.log(viewCount)
         }
       })
     },
@@ -288,6 +290,24 @@ export default {
       this.searchValue = val.fullAddress
       console.log(val)
       this.searchListShow = false
+    },
+    translation(obj){
+      let placeName = this.placeName;
+      this.$jsonp(this.youdaoUrl+'/api',
+        {
+          q: obj,
+          appKey: this.$store.state.appKey,
+          salt: this.$store.state.salt,
+          from: '',
+          to: 'en',
+          sign:this.$md5(this.$store.state.appKey+obj+this.$store.state.salt+this.$store.state.secret_key)
+        }
+      ).then(json => {
+        placeName.push(json.translation[0])
+        this.placeName = placeName
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 }
@@ -423,7 +443,8 @@ $red-color: #F4436C;
   ul {
     overflow: hidden;
     li {
-      float: left;
+      display: inline-block;
+      vertical-align: top;
       margin: 20px 25px 20px 0;
       width: 350px;
       font-size: 16px;
@@ -445,9 +466,10 @@ $red-color: #F4436C;
         letter-spacing: 0.62px;
         font-family: Roboto-Medium;
         text-align: left;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
         overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
       }
       .number {
         font-family: Roboto-Light;
