@@ -130,7 +130,7 @@
         <div class="select-time flex-wrap">
           <div class="select-time-start flex-1">
             <p>Check-in</p>
-            <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
+            <el-date-picker v-model="timeStart" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
             </el-date-picker>
             <div class="startTime text">
               <p>{{startTextTime[2]}} {{startTextTime[1]}} {{startTextTime[3]}} </p>
@@ -139,7 +139,7 @@
           </div>
           <div class="select-time-end flex-1">
             <p>Check-out</p>
-            <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
+            <el-date-picker v-model="timeEnd" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
             <div class="endTime text">
               <p>{{endTextTime[2]}} {{endTextTime[1]}} {{endTextTime[3]}}</p>
               <span>{{endTextTime[0]}}</span>
@@ -157,14 +157,14 @@
                 <ul class="rooms">
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">Adults</span>
-                    <el-input-number v-model="num1" :min="0" :max="data.guestNumber - num2" @change="handleChangeAdults"></el-input-number>
+                    <el-input-number v-model="num1" :min="1" :max="data.guestNumber - num2" @change="HandleChangeAdult"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">
                       Children
                       <p>Ages 2-12</p>
                     </span>
-                    <el-input-number v-model="num2" :min="0" :max="data.guestNumber - num1" @change="handleChangeChildren"></el-input-number>
+                    <el-input-number v-model="num2" :min="0" :max="data.guestNumber - num1" @change="HandleChangeAdult"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">Infants
@@ -183,17 +183,17 @@
         <div class="gus-wrap flex-wrap flex-center-between ">
           <div class="gus-div ">
             <!-- <div class="left">PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}} x {{time | days}} nights</div> -->
-            <div class="left">PPS {{this.data.prices[0].bestPrice}} x {{bookInfo.night}} nights</div>
+            <div class="left">PPS {{days('days')}} nights</div>
             <!-- days('days') -->
-            <div class="left">Cleaning fee</div>
-            <div class="left">Service fee</div>
+            <div class="left">Cleaning Service fee</div>
+            <!-- <div class="left">Service fee</div> -->
             <div class="left">Total</div>
           </div>
           <div class="gus-div ">
-            <div class="left">PPS {{bookInfo.clean}}</div>
-            <div class="left">{{bookInfo.service}}</div>
-            <div class="left">0</div>
-            <div class="left">PPS {{days('total')}}</div>
+            <div class="left">PPS {{days('place_price')}}</div>
+            <div class="left">{{days('clean')}}</div>
+            <!-- <div class="left">{{days('service')}}</div> -->
+            <div class="left">PPS {{days('total_price')}}</div>
           </div>
         </div>
         <button @click="Verify">Book</button>
@@ -213,7 +213,7 @@
             <p class="pps-p">PPS</p>
             <i class="iconfont icon-54"></i>
           </div>
-          <p class="top-wrap-p"><em>PPS 100</em>per night</p>
+          <p class="top-wrap-p"><em>PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p>
         </div>
         <div class="select-time flex-wrap">
           <div class="select-time-start flex-1">
@@ -238,21 +238,21 @@
           <p>Guests</p>
           <el-popover placement="bottom" width="300"  v-model="visible_xl2">
               <div class="select flex-wrap flex-center-between" slot="reference" @click="visible_xl2 = !visible_xl2">
-                <span>{{num1 + num2 + num3}} guests</span>
+                <span>{{num1 + num2}} guests {{num3 >=1 ? "," + num3 + "infants":''}}</span>
                 <i class="icon iconfont" :class="visible_xl2 ? 'icon-arrow-up' : 'icon-54'"></i>
               </div>
               <div class="placementbottom">
                 <ul class="rooms">
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">Adults</span>
-                    <el-input-number v-model="num1" :min="0" :max="10"></el-input-number>
+                    <el-input-number v-model="num1" :min="1" :max="data.guestNumber - num2" @change="HandleChangeAdult"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">
                       Children
                       <p>Ages 2-12</p>
                     </span>
-                    <el-input-number v-model="num2" :min="0" :max="10"></el-input-number>
+                    <el-input-number v-model="num2" :min="0" :max="data.guestNumber - num1" @change="HandleChangeAdult"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">Infants
@@ -270,16 +270,16 @@
         </div>
         <div class="gus-wrap flex-wrap flex-center-between ">
           <div class="gus-div ">
-            <div class="left">PPS 100 x 5 nights</div>
-            <div class="left">Cleaning fee</div>
-            <div class="left">Service fee</div>
+            <div class="left">PPS {{days('days')}} nights</div>
+            <div class="left">Cleaning Service fee</div>
+            <!-- <div class="left">Service fee</div> -->
             <div class="left">Total</div>
           </div>
           <div class="gus-div ">
-            <div class="left">PPS 500</div>
-            <div class="left">0</div>
-            <div class="left">7.5</div>
-            <div class="left">507.5</div>
+            <div class="left">PPS {{days('place_price')}}</div>
+            <!-- <div class="left">0</div> -->
+            <div class="left">{{days('clean')}}</div>
+            <div class="left">{{days('total_price')}}</div>
           </div>
         </div>
         <button @click="Verify">Book</button>
@@ -312,14 +312,9 @@ export default {
       endTextTime: [],
       startTimestamp: '',
       endTimestamp: '',
-      bookInfo: {
-        night: '',
-        clean: '',
-        service: ''
-      },
       selectValue: '1 guest',
       hostName: '',
-      num1: 0,
+      num1: 1,
       num2: 0,
       num3: 0,
       isVerify: false,
@@ -332,10 +327,11 @@ export default {
       isShowMore4: false,
       isBack: false,
       data: {},
+      bookInfo: '',
       pickerOptions: {
         disabledDate: (time) => {
-          let dates = new Date().getTime() + (1000 * 60 * 60 * 24) * this.data.guestMaxStayNight
-          return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates
+          // let dates = new Date().getTime() + (1000 * 60 * 60 * 24) * this.data.guestMaxStayNight
+          // return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates
           // return time.getTime() < Date.now() - 8.64e7
         }
       },
@@ -352,6 +348,7 @@ export default {
     this.endTextTime = String(this.timeEnd).split(' ')
     this.startTimestamp = Date.parse(this.timeStart)
     this.endTimestamp = Date.parse(this.timeEnd)
+    this.getBookInfo()
   },
   methods: {
     selectTime (e) {
@@ -361,9 +358,31 @@ export default {
       this.endTextTime = String(this.timeEnd).split(' ')
       this.startTimestamp = Date.parse(this.timeStart)
       this.endTimestamp = Date.parse(this.timeEnd)
+      this.getBookInfo()
+    },
+    HandleChangeAdult(){
+      this.getBookInfo()
     },
     Verify () {
-      this.isVerify = !this.isVerify
+      let user = this.$store.state.userInfo
+      if(user.user_identity_confirmation.document_verified === 'true'){
+        this.$post(this.bookUrl + '/booking ', {
+        action: 'makeBooking',
+        data: {
+          user_id: user.user_id,
+          place_id: this.place_id,
+          check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
+          check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
+          guest_number: this.num1 + this.num2,
+          currency: 'PPS'
+        }
+        }).then((res) => {
+          if (res.msg.code === 200) {
+            // console.log()
+            this.$router.push({path: 'lstDetail', query: res.data.booking_id})
+          }
+        })
+      }else this.isVerify = !this.isVerify
     },
     toDetail () {
       this.$router.push({path: 'lstDetail'})
@@ -398,18 +417,27 @@ export default {
       let dayTime = ''
       let day = ''
       let data = ''
-      if (this.time.length !== 0) {
-        dayTime = this.time[1].getTime() - this.time[0].getTime()
-        day = dayTime / (1000 * 60 * 60 * 24) + 1
-      } else {
-        return 0
-      }
+      console.log(this.timeEnd)
+      dayTime = this.endTimestamp - this.startTimestamp
+      day = dayTime / (1000 * 60 * 60 * 24)
+      console.log('??')
+      // let info = this.getBookInfo()
+      console.log('???')
+      // console.log(info)
       if (type === 'days') {
-        this.bookInfo.night = day
-      } else if (type === 'result') {
-        data = this.data.prices[0].bestPrice * day
-      } else if (type === 'total') {
-        data = this.data.prices[0].bestPrice * day
+        data = this.data.prices[0].bestPrice + ' x ' + day
+      }
+      else if (type === 'place_price') {
+        data = this.bookInfo.place_price
+      } 
+       else if (type === 'clean') {
+        data = this.bookInfo.cleanup_service_fee
+      }
+      // else if (type === 'service') {
+      //   data = this.bookInfo.service
+      // } 
+      else if (type === 'total_price') {
+        data = this.bookInfo.total_price
       }
       return data
     },
@@ -448,7 +476,7 @@ export default {
         console.log(this.hostName)
       })
     },
-    handleChangeAdults () {
+    getBookInfo () {
       this.$post(this.bookUrl + '/booking ', {
         action: 'estimateBookingPrice',
         data: {
@@ -459,24 +487,9 @@ export default {
           currency: 'PPS'
         }
       }).then((res) => {
-        if (res.code === 200) {
-          // this.bookInfo.guests = res.data.guest_number
-        }
-      })
-    },
-    handleChangeChildren () {
-      this.$post(this.bookUrl + '/booking ', {
-        action: 'estimateBookingPrice',
-        data: {
-          place_id: this.place_id,
-          check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
-          check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
-          guest_number: this.num1 + this.num2,
-          currency: 'PPS'
-        }
-      }).then((res) => {
-        if (res.code === 200) {
-          // this.bookInfo.guests = res.data.guest_number
+        if (res.msg.code === 200) {
+          console.log(res.data)
+          this.bookInfo = res.data
         }
       })
     }
@@ -506,12 +519,12 @@ export default {
         var scrollDistance = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
         if (scrollDistance >= 830) {
           this.isShow = true
-          // document.getElementsByClassName('lst-home-right-xl')[0].style.cssText = 'position:fixed;top:100px;right: 9.5%;'
-          // document.getElementsByClassName('scrool-fix-rili')[0].style.cssText = 'display:block'
+          document.getElementsByClassName('lst-home-right-xl')[0].style.cssText = 'position:fixed;top:100px;right: 9.5%;'
+          document.getElementsByClassName('scrool-fix-rili')[0].style.cssText = 'display:block'
         } else {
           this.isShow = false
-          // document.getElementsByClassName('lst-home-right-xl')[0].style.cssText = 'position:static;'
-          // document.getElementsByClassName('scrool-fix-rili')[0].style.cssText = 'display:none;'
+          document.getElementsByClassName('lst-home-right-xl')[0].style.cssText = 'position:static;'
+          document.getElementsByClassName('scrool-fix-rili')[0].style.cssText = 'display:none;'
         }
       })
     }

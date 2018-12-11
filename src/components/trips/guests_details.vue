@@ -114,50 +114,50 @@
 
   var moment = require('moment')
 
-  export default {
-    data () {
-      return {
-        pendingShow: false,
-        value11: '',
-        guestsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
-        options: [{
-          value: '1',
-          label: 'Please select one reason'
-        }, {
-          value: '2',
-          label: 'I don’t need a place to stay anymore'
-        }, {
-          value: '3',
-          label: 'I’ve booked the wrong dates'
-        }, {
-          value: '4',
-          label: 'I can’t travel on the dates I booked'
-        }, {
-          value: '5',
-          label: 'I’ve find a better place on another website'
-        }]
-      }
+export default {
+  data () {
+    return {
+      pendingShow: false,
+      value11: '',
+      guestsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
+      options: [{
+        value: '1',
+        label: 'Please select one reason'
+      }, {
+        value: '2',
+        label: 'I don’t need a place to stay anymore'
+      }, {
+        value: '3',
+        label: 'I’ve booked the wrong dates'
+      }, {
+        value: '4',
+        label: 'I can’t travel on the dates I booked'
+      }, {
+        value: '5',
+        label: 'I’ve find a better place on another website'
+      }]
+    }
+  },
+  methods: {
+    cancel () {
+      this.pendingShow = true
     },
-    methods: {
-      cancel () {
-        this.pendingShow = true
-      },
-      submit () {
-        this.pendingShow = false
-        this.$router.push('/trips/guests')
-      },
-      guestsTabClick (item) {
+    submit () {
+      this.pendingShow = false
+      this.$router.push('/trips/guests')
+    },
+    guestsTabClick (item) {
 
-        this.$router.push({
-          path: '/trips/guests',
-          query: {
-            tripsitem: item
-          }
-        })
+      this.$router.push({
+        path: '/trips/guests',
+        query: {
+          tripsitem: item
+        }
+      })
 
-      }
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
