@@ -1,6 +1,7 @@
 <template>
   <div>
     <ul class="tabList flex-wrap flex-wrap-wrap">
+      <li v-for="(item, index) in guestsTabList" :key="index" :class="guestsTabTitle == item ? 'active' : ''" @click="guestsTabClick(item, index)">{{item}}</li>
         <li v-for="(item, index) in tripsTabList" :key="index" :class="tripsTabTitle == item ? 'active' : ''" @click="tripsTabClick(item, index)">{{item}}</li>
     </ul>
     <ul class="dataList" v-if="islist == true">
@@ -21,7 +22,7 @@
             </div>
             <div class="bottom flex-wrap flex-content-between">
               <span class="time">{{item.strat_time}} - {{item.end_time}} {{item.cha_time}}</span>
-              <span class="num">{{item.price}} PPS</span>
+              <span class="num">{{item.price}} {{item.currency}}</span>
             </div>
           </div>
           <div class="list-operation flex-wrap" :class="item.status == 'Pending' ? 'flex-column-center flex-wrap' : ''">
@@ -65,70 +66,103 @@
 </template>
 
 <script>
-import completed from '../../assets/images/trips/completed.png'
-import upcoming from '../../assets/images/trips/upcoming.png'
-var moment = require('moment')
+  import cancelled from '../../assets/images/trips/cancelled.png'
+  import checked from '../../assets/images/trips/checked-in.png'
+  import completed from '../../assets/images/trips/completed.png'
+  import pending from '../../assets/images/trips/pending.png'
+  import upcoming from '../../assets/images/trips/upcoming.png'
+  var moment = require('moment')
 
-export default {
-  data () {
-    return {
-      tripsTabTitle: 'Upcoming',
-      tripsTabList: ['Upcoming', 'Completed'],
-      dataList: [
-        {title: 'Upcoming', img: upcoming, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 1},
-        {title: 'Upcoming', img: upcoming, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 1},
-        {title: 'Completed', img: completed, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 3},
-        {title: 'Completed', img: completed, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 3}
-      ],
-      islist: true,
-      list: [],
-      tripsList: [],
-      checkoutShow: false,
-      cancelShow: false
-    }
-  },
-  created () {
-    this.getGuestsList()
-    this.list = this.dataList
-    let title = this.$route.query.title
-    if (title) this.tripsTabTitle = title
-    else this.tripsTabTitle = 'Upcoming'
-  },
-  methods: {
-    getGuestsList () {
-      // let user = JSON.parse(localStorage.getItem('user'))
-      this.$post(this.bookUrl + '/booking', {
-        action: 'listHostBookings',
-        data: {
-          // host_id: user.user_id,
-          host_id: 2732,
-          page: 1
+  export default {
+    data () {
+      return {
+        guestsTabTitle: 'All',
+        guestsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
+        dataList: [
+          {title: 'Pending', img: cancelled, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 0},
+          {title: 'Upcoming', img: checked, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 1},
+          {title: 'Checked-in', img: completed, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 2},
+          {title: 'Completed', img: pending, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 3},
+          {title: 'Cancelled', img: upcoming, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 4}
+        ],
+        guestsList: [],
+        islist: true,
+        list: [],
+        checkoutShow: false,
+        cancelShow: false,
+        user: ''
+      }
+    },
+    created () {
+      this.user = this.$store.state.userInfo;
+
+      this.list = this.dataList
+      let title = this.$route.query.guestsitem
+      if (title) this.guestsTabTitle = title
+      else this.guestsTabTitle = 'All'
+
+      this.getguestsList()
+    },
+    methods: {
+      getguestsList () {
+        // let user = JSON.parse(localStorage.getItem('user'))
+
+        var status = '';
+
+        switch (this.guestsTabTitle) {
+          case 'Pending':
+            status = 'pending_for_payment'
+            break
+          case 'Upcoming':
+            status = 'pending_for_checking'
+            break
+          case 'Checked-in':
+            status = 'checked_in'
+            break
+          case 'Completed':
+            status = 'completed'
+            break
+          case 'Cancelled':
+            status = 'cancelled'
+            break
+          default:
+            status = ''
+            break
         }
-      }).then((res) => {
-        if (res.data) {
-          if (res.data.length > 0) {
-          // if (res.data.status == 'pending for payment')
-            for (let i in res.data) {
-              switch (res.data[i].status) {
-                case 'pending_for_payment':
-                  res.data[i].status = 'Upcoming'
-                  break
-                // case 'pending_for_checking':
-                //   res.data[i].status = 'Upcoming'
-                //   break
-                // case 'checked_in':
-                //   res.data[i].status = 'Checked-in'
-                //   break
-                // case 'completed':
-                //   res.data[i].status = 'Completed'
-                //   break
-                // case 'cancelled':
-                //   res.data[i].status = 'Cancelled'
-                //   break
-                default:
-                  res.data[i].status = 'Completed'
-                  break
-              }
+
+        this.$post(this.bookUrl + '/booking', {
+          action: 'listHostBookings',
+          data: {
+            // host_id: user.user_id,
+            host_id: 2732,
+            page: 0,
+            status:status
+          }
+        }).then((res) => {
+          res.data.length > 0 ? this.islist = true : this.islist = false;
+
+          for (let i in res.data) {
+
+            switch (res.data[i].status) {
+              case 'pending_for_payment':
+                res.data[i].status = 'Pending'
+                break
+              case 'pending_for_checking':
+                res.data[i].status = 'Upcoming'
+                break
+              case 'checked_in':
+                res.data[i].status = 'Checked-in'
+                break
+              case 'completed':
+                res.data[i].status = 'Completed'
+                break
+              case 'cancelled ':
+                res.data[i].status = 'Cancelled'
+                break
+              default:
+                res.data[i].status = ''
+                break
+
               res.data[i].strat_time = moment(res.data[i].strat_time).format('DD MMM YYYY')
               res.data[i].end_time = moment(res.data[i].end_time).format('DD MMM YYYY')
               // console.log(moment.duration(res.data[i].end_time - res.data[i].strat_time), 'days')
@@ -145,8 +179,19 @@ export default {
             this.tripsList = res.data
             console.log(this.tripsList)
           }
-        } else this.islist = false
-      })
+          this.guestsList = res.data;
+
+        })
+      },
+      guestsTabClick (value, index) {
+        this.guestsTabTitle = value
+        this.getguestsList()
+
+      },
+      next () {
+        this.checkoutShow = false
+        this.cancelShow = true
+      }
     },
     tripsTabClick (value, index) {
       this.tripsTabTitle = value
@@ -169,7 +214,6 @@ export default {
       this.cancelShow = true
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>

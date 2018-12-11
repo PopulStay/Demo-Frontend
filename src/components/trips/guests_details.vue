@@ -1,23 +1,23 @@
 <template>
   <div>
     <ul class="tabList flex-wrap flex-wrap-wrap">
-      <li v-for="(item, index) in guestsTabList" :key="index" :class="$route.query.gueststitle == item ? 'active' : ''" @click="guestsTabClick(item, index)">{{item}}</li>
+        <li v-for="(item, index) in guestsTabList" :key="index" :class="$route.query.gueststitle == item ? 'active' : ''" @click="guestsTabClick(item, index)">{{item}}</li>
     </ul>
     <div class="wrap">
       <div class="header flex-wrap flex-content-between">
         <p class="h3">{{this.$route.query.gueststitle}}</p>
-        <p class="time">Booked on 25 October, 2018</p>
+        <!--<p class="time">Booked on 25 October, 2018</p>-->
       </div>
       <div class="content flex-wrap">
         <div class="flex-1 c-left">
           <img src="../../assets/images/trips/checked-in.png" alt="">
         </div>
         <div class="c-right">
-          <h3>Lorem ipsum dolor sit amet consectetur adipiscing elit</h3>
+          <!--<h3>Lorem ipsum dolor sit amet consectetur adipiscing elit</h3>-->
           <ul>
             <li class="flex-wrap flex-align-center">
               <div class="title flex-1">Booking ID</div>
-              <div class="text flex-2 flex-wrap">114693321</div>
+              <div class="text flex-2 flex-wrap">{{this.$route.query.guestsitem.booking_id}}</div>
             </li>
             <li class="flex-wrap">
               <div class="title flex-1">
@@ -25,33 +25,33 @@
                 <p class="check">Check-out</p>
               </div>
               <div class="text flex-2">
-                <p class="check">23 Sep 2018</p>
-                <p class="check">25 Sep 2018</p>
-                <p class="check">2 nights</p>
+                <p class="check">{{this.$route.query.guestsitem.strat_time}}</p>
+                <p class="check">{{this.$route.query.guestsitem.end_time}}</p>
+                <p class="check">{{parseInt(this.$route.query.guestsitem.cha_time)}} night</p>
               </div>
             </li>
             <li class="flex-wrap flex-align-center">
               <div class="title flex-1">Contact details</div>
-              <div class="text flex-2 flex-wrap">name@mail.com</div>
+              <div class="text flex-2 flex-wrap">{{this.user.email_address}}</div>
             </li>
-            <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Host name</div>
-              <div class="text flex-2 flex-wrap">Nunc Eget</div>
-            </li>
-            <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Guest name</div>
-              <div class="text flex-2 flex-wrap">Fusce Inibs, Sed Placerat</div>
-            </li>
-            <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Booked capacity</div>
-              <div class="text flex-2 flex-wrap">2 adults</div>
-            </li>
+            <!--<li class="flex-wrap flex-align-center">-->
+              <!--<div class="title flex-1">Host name</div>-->
+              <!--<div class="text flex-2 flex-wrap">en</div>-->
+            <!--</li>-->
+            <!--<li class="flex-wrap flex-align-center">-->
+              <!--<div class="title flex-1">Guest name</div>-->
+              <!--<div class="text flex-2 flex-wrap">Fusce Inibs, Sed Placerat</div>-->
+            <!--</li>-->
+            <!--<li class="flex-wrap flex-align-center">-->
+              <!--<div class="title flex-1">Booked capacity</div>-->
+              <!--<div class="text flex-2 flex-wrap">2 adults</div>-->
+            <!--</li>-->
             <li class="flex-wrap flex-align-center">
               <div class="title flex-1">Payment details</div>
               <div class="text flex-2 flex-wrap">
-                <span class="flex-2">PPS 100 x 2 nights</span>
-                <span class="flex-1">PPS</span>
-                <span class="flex-1">500</span>
+                <span class="flex-2">{{parseInt(this.$route.query.guestsitem.cha_time)}} night</span>
+                <span class="flex-1">{{this.$route.query.guestsitem.currency}}</span>
+                <span class="flex-1">{{this.$route.query.guestsitem.price}}</span>
               </div>
             </li>
             <li class="flex-wrap flex-align-center">
@@ -59,18 +59,18 @@
               <div class="text last-li flex-2">
                 <p class="flex-wrap">
                   <span class="flex-2">Cleaning fee</span>
-                  <span class="flex-1">PPS</span>
+                  <span class="flex-1">{{this.$route.query.guestsitem.currency}}</span>
                   <span class="flex-1">0</span>
                 </p>
                 <p class="flex-wrap">
                   <span class="flex-2">Service fee</span>
-                  <span class="flex-1">PPS</span>
-                  <span class="flex-1">7.5</span>
+                  <span class="flex-1">{{this.$route.query.guestsitem.currency}}</span>
+                  <span class="flex-1">{{this.$route.query.guestsitem.cleanup_service_fee}}</span>
                 </p>
                 <p class="flex-wrap">
                   <span class="flex-2 red">Total</span>
-                  <span class="flex-1 red">PPS</span>
-                  <span class="flex-1 red">507.5</span>
+                  <span class="flex-1 red">{{this.$route.query.guestsitem.currency}}</span>
+                  <span class="flex-1 red">{{this.$route.query.guestsitem.total_price}}</span>
                 </p>
               </div>
             </li>
@@ -114,239 +114,245 @@
 
   var moment = require('moment')
 
-  export default {
-    data () {
-      return {
-        pendingShow: false,
-        value11: '',
-        guestsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
-        options: [{
-          value: '1',
-          label: 'Please select one reason'
-        }, {
-          value: '2',
-          label: 'I don’t need a place to stay anymore'
-        }, {
-          value: '3',
-          label: 'I’ve booked the wrong dates'
-        }, {
-          value: '4',
-          label: 'I can’t travel on the dates I booked'
-        }, {
-          value: '5',
-          label: 'I’ve find a better place on another website'
-        }]
-      }
+export default {
+  data () {
+    return {
+      pendingShow: false,
+      value11: '',
+      guestsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
+      options: [{
+        value: '1',
+        label: 'Please select one reason'
+      }, {
+        value: '2',
+        label: 'I don’t need a place to stay anymore'
+      }, {
+        value: '3',
+        label: 'I’ve booked the wrong dates'
+      }, {
+        value: '4',
+        label: 'I can’t travel on the dates I booked'
+      }, {
+        value: '5',
+        label: 'I’ve find a better place on another website'
+      }],
+      user: ''
+    }
+  },
+  created () {
+    this.user = this.$store.state.userInfo;
+    console.log(this.$route.query.guestsitem)
+
+  },
+  methods: {
+    cancel () {
+      this.pendingShow = true
     },
-    methods: {
-      cancel () {
-        this.pendingShow = true
-      },
-      submit () {
-        this.pendingShow = false
-        this.$router.push('/trips/guests')
-      },
-      guestsTabClick (item) {
+    submit () {
+      this.pendingShow = false
+      this.$router.push('/trips/guests')
+    },
+    guestsTabClick (item) {
 
-        this.$router.push({
-          path: '/trips/guests',
-          query: {
-            tripsitem: item
-          }
-        })
+      this.$router.push({
+        path: '/trips/guests',
+        query: {
+          guestsitem: item
+        }
+      })
 
-      }
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  $red-color: #F4436C;
-  .tabList {
-    margin-bottom: 30px;
-    li {
-      margin-right: 35px;
-      font-family: Roboto-Regular;
+$red-color: #F4436C;
+.tabList {
+  margin-bottom: 30px;
+  li {
+    margin-right: 35px;
+    font-family: Roboto-Regular;
+    font-size: 16px;
+    color: #000000;
+    letter-spacing: 1px;
+    line-height: 19px;
+    cursor: pointer;
+    padding: 8px 0;
+  }
+  .active {
+    color: $red-color;
+    border-bottom: 1px solid $red-color;
+  }
+}
+.wrap {
+  padding: 30px;
+  border: 1px solid #E6E7E8;
+  .header {
+    .h3 {
+      font-family: Roboto-Medium;
       font-size: 16px;
-      color: #000000;
+      color: #F4436C;
       letter-spacing: 1px;
-      line-height: 19px;
-      cursor: pointer;
-      padding: 8px 0;
     }
-    .active {
-      color: $red-color;
-      border-bottom: 1px solid $red-color;
+    .time {
+      font-family: Roboto-Regular;
+      font-size: 14px;
+      color: #4A4A4A;
+      letter-spacing: 0.88px;
     }
   }
-  .wrap {
-    padding: 30px;
-    border: 1px solid #E6E7E8;
-    .header {
-      .h3 {
-        font-family: Roboto-Medium;
-        font-size: 16px;
-        color: #F4436C;
-        letter-spacing: 1px;
-      }
-      .time {
-        font-family: Roboto-Regular;
-        font-size: 14px;
-        color: #4A4A4A;
-        letter-spacing: 0.88px;
+  .content {
+    padding-top: 30px;
+    .c-left {
+      box-sizing: border-box;
+      img {
+        width: 100%;
       }
     }
-    .content {
-      padding-top: 30px;
-      .c-left {
-        box-sizing: border-box;
-        img {
-          width: 100%;
-        }
+    .c-right {
+      flex: 3;
+      box-sizing: border-box;
+      padding-left: 30px;
+      h3 {
+        text-align: left;
+        font-weight: 100;
+        margin: 0;
+        font-family: Roboto-Medium;
+        font-size: 16px;
+        color: #4A4A4A;
+        letter-spacing: 1px;
+        margin-bottom: 30px;
       }
-      .c-right {
-        flex: 3;
-        box-sizing: border-box;
-        padding-left: 30px;
-        h3 {
-          text-align: left;
-          font-weight: 100;
-          margin: 0;
-          font-family: Roboto-Medium;
+      ul {
+        li {
+          font-family: Roboto-Regular;
           font-size: 16px;
           color: #4A4A4A;
           letter-spacing: 1px;
-          margin-bottom: 30px;
-        }
-        ul {
-          li {
-            font-family: Roboto-Regular;
-            font-size: 16px;
-            color: #4A4A4A;
-            letter-spacing: 1px;
-            line-height: 26px;
-            border-bottom: 1px solid #E6E7E8;
-            padding: 15px 0;
-            .title {
-              width: 300px;
-              text-align: left;
+          line-height: 26px;
+          border-bottom: 1px solid #E6E7E8;
+          padding: 15px 0;
+          .title {
+            width: 300px;
+            text-align: left;
+          }
+          .text {
+            text-align: left;
+          }
+          .last-li {
+            p {
+              margin-bottom: 25px;
             }
-            .text {
-              text-align: left;
-            }
-            .last-li {
-              p {
-                margin-bottom: 25px;
-              }
-            }
-            .check {
-              margin-bottom: 2px;
-            }
+          }
+          .check {
+            margin-bottom: 2px;
           }
         }
       }
     }
-    .red {
-      color: $red-color;
-      font-family: Roboto-Medium;
-      font-size: 16px;
-      letter-spacing: 1px;
-      line-height: 26px;
-    }
-    .button {
-      width: 130px;
-      height: 40px;
-      line-height: 42px;
-      font-size: 14px;
-      letter-spacing: 0.88px;
-      margin: 50px 20px 0 0;
-    }
-    .confirm {
-      width: 150px
-    }
-    .check-out {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      line-height: 1;
-    }
   }
-  .pendingWrap {
-    h3 {
-      font-family: Roboto-Regular;
-      font-size: 30px;
-      color: #F4436C;
-      line-height: 36px;
-      margin: 0;
-      padding-bottom: 20px;
-      font-weight: 100;
-    }
-    p {
-      font-family: Roboto-Regular;
-      font-size: 16px;
-      color: #4A4A4A;
-      letter-spacing: 0;
-    }
-    .select-wrap {
-      margin: 40px 0;
-    }
-    .button {
-      width: 200px;
-      height: 50px;
-      line-height: 50px;
-      margin: 0 auto;
-      font-size: 16px;
-    }
+  .red {
+    color: $red-color;
+    font-family: Roboto-Medium;
+    font-size: 16px;
+    letter-spacing: 1px;
+    line-height: 26px;
   }
-  .icon-CHECKMARK-wrap {
-    display: inline-block;
-    width: 20px;
+  .button {
+    width: 130px;
+    height: 40px;
+    line-height: 42px;
+    font-size: 14px;
+    letter-spacing: 0.88px;
+    margin: 50px 20px 0 0;
   }
-  @media only screen and (max-width: 1000px) {
-    .wrap {
-      .content {
-        display: block;
-        .c-left {
-          margin-bottom: 20px;
-        }
-        .c-right {
-          padding: 0
-        }
-      }
-    }
+  .confirm {
+    width: 150px
   }
-  @media only screen and (max-width: 600px) {
-    .wrap {
-      padding: 30px 10px;
-    }
+  .check-out {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1;
   }
-</style>
-<style>
-  .select-wrap .el-select{
-    width: 100%;
+}
+.pendingWrap {
+  h3 {
+    font-family: Roboto-Regular;
+    font-size: 30px;
+    color: #F4436C;
+    line-height: 36px;
+    margin: 0;
+    padding-bottom: 20px;
+    font-weight: 100;
   }
-  .select-wrap .el-select input {
-    height: 46px;
+  p {
     font-family: Roboto-Regular;
     font-size: 16px;
     color: #4A4A4A;
+    letter-spacing: 0;
   }
-  .select-wrap .el-scrollbar {
-    font-family: Roboto-Regular;
-    font-size: 16px;
-    color: #000000;
+ .select-wrap {
+   margin: 40px 0;
+ }
+ .button {
+   width: 200px;
+   height: 50px;
+   line-height: 50px;
+   margin: 0 auto;
+   font-size: 16px;
+ }
+}
+.icon-CHECKMARK-wrap {
+  display: inline-block;
+  width: 20px;
+}
+@media only screen and (max-width: 1000px) {
+  .wrap {
+    .content {
+      display: block;
+      .c-left {
+        margin-bottom: 20px;
+      }
+      .c-right {
+        padding: 0
+      }
+    }
   }
-  .pendingWrap-select:hover {
-    color: #f4436c
+}
+@media only screen and (max-width: 600px) {
+  .wrap {
+    padding: 30px 10px;
   }
-  .pendingWrap-select.el-select-dropdown__item.selected {
-    color: #b1b3b6;
-    font-family: Roboto-Regular;
-    font-weight: 100;
-  }
-  .pendingWrap-select {
-    color: #4a4a4a;
-    font-family: Roboto-Regular;
-    font-size: 16px;
-  }
+}
+</style>
+<style>
+.select-wrap .el-select{
+  width: 100%;
+}
+.select-wrap .el-select input {
+  height: 46px;
+  font-family: Roboto-Regular;
+  font-size: 16px;
+  color: #4A4A4A;
+}
+.select-wrap .el-scrollbar {
+  font-family: Roboto-Regular;
+  font-size: 16px;
+  color: #000000;
+}
+.pendingWrap-select:hover {
+  color: #f4436c
+}
+.pendingWrap-select.el-select-dropdown__item.selected {
+  color: #b1b3b6;
+  font-family: Roboto-Regular;
+  font-weight: 100;
+}
+.pendingWrap-select {
+  color: #4a4a4a;
+  font-family: Roboto-Regular;
+  font-size: 16px;
+}
 </style>
