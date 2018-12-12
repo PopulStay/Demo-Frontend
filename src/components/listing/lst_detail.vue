@@ -11,20 +11,20 @@
             <p class="pps-p">PPS</p>
             <i class="iconfont icon-54"></i>
           </div>
-          <p class="top-wrap-p"><em>PPS 100</em>per night</p>
+          <!-- <p class="top-wrap-p"><em>PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p> -->
         </div>
         <div class="detail-content">
           <div class="content-wrap">
             <i class="iconfont icon-rili"></i>
-            <span>25 Dec 2018</span>
+            <span>{{book_detail.start_time}}</span>
             <i class="iconfont icon-54 icon-class"></i>
-            <span>30 Dec 2018</span>
+            <span>{{book_detail.end_time}}</span>
             <!-- <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime">
             </el-date-picker> -->
           </div>
           <div class="content-wrap mgt20">
             <i class="iconfont icon-geren"></i>
-            <span>2 guests</span>
+            <span>2{{book_detail.guests}}</span>
           </div>
         </div>
         <!-- <div class="select-time flex-wrap">
@@ -40,16 +40,16 @@
 
         <div class="gus-wrap flex-wrap flex-center-between">
           <div class="gus-div">
-            <div class="left">PPS 100 x 5 nights</div>
-            <div class="left">Cleaning fee</div>
-            <div class="left">Service fee</div>
+            <div class="left">PPS 3 nights</div>
+            <div class="left">Cleaning Service fee</div>
+            <!-- <div class="left">Service fee</div> -->
             <div class="left">Total</div>
           </div>
           <div class="gus-div ">
-            <div class="left">PPS 500</div>
-            <div class="left">0</div>
-            <div class="left">7.5</div>
-            <div class="left">507.5</div>
+            <div class="left">PPS {{book_detail.price}}</div>
+            <div class="left">{{book_detail.cleanup_service_fee}}</div>
+            <!-- <div class="left">7.5</div> -->
+            <div class="left">{{book_detail.total_price}}</div>
           </div>
         </div>
         <div class="foot-wrap flex-wrap flex-center-between">
@@ -252,6 +252,7 @@ export default {
         day: '',
         year: ''
       },
+      book_detail: '',
       list: {
         month: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
         day: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
@@ -280,7 +281,8 @@ export default {
       this.isVerify = !this.isVerify
     }
   },
-  beforeCreate () {
+  created () {
+    this.book_detail = JSON.parse(this.$route.query.book_detail)
     // document.getElementsByClassName('footer')[0].style.cssText = 'border-top: none;'
   }
 }

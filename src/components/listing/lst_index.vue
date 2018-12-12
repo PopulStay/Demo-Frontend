@@ -369,7 +369,7 @@ export default {
         this.$post(this.bookUrl + '/booking ', {
         action: 'makeBooking',
         data: {
-          user_id: user.user_id,
+          user_id: 2732,
           place_id: this.place_id,
           check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
           check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
@@ -379,13 +379,16 @@ export default {
         }).then((res) => {
           if (res.msg.code === 200) {
             // console.log()
-            this.$router.push({path: 'lstDetail', query: res.data.booking_id})
+            this.$router.push({path: 'lstDetail', query: {book_detail: JSON.stringify(res.data)}})
           }
         })
-      }else this.isVerify = !this.isVerify
+      }else {
+        this.isVerify = !this.isVerify
+      }
+      
     },
     toDetail () {
-      this.$router.push({path: 'lstDetail'})
+      this.$router.push({path: 'VerifyIdentity'})
     },
     // 搜索请求
     getPlace (id) {
@@ -420,10 +423,6 @@ export default {
       console.log(this.timeEnd)
       dayTime = this.endTimestamp - this.startTimestamp
       day = dayTime / (1000 * 60 * 60 * 24)
-      console.log('??')
-      // let info = this.getBookInfo()
-      console.log('???')
-      // console.log(info)
       if (type === 'days') {
         data = this.data.prices[0].bestPrice + ' x ' + day
       }
@@ -515,18 +514,18 @@ export default {
     }
     if (flag) return false
     else {
-      document.addEventListener('scroll', function (event) {
-        var scrollDistance = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-        if (scrollDistance >= 830) {
-          this.isShow = true
-          document.getElementsByClassName('lst-home-right-xl')[0].style.cssText = 'position:fixed;top:100px;right: 9.5%;'
-          document.getElementsByClassName('scrool-fix-rili')[0].style.cssText = 'display:block'
-        } else {
-          this.isShow = false
-          document.getElementsByClassName('lst-home-right-xl')[0].style.cssText = 'position:static;'
-          document.getElementsByClassName('scrool-fix-rili')[0].style.cssText = 'display:none;'
-        }
-      })
+      // document.addEventListener('scroll', function (event) {
+      //   var scrollDistance = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      //   if (scrollDistance >= 830) {
+      //     this.isShow = true
+      //     // document.getElementsByClassName('lst-home-right-xl')[0].style.cssText = 'position:fixed;top:100px;right: 9.5%;'
+      //     // document.getElementsByClassName('scrool-fix-rili')[0].style.cssText = 'display:block'
+      //   } else {
+      //     this.isShow = false
+      //     // document.getElementsByClassName('lst-home-right-xl')[0].style.cssText = 'position:static;'
+      //     // document.getElementsByClassName('scrool-fix-rili')[0].style.cssText = 'display:none;'
+      //   }
+      // })
     }
   }
 }
