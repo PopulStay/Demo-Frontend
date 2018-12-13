@@ -28,18 +28,18 @@
 </template>
 
 <script>
-import list1 from '../../assets/images/index/list-1.jpg'
-import list2 from '../../assets/images/index/list-2.png'
-import list3 from '../../assets/images/index/list-3.png'
-import list4 from '../../assets/images/index/list-4.png'
-import list5 from '../../assets/images/index/list-5.png'
-import list6 from '../../assets/images/index/list-6.png'
-import list7 from '../../assets/images/index/list-7.png'
-import list8 from '../../assets/images/index/list-8.png'
-import list9 from '../../assets/images/index/list-9.png'
-import list10 from '../../assets/images/index/list-10.png'
-import list11 from '../../assets/images/index/list-11.png'
-import list12 from '../../assets/images/index/list-12.png'
+import list1 from '../../../assets/images/index/list-1.jpg'
+import list2 from '../../../assets/images/index/list-2.png'
+import list3 from '../../../assets/images/index/list-3.png'
+import list4 from '../../../assets/images/index/list-4.png'
+import list5 from '../../../assets/images/index/list-5.png'
+import list6 from '../../../assets/images/index/list-6.png'
+import list7 from '../../../assets/images/index/list-7.png'
+import list8 from '../../../assets/images/index/list-8.png'
+import list9 from '../../../assets/images/index/list-9.png'
+import list10 from '../../../assets/images/index/list-10.png'
+import list11 from '../../../assets/images/index/list-11.png'
+import list12 from '../../../assets/images/index/list-12.png'
 
 export default {
   data () {

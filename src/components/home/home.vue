@@ -288,7 +288,6 @@ export default {
     // 点击搜索出来的列表
     selectSeach (val) {
       this.searchValue = val.fullAddress
-      console.log(val)
       this.searchListShow = false
     },
     translation(obj){

@@ -13,7 +13,7 @@ Vue.prototype.imageUrl = 'https://testapi.image.populstay.com/image?dir=populsta
 Vue.prototype.$axios = axios
 // axios.defaults.baseURL = Vue.prototype.HOST
 axios.defaults.timeout = 10000
-axios.defaults.headers.post['Content-Type'] = 'application/json; charset=UTF-8'
+axios.defaults.headers['Content-Type'] = 'application/json; charset=UTF-8'
 // 带cookie请求
 axios.defaults.withCredentials = true
 // request 请求拦截器 - 请求之前headers加token

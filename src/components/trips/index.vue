@@ -29,7 +29,7 @@
 <script>
 import header from '../common/header'
 import footer from '../common/footer'
-import trips from './trips'
+import trips from './myTrips/trips'
 import enterPsw from './myWallet/model/enterpsw'
 import exportPkey from './myWallet/model/export_private_key'
 import screen from './myWallet/model/screen'

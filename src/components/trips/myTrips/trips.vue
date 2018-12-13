@@ -28,11 +28,11 @@
               <p class="cancel">Cancel</p>
             </div>
             <div class="checkout" v-if="item.status == 'Pending'" @click="checkoutShow = true; PaymentHostID = item.booking_id">Payment</div>
-            <div class="checkout" v-else-if="item.status == 'Completed'">Confirm</div>
-            <div class="checkout Edit" v-else-if="item.status == 'Cancelled'">
-              <p>Edit</p>
-              <p>Check-out time </p>
-            </div>
+            <!--<div class="checkout" v-else-if="item.status == 'Completed'">Confirm</div>-->
+            <!--<div class="checkout Edit" v-else-if="item.status == 'Cancelled'">-->
+              <!--<p>Edit</p>-->
+              <!--<p>Check-out time </p>-->
+            <!--</div>-->
           </div>
         </div>
       </li>
@@ -69,7 +69,7 @@
         <p>QR code to make a payment.</p>
       </div>
       <div class="asset">
-        <img src="../../assets/images/trips/Asset.svg" alt="">
+        <img src="../../../assets/images/trips/Asset.svg" alt="">
       </div>
       <div class="button" @click="cancelShow = false">Cancel</div>
     </el-dialog>
@@ -77,27 +77,15 @@
 </template>
 
 <script>
-import cancelled from '../../assets/images/trips/cancelled.png'
-import checked from '../../assets/images/trips/checked-in.png'
-import completed from '../../assets/images/trips/completed.png'
-import pending from '../../assets/images/trips/pending.png'
-import upcoming from '../../assets/images/trips/upcoming.png'
-
 var moment = require('moment')
 const sha256 = require('js-sha256').sha256
+import qs from 'qs';
 export default {
   data () {
     return {
       tripsTabTitle: 'All',
       webxiang: 'nb',
       tripsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
-      dataList: [
-        {title: 'Pending', img: cancelled, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 0},
-        {title: 'Upcoming', img: checked, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 1},
-        {title: 'Checked-in', img: completed, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 2},
-        {title: 'Completed', img: pending, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 3},
-        {title: 'Cancelled', img: upcoming, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 4}
-      ],
       tripsList: [],
       islist: true,
       list: [],
@@ -225,6 +213,7 @@ export default {
       //   list.length > 0 ? this.tripsList = list : this.tripsList = ''
       //   list.length > 0 ? this.islist = true : this.islist = false
       // }
+
     },
     paynext () {
 
@@ -235,6 +224,7 @@ export default {
       }).then((res) => {
         console.log(res)
       })
+
 
       // this.checkoutShow = false
       // this.cancelShow = true
@@ -288,7 +278,7 @@ $red-color: #F4436C;
   .list-img {
     width: 250px;
     height: 200px;
-    background: url("../../assets/images/trips/cancelled.png");
+    background: url("../../../assets/images/trips/cancelled.png");
     background-size: cover;
   }
   .list-text {

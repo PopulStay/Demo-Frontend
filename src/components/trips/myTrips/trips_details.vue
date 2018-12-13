@@ -10,7 +10,7 @@
       </div>
       <div class="content flex-wrap">
         <div class="flex-1 c-left">
-          <img src="../../assets/images/trips/checked-in.png" alt="">
+          <img src="../../../assets/images/trips/checked-in.png" alt="">
         </div>
         <div class="c-right">
           <!--<h3>Lorem ipsum dolor sit amet consectetur adipiscing elit</h3>-->
