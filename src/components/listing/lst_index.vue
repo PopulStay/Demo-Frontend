@@ -20,7 +20,7 @@
         <div class="top flex-wrap flex-center-between">
           <div class="top-left">
             <p class="entire-p">{{data.category}}</p>
-            <p class="name-p">{{data.placeName}}</p>
+            <p class="name-p">{{placeName}}</p>
             <p class="address-p">{{listName}}</p>
           </div>
           <div class="top-right flex-wrap flex-column-center flex-align-center">
@@ -49,7 +49,7 @@
               <span>{{data.bathNumber}} bath</span>
             </div>
           </div>
-          <p class="intro-p" :class="isShowMore1 ? 'intro-p2' : ''">{{data.description}}</p>
+          <p class="intro-p" :class="isShowMore1 ? 'intro-p2' : ''">{{description}}</p>
           <!-- <p class="intro-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 0 || isShowMore1">{{item.space}}</p> -->
         </div>
         <div class="read-more flex-wrap flex-align-center"  @click="isShowMore1 = !isShowMore1">
@@ -97,7 +97,8 @@
         <div class="d_item">
           <p class="h1-p">Cancellations</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.name : ''}}</p>
-          <p class="arr-down">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
+          <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.title : ''}}</p>
+          <p class="arr-top" v-if="isShowMore4">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
           <div class="read-more flex-wrap flex-align-center" @click="isShowMore4 = !isShowMore4">
             <p>{{isShowMore4 ? 'hide' : 'Read more about the policy'}}</p>
             <i class="iconfont icon-54" :class="isShowMore4 ? 'transform' : ''"></i>
@@ -306,6 +307,8 @@ export default {
       time: '',
       place_id: '',
       listName: '',
+      placeName:'',
+      description:'',
       timeStart: '',
       timeEnd: '',
       startTextTime: [],
@@ -400,8 +403,12 @@ export default {
           if (res.data.prices.length === 0) res.data.prices.push([{bestPrice: 0}])
           var citycode = res.data.citycode
           var hostname = res.data.hostId
+          var placeName = res.data.placeName
+          var description = res.data.description
           that.getName(citycode)
           that.getUserName(hostname)
+          that.translation('placeName',placeName)
+          that.translation('description',description)
           this.data = res.data
         }
       })
@@ -454,7 +461,7 @@ export default {
               <p class="title">${item.citycode}</p>
               <p class="text">${item.cancellationPolicy ? item.cancellationPolicy.title : ''}</p>
               <p class="number">${item.prices.length !== 0 ? item.prices[0].bestPrice : ''} pps per night</p>
-             
+
             </div>
           </div>
         </el-popover>`
@@ -490,6 +497,26 @@ export default {
           console.log(res.data)
           this.bookInfo = res.data
         }
+      })
+    },
+    translation(type,obj){
+      this.$jsonp(this.youdaoUrl+'/api',
+        {
+          q: obj,
+          appKey: this.$store.state.appKey,
+          salt: this.$store.state.salt,
+          from: '',
+          to: 'en',
+          sign:this.$md5(this.$store.state.appKey+obj+this.$store.state.salt+this.$store.state.secret_key)
+        }
+      ).then(json => {
+        if(type == "placeName"){
+          this.placeName = json.translation[0]
+        }else if(type == "description"){
+          this.description = json.translation[0]
+        }
+      }).catch(err => {
+        console.log(err)
       })
     }
   },

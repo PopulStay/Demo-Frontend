@@ -82,6 +82,7 @@ import checked from '../../assets/images/trips/checked-in.png'
 import completed from '../../assets/images/trips/completed.png'
 import pending from '../../assets/images/trips/pending.png'
 import upcoming from '../../assets/images/trips/upcoming.png'
+
 var moment = require('moment')
 const sha256 = require('js-sha256').sha256
 export default {
@@ -211,35 +212,32 @@ export default {
     },
     tripsTabClick (value, index) {
       this.tripsTabTitle = value
-      console.log('tab')
-      if (this.list.length > 0) {
-        if (value === 'All') {
-          console.log('all')
-          this.tripsList = this.list
-          this.islist = true
-          return false
-        }
-        let list = this.list.filter((item) => item.status === value)
-        list.length > 0 ? this.tripsList = list : this.tripsList = ''
-        list.length > 0 ? this.islist = true : this.islist = false
-      }
+      this.getTripsList()
+
+      // if (this.list.length > 0) {
+      //   if (value === 'All') {
+      //     console.log('all')
+      //     this.tripsList = this.list
+      //     this.islist = true
+      //     return false
+      //   }
+      //   let list = this.list.filter((item) => item.status === value)
+      //   list.length > 0 ? this.tripsList = list : this.tripsList = ''
+      //   list.length > 0 ? this.islist = true : this.islist = false
+      // }
     },
     paynext () {
 
-      // this.$post(this.paymentUrl + '/api/v1/payments/reserve ', {
-      //   bookingId: this.PaymentHostID,
-      //   userWalletId:this.walletID,
-      //   userWalletEncryptedPassword:sha256(this.userPassword)
-      // }).then((res) => {
-      //   console.log(res)
-      // })
-
+      this.$post(this.paymentUrl + '/api/v1/payments/reserve ', {
+        bookingId: this.PaymentHostID,
+        userWalletId:this.walletID,
+        userWalletEncryptedPassword:sha256(this.userPassword)
+      }).then((res) => {
+        console.log(res)
+      })
 
       // this.checkoutShow = false
       // this.cancelShow = true
-    },
-    handleCommand(command) {
-      this.wallet = command
     }
   }
 }

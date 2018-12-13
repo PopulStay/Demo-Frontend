@@ -10,13 +10,16 @@ import store from './store'
 import axios from './axios'
 // import axios from 'axios'
 import AMap from 'vue-amap'
+import VueJsonp from 'vue-jsonp'
 
 import VueClipboard from 'vue-clipboard2'
+import md5 from 'js-md5';
 
 Vue.use(VueClipboard)
 
 Vue.use(AMap)
-
+Vue.use(VueJsonp);
+Vue.prototype.$md5 = md5;
 // 初始化vue-amap
 AMap.initAMapApiLoader({
   // 高德的key

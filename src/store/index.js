@@ -21,6 +21,9 @@ export default new vuex.Store({
     resetNumber: '',
     hintText: 'Operation failed, please try again',
     hintShow: false,
+    appKey:'4f8f22b581b589a3',
+    salt:"13753068898",
+    secret_key:'ZeTmYSw4chp1VWfTldWtiVjSx2JTEoYh',
     nation: [
       {
         name: 'United States',

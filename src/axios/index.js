@@ -2,6 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 
 // Vue.prototype.HOST = '/api'
+Vue.prototype.youdaoUrl = 'https://openapi.youdao.com'
 Vue.prototype.userUrl = 'https://testapi.user.populstay.com'
 Vue.prototype.placeUrl = 'https://tesapi.place.populstay.com'
 Vue.prototype.cityUrl = 'https://testapi.citycode.populstay.com'

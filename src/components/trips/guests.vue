@@ -2,10 +2,9 @@
   <div>
     <ul class="tabList flex-wrap flex-wrap-wrap">
       <li v-for="(item, index) in guestsTabList" :key="index" :class="guestsTabTitle == item ? 'active' : ''" @click="guestsTabClick(item, index)">{{item}}</li>
-        <li v-for="(item, index) in tripsTabList" :key="index" :class="tripsTabTitle == item ? 'active' : ''" @click="tripsTabClick(item, index)">{{item}}</li>
     </ul>
     <ul class="dataList" v-if="islist == true">
-      <li  v-for="(item, index) in tripsList" :key="index">
+      <li  v-for="(item, index) in guestsList" :key="index">
         <div class="list-header flex-wrap-wrap flex-wrap flex-content-between">
           <p class="title">{{item.status}}</p>
           <!-- <p class="time">Booked on 25 October, 2018</p> -->
@@ -27,7 +26,7 @@
           </div>
           <div class="list-operation flex-wrap" :class="item.status == 'Pending' ? 'flex-column-center flex-wrap' : ''">
             <div>
-              <p class="details"><router-link :to="{path:'/trips/guests_details',query: {title:item.title}}">View details</router-link></p>
+              <p class="details"><router-link :to="{path:'/trips/guests_details',query: {guestsitem:item,gueststitle:item.status}}">View details</router-link></p>
               <p class="cancel" >Cancel</p>
               <!-- v-if="item.title === 'Pending'" -->
             </div>
@@ -176,8 +175,7 @@
               // res.data[i].time_cha = res.data[i].strat_time.substring(7) - res.data[i].end_time.substring(7)
             }
             this.list = res.data
-            this.tripsList = res.data
-            console.log(this.tripsList)
+            this.guestsList = res.data
           }
           this.guestsList = res.data;
 
@@ -195,19 +193,20 @@
     },
     tripsTabClick (value, index) {
       this.tripsTabTitle = value
+      this.getguestsList()
       // let list = this.dataList.filter((item) => item.title === value)
       // list.length ? this.list = list : this.list = this.dataList
-      if (this.list.length > 0) {
-        // if (value === 'All') {
-        //   console.log('all')
-        //   this.tripsList = this.list
-        //   this.islist = true
-        //   return false
-        // }
-        let list = this.list.filter((item) => item.status === value)
-        list.length > 0 ? this.tripsList = list : this.tripsList = ''
-        list.length > 0 ? this.islist = true : this.islist = false
-      }
+      // if (this.list.length > 0) {
+      //   // if (value === 'All') {
+      //   //   console.log('all')
+      //   //   this.guestsList = this.list
+      //   //   this.islist = true
+      //   //   return false
+      //   // }
+      //   let list = this.list.filter((item) => item.status === value)
+      //   list.length > 0 ? this.guestsList = list : this.guestsList = ''
+      //   list.length > 0 ? this.islist = true : this.islist = false
+      // }
     },
     next () {
       this.checkoutShow = false
