@@ -372,7 +372,7 @@ export default {
         this.$post(this.bookUrl + '/booking ', {
         action: 'makeBooking',
         data: {
-          user_id: 2732,
+          user_id: user.user_id,
           place_id: this.place_id,
           check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
           check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
@@ -380,15 +380,18 @@ export default {
           currency: 'PPS'
         }
         }).then((res) => {
+          console.log(res)
           if (res.msg.code === 200) {
             // console.log()
             this.$router.push({path: 'lstDetail', query: {book_detail: JSON.stringify(res.data)}})
+          }else if(res.msg.code === 952){
+
           }
         })
       }else {
         this.isVerify = !this.isVerify
       }
-      
+
     },
     toDetail () {
       this.$router.push({path: 'VerifyIdentity'})
@@ -435,13 +438,13 @@ export default {
       }
       else if (type === 'place_price') {
         data = this.bookInfo.place_price
-      } 
+      }
        else if (type === 'clean') {
         data = this.bookInfo.cleanup_service_fee
       }
       // else if (type === 'service') {
       //   data = this.bookInfo.service
-      // } 
+      // }
       else if (type === 'total_price') {
         data = this.bookInfo.total_price
       }

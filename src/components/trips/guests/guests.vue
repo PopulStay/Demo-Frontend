@@ -10,9 +10,7 @@
           <!-- <p class="time">Booked on 25 October, 2018</p> -->
         </div>
         <div class="list-content flex-wrap flex-wrap-wrap">
-          <div class="list-img">
-            <img src="../../assets/images/trips/cancelled.png" alt="">
-          </div>
+          <div class="list-img"></div>
           <div class="list-text">
             <div>
               <!-- <p class="title">{{item.title1}}</p>
@@ -57,7 +55,7 @@
         <p>QR code to make a payment.</p>
       </div>
       <div class="asset">
-        <img src="../../assets/images/trips/Asset.svg" alt="">
+        <img src="../../../assets/images/trips/Asset.svg" alt="">
       </div>
       <div class="button" @click="cancelShow = false">Cancel</div>
     </el-dialog>
@@ -65,11 +63,6 @@
 </template>
 
 <script>
-  import cancelled from '../../assets/images/trips/cancelled.png'
-  import checked from '../../assets/images/trips/checked-in.png'
-  import completed from '../../assets/images/trips/completed.png'
-  import pending from '../../assets/images/trips/pending.png'
-  import upcoming from '../../assets/images/trips/upcoming.png'
   var moment = require('moment')
 
   export default {
@@ -77,13 +70,6 @@
       return {
         guestsTabTitle: 'All',
         guestsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
-        dataList: [
-          {title: 'Pending', img: cancelled, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 0},
-          {title: 'Upcoming', img: checked, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 1},
-          {title: 'Checked-in', img: completed, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 2},
-          {title: 'Completed', img: pending, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 3},
-          {title: 'Cancelled', img: upcoming, title1: 'Lorem ipsum dolor sit amet', title2: 'consectetur adipiscing elit', id: '114693321', time: '23 Sep 2018 - 25 Sep 2018  2 nights', num: '552', state: 4}
-        ],
         guestsList: [],
         islist: true,
         list: [],
@@ -258,11 +244,10 @@ $red-color: #F4436C;
     }
   }
   .list-img {
-    img {
-      width: 250px;
-      height: 100%;
-      min-height: 200px;
-    }
+    width: 250px;
+    height: 200px;
+    background: url("../../../assets/images/trips/cancelled.png");
+    background-size: cover;
   }
   .list-text {
     flex: 2.5;
@@ -419,11 +404,7 @@ $red-color: #F4436C;
       .list-content {
         display: block;
         border: none;
-        .list-img {
-          img {
-            width: 100%;
-          }
-        }
+
         .list-text {
           padding: 5px 0;
         }

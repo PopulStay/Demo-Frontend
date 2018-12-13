@@ -299,7 +299,9 @@ export default {
       },
       amenitiesList: [],
       safeAmenitiesList: [],
-      spaceids: []
+      spaceids: [],
+      pageNo:1,
+      pageSize:15,
     }
   },
   created () {
@@ -384,9 +386,12 @@ export default {
     // 搜索请求
     search () {
       var that = this
+
+      var url = "?pageNo="+this.pageNo+"&pageSize="+this.pageSize;
+
       let formdata = {
         startDate: this.startTime,
-        endData: this.endTime,
+        endDate: this.endTime,
         cityCode: this.cityCode,
         minPrice: this.price.value[0] === 0 & this.price.isfilter !== false ? '' : this.price.value[0],
         maxPrice: this.price.value[1] === 5000 & this.price.isfilter !== false ? '' : this.price.value[1],
@@ -402,6 +407,7 @@ export default {
         pageNo: 1,
         pageSize: 20
       }
+
       this.$get(this.placeUrl + '/places', formdata).then((res) => {
         if (res.code === 200) {
           res.data.dataList.forEach((val, key) => {
@@ -524,7 +530,7 @@ export default {
           <div>￥${item.prices.length !== 0 ? item.prices[0].bestPrice : ''} </div>
         </div>
         <div class="map">
-        
+
               <img src="${item.picture.length !== 0 ? item.picture[0].smallPictureUrl : ''}" alt="">
           <div class="map-info">
             <p class="title">${item.citycode}</p>

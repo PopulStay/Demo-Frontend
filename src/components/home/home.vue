@@ -447,6 +447,7 @@ $red-color: #F4436C;
       margin: 20px 25px 20px 0;
       width: 350px;
       font-size: 16px;
+      cursor: pointer;
       img{
         width: 100%;
         height: 260px;

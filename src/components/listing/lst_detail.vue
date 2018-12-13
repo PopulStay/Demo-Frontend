@@ -76,60 +76,60 @@
           <p class="normal-p">lorem@mail.com</p>
         </div>
         <p class="spilt-p"></p>
-        <div class="read-more flex-wrap flex-align-center" v-show="!isShowMoreAddTitle" @click="isShowMoreAddTitle = true,isShowMoreAdd1Content = true,isShowMoreAddfooter = true">
-          <p>Add a guest</p>
-          <i class="iconfont icon-54"></i>
-        </div>
-        <div class="" v-show="isShowMoreAdd1Content" style="display:none;">
-          <p class="addg-p">Add a guest</p>
-          <input type="text" placeholder="Full name" class="full-name">
-          <div class="addg-select" >
-            <el-select v-model="identifySelect" placeholder="Latest">
-              <el-option class="addg-select-item"
-                v-for="(item,index) in SelectList"
-                :key="index"
-                :label="item"
-                :value="item">
-              </el-option>
-            </el-select>
-            <div v-show="identifySelect == 'Identity Card'">
-              <input type="text" placeholder="Identity card number" class="full-name">
-              <input type="text" placeholder="Email/Phone number" class="full-name">
-            </div>
-            <div v-show="identifySelect == 'Passport'">
-              <input type="text" placeholder="Passport number" class="full-name mgb14">
-              <el-select v-model="Country_name" placeholder="Issuing Country">
-                <el-option
-                  v-for="(item,index) in Country"
-                  :key="index"
-                  :label="item"
-                  :value="item">
-                </el-option>
-              </el-select>
-              <p class="date-p">Date of expiry</p>
-              <div class="lst-detail-select">
-                <el-select v-model="date.month" placeholder="Month">
-                  <el-option v-for="item in list.month" :key="item" :label="item" :value="item"></el-option>
-                </el-select>
-                <el-select v-model="date.day" placeholder="Day">
-                  <el-option v-for="item in list.day" :key="item" :label="item" :value="item"></el-option>
-                </el-select>
-                <el-select v-model="date.year" placeholder="Year">
-                  <el-option v-for="item in list.year" :key="item" :label="item" :value="item"></el-option>
-                </el-select>
-              </div>
-            </div>
-            <div v-show="identifySelect == 'Driver’s license'">
-              <input type="text" placeholder="Driver's license number" class="full-name">
-              <input type="text" placeholder="Email/Phone number" class="full-name">
-            </div>
-            <button class="save-btn">Save</button>
-          </div>
-        </div>
-        <div class="read-more flex-wrap flex-align-center" v-show="isShowMoreAddfooter" style="display:none;">
-          <p>Add a guest</p>
-          <i class="iconfont icon-54"></i>
-        </div>
+        <!--<div class="read-more flex-wrap flex-align-center" v-show="!isShowMoreAddTitle" @click="isShowMoreAddTitle = true,isShowMoreAdd1Content = true,isShowMoreAddfooter = true">-->
+          <!--<p>Add a guest</p>-->
+          <!--<i class="iconfont icon-54"></i>-->
+        <!--</div>-->
+        <!--<div class="" v-show="isShowMoreAdd1Content" style="display:none;">-->
+          <!--<p class="addg-p">Add a guest</p>-->
+          <!--<input type="text" placeholder="Full name" class="full-name">-->
+          <!--<div class="addg-select" >-->
+            <!--<el-select v-model="identifySelect" placeholder="Latest">-->
+              <!--<el-option class="addg-select-item"-->
+                <!--v-for="(item,index) in SelectList"-->
+                <!--:key="index"-->
+                <!--:label="item"-->
+                <!--:value="item">-->
+              <!--</el-option>-->
+            <!--</el-select>-->
+            <!--<div v-show="identifySelect == 'Identity Card'">-->
+              <!--<input type="text" placeholder="Identity card number" class="full-name">-->
+              <!--<input type="text" placeholder="Email/Phone number" class="full-name">-->
+            <!--</div>-->
+            <!--<div v-show="identifySelect == 'Passport'">-->
+              <!--<input type="text" placeholder="Passport number" class="full-name mgb14">-->
+              <!--<el-select v-model="Country_name" placeholder="Issuing Country">-->
+                <!--<el-option-->
+                  <!--v-for="(item,index) in Country"-->
+                  <!--:key="index"-->
+                  <!--:label="item"-->
+                  <!--:value="item">-->
+                <!--</el-option>-->
+              <!--</el-select>-->
+              <!--<p class="date-p">Date of expiry</p>-->
+              <!--<div class="lst-detail-select">-->
+                <!--<el-select v-model="date.month" placeholder="Month">-->
+                  <!--<el-option v-for="item in list.month" :key="item" :label="item" :value="item"></el-option>-->
+                <!--</el-select>-->
+                <!--<el-select v-model="date.day" placeholder="Day">-->
+                  <!--<el-option v-for="item in list.day" :key="item" :label="item" :value="item"></el-option>-->
+                <!--</el-select>-->
+                <!--<el-select v-model="date.year" placeholder="Year">-->
+                  <!--<el-option v-for="item in list.year" :key="item" :label="item" :value="item"></el-option>-->
+                <!--</el-select>-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div v-show="identifySelect == 'Driver’s license'">-->
+              <!--<input type="text" placeholder="Driver's license number" class="full-name">-->
+              <!--<input type="text" placeholder="Email/Phone number" class="full-name">-->
+            <!--</div>-->
+            <!--<button class="save-btn">Save</button>-->
+          <!--</div>-->
+        <!--</div>-->
+        <!--<div class="read-more flex-wrap flex-align-center" v-show="isShowMoreAddfooter" style="display:none;">-->
+          <!--<p>Add a guest</p>-->
+          <!--<i class="iconfont icon-54"></i>-->
+        <!--</div>-->
         <p class="spilt-p" style="display:none;"></p>
         <p class="h1-p">Amenities</p>
         <ul>
@@ -215,15 +215,28 @@
       </el-dialog>
     </div>
     <div class="confirm-pay-model-out">
-      <el-dialog :visible.sync="pswInput">
-        <div class="login-frame-content">
-          <p>Login password</p>
-          <input type="password" class="psw">
-          <p>Payment password</p>
-          <input type="password" class="psw">
-          <button class="confirm-btn XY-fz16 XY-colf XY-cursorp" @click="pswInput = false,qrcode = true">Confirm and pay</button>
+
+      <el-dialog  :visible.sync="pswInput" class="checkoutWrap">
+        <el-popover placement="bottom-start" width="300" trigger="manual" v-model="walletshow" popper-class="state-popover">
+          <div slot="reference" class="walletList flex-wrap flex-center-between" @click="walletshow = !walletshow">
+            <p>{{wallet}}</p>
+            <i class="icon iconfont" :class="walletshow ? 'icon-arrow-up' : 'icon-54'"></i>
+          </div>
+          <div class="popover">
+            <ul>
+              <li v-for="(item, index) in walletList" :key="index" @click="wallet = item.name; walletID = item.user_wallet_id; walletshow = false">
+                {{item.name}}
+              </li>
+            </ul>
+          </div>
+        </el-popover>
+
+        <div class="input-wrap">
+          <input type="password" placeholder="Payment password" v-model="userPassword">
         </div>
+        <div class="button" @click="paynext">Confirm and pay</div>
       </el-dialog>
+
     </div>
   </div>
 </template>
@@ -269,7 +282,12 @@ export default {
       isShowMoreAdd1Content: false,
       isShowMoreAddfooter: false,
       pswInput: false,
-      qrcode: false
+      qrcode: false,
+      wallet:'Please choose a wallet',
+      walletID:0,
+      walletList:[],
+      walletshow:false,
+      userPassword:'',
     }
   },
   methods: {
@@ -279,7 +297,35 @@ export default {
     },
     Verify () {
       this.isVerify = !this.isVerify
+    },
+    getWalletList(){
+
+      this.$post(this.userUrl + '/user', {
+        action: 'getUserWallets',
+        data: {
+          user_id: this.$store.state.userInfo.user_id
+        }
+      }).then((res) => {
+        if(res.msg.code == 200){
+          this.walletList = res.data.user_wallets
+        }
+      })
+
+    },
+    paynext () {
+
+      this.$post(this.paymentUrl + '/api/v1/payments/reserve ', {
+        bookingId: this.PaymentHostID,
+        userWalletId:this.walletID,
+        userWalletEncryptedPassword:sha256(this.userPassword)
+      }).then((res) => {
+        console.log(res)
+      })
+
     }
+  },
+  mounted () {
+    this.getWalletList()
   },
   created () {
     this.book_detail = JSON.parse(this.$route.query.book_detail)
@@ -675,6 +721,64 @@ $red-color: #F4436C;
   letter-spacing: 1px;
   line-height: 26px;
 }
+.checkoutWrap {
+  .input-wrap {
+    border-bottom: 1px solid #E6E7E8;
+    height: 60px;
+    line-height: 60px;
+    input {
+      border: none;
+      font-size: 16px;
+      font-family: Roboto-Regular;
+      color: #B1B3B6;
+      letter-spacing: 0;
+      width: 100%;
+      padding: 0 15px;
+      color: #B1B3B6;
+      box-sizing: border-box;
+    }
+  }
+  .button {
+    width: 100%;
+    height: 50px;
+    background: $red-color;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    color: #FFFFFF;
+    letter-spacing: 3px;
+    cursor: pointer;
+    margin-top: 30px;
+    border-radius: 4px;
+  }
+}
+
+.walletList{
+  height: 60px;
+
+  p{
+    font-size: 18px;
+  }
+
+}
+
+.popover {
+  li {
+    letter-spacing: .83px;
+    padding: 5px 0;
+    cursor: pointer;
+    &:hover {
+      color: #F4436C
+    }
+    i {
+      font-style: normal;
+      margin-left: 5px;
+      color: #999;
+    }
+  }
+}
+
+
 @media only screen and (max-width:1131px) {
   .lst-detail .lst-home{
     display: block;

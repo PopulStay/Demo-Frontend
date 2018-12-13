@@ -61,6 +61,7 @@
       </div>
       <div class="button" @click="paynext">Confirm and pay</div>
     </el-dialog>
+
     <!-- 扫码付款弹窗  -->
     <el-dialog  :visible.sync="cancelShow" width="22%" class="cancelWrap">
       <div class="text-wrap">
@@ -73,13 +74,13 @@
       </div>
       <div class="button" @click="cancelShow = false">Cancel</div>
     </el-dialog>
+
   </div>
 </template>
 
 <script>
 var moment = require('moment')
 const sha256 = require('js-sha256').sha256
-import qs from 'qs';
 export default {
   data () {
     return {
@@ -202,22 +203,11 @@ export default {
       this.tripsTabTitle = value
       this.getTripsList()
 
-      // if (this.list.length > 0) {
-      //   if (value === 'All') {
-      //     console.log('all')
-      //     this.tripsList = this.list
-      //     this.islist = true
-      //     return false
-      //   }
-      //   let list = this.list.filter((item) => item.status === value)
-      //   list.length > 0 ? this.tripsList = list : this.tripsList = ''
-      //   list.length > 0 ? this.islist = true : this.islist = false
-      // }
 
     },
     paynext () {
 
-      this.$post(this.paymentUrl + '/api/v1/payments/reserve ', {
+      this.$post(this.paymentUrl + '/api/v1/payments/deposit', {
         bookingId: this.PaymentHostID,
         userWalletId:this.walletID,
         userWalletEncryptedPassword:sha256(this.userPassword)
@@ -225,9 +215,6 @@ export default {
         console.log(res)
       })
 
-
-      // this.checkoutShow = false
-      // this.cancelShow = true
     }
   }
 }
@@ -440,8 +427,6 @@ $red-color: #F4436C;
       .list-content {
         display: block;
         border: none;
-        .list-img {
-        }
         .list-text {
           padding: 5px 0;
         }
