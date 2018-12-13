@@ -31,17 +31,23 @@
             <p>Check-in</p>
              <el-date-picker v-model="timeStart" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
             </el-date-picker>
-            <div class="startTime text">
+            <div class="startTime text" v-if="timeStart != ''">
               <p>{{startTextTime[2]}} {{startTextTime[1]}} {{startTextTime[3]}} </p>
               <span> {{startTextTime[0]}}</span>
+            </div>
+            <div class="startTime text" v-if="timeStart == ''">
+              <span>Select</span>
             </div>
           </div>
           <div class="select-time-end flex-1">
             <p>Check-out</p>
             <el-date-picker v-model="timeEnd" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
-            <div class="endTime text">
+            <div class="endTime text" v-if="timeEnd != ''">
               <p>{{endTextTime[2]}} {{endTextTime[1]}} {{endTextTime[3]}}</p>
               <span>{{endTextTime[0]}}</span>
+            </div>
+            <div class="endTime text" v-if="timeEnd == ''">
+              <span>Select</span>
             </div>
           </div>
         </div>
@@ -56,7 +62,7 @@
                 <ul class="rooms">
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">Adults</span>
-                    <el-input-number v-model="guests.adults" :min="0" :max="10"></el-input-number>
+                    <el-input-number v-model="guests.adults" :min="1" :max="10"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">
@@ -121,19 +127,6 @@ import banner2 from '../../assets/images/index/banner-2.png'
 import banner3 from '../../assets/images/index/banner-3.png'
 import banner4 from '../../assets/images/index/banner-4.png'
 
-import list1 from '../../assets/images/index/list-1.jpg'
-import list2 from '../../assets/images/index/list-2.png'
-import list3 from '../../assets/images/index/list-3.png'
-import list4 from '../../assets/images/index/list-4.png'
-import list5 from '../../assets/images/index/list-5.png'
-import list6 from '../../assets/images/index/list-6.png'
-import list7 from '../../assets/images/index/list-7.png'
-import list8 from '../../assets/images/index/list-8.png'
-import list9 from '../../assets/images/index/list-9.png'
-import list10 from '../../assets/images/index/list-10.png'
-import list11 from '../../assets/images/index/list-11.png'
-import list12 from '../../assets/images/index/list-12.png'
-
 import header from '../common/header'
 import footer from '../common/footer'
 import formatdata from '../../utils/formatdata.js'
@@ -149,23 +142,10 @@ export default {
       listName: [],
       placeName: [],
       viewCount: [],
-      list1: [
-        { img: list1, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list2, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list3, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list4, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list5, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list6, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list7, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list8, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list9, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list10, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list11, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 },
-        { img: list12, title: 'TOKYO,JAPAN', text: 'Lorem ipsum dolor sit amet', number: '527pps per night', value: 3.7 }
-      ],
       isLogin: false,
       searchListShow: false,
       searchValue: '',
+      searchIDcode:'',
       img: [banner1, banner2, banner3, banner4],
       timeStart: '',
       timeEnd: '',
@@ -192,8 +172,9 @@ export default {
   created () {
     document.execCommand('BackgroundImageCache', false, true)
     let date = new Date().getTime()
-    this.timeStart = new Date()
-    this.timeEnd = new Date(date + (1000 * 60 * 60 * 24))
+    // this.timeStart = new Date()
+    // this.timeEnd = new Date(date + (1000 * 60 * 60 * 24))
+
     this.startTextTime = String(this.timeStart).split(' ')
     this.endTextTime = String(this.timeEnd).split(' ')
     // this.search()
@@ -223,7 +204,7 @@ export default {
           guests: JSON.stringify(this.guests),
           startTime: formatdata.timestampToTime(this.startTimestamp),
           endTime: formatdata.timestampToTime(this.endTimestamp),
-          cityCode: this.searchValue
+          cityCode: this.searchIDcode
         }
       })
     },
@@ -237,7 +218,8 @@ export default {
     getHomeSearch () {
       let that = this
       this.$get(this.placeUrl + '/places', {
-        pageNo: 7,
+        source:'RECOM',
+        pageNo: 1,
         pageSize: 12
       }).then((res) => {
         if (res.code === 200) {
@@ -288,6 +270,7 @@ export default {
     // 点击搜索出来的列表
     selectSeach (val) {
       this.searchValue = val.fullAddress
+      this.searchIDcode = val.code
       this.searchListShow = false
     },
     translation(obj){
@@ -353,6 +336,7 @@ $red-color: #F4436C;
     margin: 30px 0;
     font-size: 16px;
     color: #4A4A4A;
+    cursor: pointer;
     p {
       margin-bottom: 5px;
     }
@@ -408,6 +392,7 @@ $red-color: #F4436C;
       border: 1px solid #e6e7e8;
       font-size: 16px;
       color: #4a4a4a;
+      cursor: pointer;
     }
   }
   .button {

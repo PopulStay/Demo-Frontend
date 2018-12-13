@@ -108,7 +108,7 @@
 
         <div class="d_item">
           <p class="h1-p">Nearby landmarks</p>
-          <el-amap v-if="Object.keys(data).length !== 0" vid="amapDemo" :zoom="10" :center="[data.lng, data.lat]" class="amap">
+          <el-amap v-if="Object.keys(data).length !== 0" vid="amapDemo" :zoom="6" :center="[data.lng, data.lat]" class="amap">
               <el-amap-marker
               :position="[data.lng, data.lat]"
               :clickable="true"

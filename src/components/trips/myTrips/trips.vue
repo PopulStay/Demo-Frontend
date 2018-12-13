@@ -209,11 +209,22 @@ export default {
 
       this.$post(this.paymentUrl + '/api/v1/payments/deposit', {
         bookingId: this.PaymentHostID,
-        userWalletId:this.walletID,
+        userWalletId: this.walletID,
         userWalletEncryptedPassword:sha256(this.userPassword)
       }).then((res) => {
         console.log(res)
+      }).catch(err => {
+        console.log(err)
       })
+
+      this.checkoutShow = false;
+
+      this.$alert('Please wait, your order is being paid', 'Paying', {
+        confirmButtonText: 'OK',
+        callback: action => {
+          location.reload();
+        }
+      });
 
     }
   }

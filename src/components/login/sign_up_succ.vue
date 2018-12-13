@@ -6,9 +6,9 @@
         <i class="iconfont icon-success XY-fz60"></i>
         <p class="RobotoM center XY-fz20 red-color succ-p-set">You’re all set!</p>
       </div>
-      <p class="XY-fz16 XY-center success-trip">Cras id risus blandit, aliquet sapien quis sodales lectus curabitur rutrum viverra dapibus.  </p>
+      <!--<p class="XY-fz16 XY-center success-trip">Cras id risus blandit, aliquet sapien quis sodales lectus curabitur rutrum viverra dapibus.  </p>-->
       <div class="sup-btn">
-        <button class="XY-fz16 XY-cursorp" @click="hideModel">Start exploring</button>
+        <button class="XY-fz16 XY-cursorp" @click="hideModel"><router-link to="/">Start exploring</router-link></button>
         <button class="XY-fz16 XY-cursorp" @click="hideModel"><router-link to="/trips/editProfile">Edit profile</router-link></button>
       </div>
     </div>

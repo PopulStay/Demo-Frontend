@@ -4,24 +4,31 @@
     <!-- price.show = false,rating.show = false,guests.show = false,more.show = false -->
     <div class="middle search">
       <div class="m-header flex-wrap">
-        <div class="item select-time">
+        <div class="item select-time" :class="startTime != '' ? 'redborder' :null">
           <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
           </el-date-picker>
-          <div class="startTime text">
+          <div class="startTime text" v-if="startTime != ''">
             <p>{{startTextTime[2]}} {{startTextTime[1]}} {{startTextTime[3]}} </p>
             <span> {{startTextTime[0]}}</span>
           </div>
+          <div class="startTime text text1" v-if="startTime == ''">
+            <span>Check in</span>
+          </div>
         </div>
-        <div class="item select-time">
+        <div class="item select-time" :class="endTime != '' ? 'redborder' :null">
           <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
-          <div class="endTime text">
+          <div class="endTime text" v-if="endTime != ''">
             <p>{{endTextTime[2]}} {{endTextTime[1]}} {{endTextTime[3]}}</p>
             <span>{{endTextTime[0]}}</span>
           </div>
+          <div class="endTime text text1" v-if="endTime == ''">
+            <span>Check out</span>
+          </div>
+          <i v-if="endTime != ''" class="el-icon-error clonetime" @click="time='';startTime='';endTime='';search();"></i>
         </div>
 
         <el-popover placement="bottom-start" width="300" trigger="manual" v-model="price.show" popper-class="s-popover">
-          <div slot="reference" class="item" @click="price.show = !price.show,rating.show = false,guests.show = false,more.show = false">{{price.text === '' ? 'Price per night' : price.text}}</div>
+          <div slot="reference" class="item" :class="this.price.value[0] != 0 || this.price.value[1] != 5000 ? 'redborder' :null" @click="price.show = !price.show,rating.show = false,guests.show = false,more.show = false">{{price.text === '' ? 'Price per night' : price.text}}</div>
           <div class="popover">
              <el-slider
               v-model="price.value"
@@ -52,7 +59,7 @@
         </el-popover>
 
         <el-popover placement="bottom-start" width="300" trigger="manual" v-model="rating.show" popper-class="s-popover">
-          <div slot="reference" class="item" @click="rating.show = !rating.show,price.show = false,guests.show = more.show = false">{{rating.text === '' ? 'Star rating' : rating.text}}</div>
+          <div slot="reference" class="item" :class="rating.level != 0 ? 'redborder' :null" @click="rating.show = !rating.show,price.show = false,guests.show = more.show = false">{{rating.text === '' ? 'Star rating' : rating.text}}</div>
           <div class="popover">
             <ul class="level flex-wrap flex-center">
               <li class="flex-1" :class="rating.level === 1 ? 'active' : ''" @click="handlevel(1)">1</li>
@@ -70,14 +77,14 @@
         </el-popover>
 
         <el-popover placement="bottom-start" width="300" trigger="manual" v-model="guests.show" popper-class="s-popover">
-          <div slot="reference" class="item" @click="guests.show = !guests.show,rating.show = false,price.show = false,more.show = false">
+          <div slot="reference" class="item" :class="guests.adults + guests.children != 1 || guests.infants != 0 ? 'redborder' :null" @click="guests.show = !guests.show,rating.show = false,price.show = false,more.show = false">
             {{guests.adults + guests.children == 0 ? 'Guests' : guests.adults + guests.children + ' Guests' }}
           </div>
           <div class="popover">
             <ul class="rooms guests search-guests">
               <li class="flex-wrap flex-center-between">
                 <span class="r-title">Adults</span>
-                <el-input-number v-model="guests.adults" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="guests.adults" :min="1" :max="10"></el-input-number>
               </li>
               <li class="flex-wrap flex-center-between">
                 <span class="r-title">
@@ -101,7 +108,7 @@
         </el-popover>
 
         <el-popover placement="bottom-end" width="675" trigger="manual" v-model="more.show" popper-class="s-popover s-select">
-          <div slot="reference" class="item filter" @click="more.show = !more.show,guests.show = false,rating.show = false,price.show = false">More filters</div>
+          <div slot="reference" class="item filter" :class="this.more.home.length != 0 || this.more.beds != 0 || this.more.bedrooms != 0 || this.more.bathrooms != 0 || this.more.Amenities.length != 0 || this.more.safeAmenities.length != 0 || this.more.spaceids.length != 0 ? 'redborder' :null" @click="more.show = !more.show,guests.show = false,rating.show = false,price.show = false">More filters</div>
           <div class="popover filters">
             <div class="item flex-wrap">
               <div class="title">Home type</div>
@@ -157,7 +164,7 @@
               <div class="content flex-wrap amenities">
                 <ul class="flex-1">
                   <el-checkbox-group v-model="more.Amenities" style="top:200px !important;" @change="changeAment">
-                    <li v-for="(item,index) in amenitiesList" :key="index"><el-checkbox :label="index">{{item.amenity}}</el-checkbox></li>
+                    <li v-for="(item,index) in amenitiesList" :key="item.amenityId"><el-checkbox :label="item.amenityId">{{item.amenity}}</el-checkbox></li>
                     <!-- <li><el-checkbox label="1">Air conditioning</el-checkbox></li>
                     <li><el-checkbox label="2">Washer</el-checkbox></li>
                     <li><el-checkbox label="3">Dryer</el-checkbox></li>
@@ -184,7 +191,7 @@
               <div class="content flex-wrap amenities">
                 <ul class="flex-1">
                   <el-checkbox-group v-model="more.safeAmenities" style="top:200px !important;" @change="changeSafeAment">
-                    <li v-for="(item,index) in safeAmenitiesList" :key="index"><el-checkbox :label="index">{{item.safeAmenity}}</el-checkbox></li>
+                    <li v-for="(item,index) in safeAmenitiesList" :key="item.safeAmenityId"><el-checkbox :label="item.safeAmenityId">{{item.safeAmenity}}</el-checkbox></li>
                   </el-checkbox-group>
                 </ul>
               </div>
@@ -194,13 +201,13 @@
               <div class="content flex-wrap amenities">
                 <ul class="flex-1">
                   <el-checkbox-group v-model="more.spaceids" style="top:200px !important;" @change="changeSpace">
-                    <li v-for="(item,index) in spaceids" :key="index"><el-checkbox :label="index">{{item.space}}</el-checkbox></li>
+                    <li v-for="(item,index) in spaceids" :key="item.spaceId"><el-checkbox :label="item.spaceId">{{item.space}}</el-checkbox></li>
                   </el-checkbox-group>
                 </ul>
               </div>
             </div>
             <div class="popover-button flex-wrap flex-center-between">
-              <span @click="more.show = false">Clear</span>
+              <span @click="moreFilters(more, 'hide') ">Clear</span>
               <span class="red" @click="moreFilters(more)">Apply</span>
             </div>
           </div>
@@ -276,7 +283,7 @@ export default {
       rating: {
         show: false,
         isfilter: false,
-        level: 1,
+        level: 0,
         text: ''
       },
       more: {
@@ -301,17 +308,21 @@ export default {
       safeAmenitiesList: [],
       spaceids: [],
       pageNo:1,
-      pageSize:15,
+      pageSize:20,
+      startTime:'',
+      endTime:''
     }
   },
   created () {
-    console.log(this.more.beds)
     let data = this.$route.query
-    this.startTextTime = JSON.parse(data.time)[0]
-    this.endTextTime = JSON.parse(data.time)[1]
-    this.startTime = data.startTime
-    this.endTime = data.endTime
-    console.log(this.startTextTime, this.endTextTime)
+    if(JSON.parse(data.time)[0] != ''){
+
+      this.startTextTime = JSON.parse(data.time)[0]
+      this.endTextTime = JSON.parse(data.time)[1]
+      this.startTime = data.startTime
+      this.endTime = data.endTime
+
+    }
     let guests = JSON.parse(data.guests)
     this.guests.adults = guests.adults
     this.guests.children = guests.children
@@ -332,6 +343,7 @@ export default {
       }
     },
     changeAment (e) {
+      console.log(this.more.Amenities)
       if (this.more.Amenities.length !== 0) {
         this.more.Amenities = this.more.Amenities
         console.log(this.more.Amenities.join(''))
@@ -389,26 +401,85 @@ export default {
 
       var url = "?pageNo="+this.pageNo+"&pageSize="+this.pageSize;
 
-      let formdata = {
-        startDate: this.startTime,
-        endDate: this.endTime,
-        cityCode: this.cityCode,
-        minPrice: this.price.value[0] === 0 & this.price.isfilter !== false ? '' : this.price.value[0],
-        maxPrice: this.price.value[1] === 5000 & this.price.isfilter !== false ? '' : this.price.value[1],
-        placeScore: this.rating.isfilter !== false ? this.rating.level : '',
-        minGuestNumber: this.guests.isfilter !== false ? this.guests.adults + this.guests.children : 0,
-        category: this.more.home[0] === '0' & this.more.isfilter !== false ? 'Entire place' : this.more.home[0] === '1' & this.more.isfilter !== false ? 'Private Room' : this.more.home[0] === '2' & this.more.isfilter !== false ? 'Share room' : [],
-        minBedNumber: this.more.isfilter !== false ? this.more.beds : 0,
-        minBedroomNumber: this.more.isfilter !== false ? this.more.bedrooms : 0,
-        minBathNumber: this.more.isfilter !== false ? this.more.bathrooms : 0,
-        amenityIds: this.more.isfilter !== false ? this.more.spaceids.join('') : [],
-        safeAmenityIds: this.more.isfilter !== false ? this.more.safeAmenities.join('') : [],
-        spaceIds: this.more.isfilter !== false ? this.more.spaceids.join('') : [],
-        pageNo: 1,
-        pageSize: 20
+      if(this.startTime != "" && this.endTime != "" && this.startTime  != 'NaN-NaN-NaN' && this.endTime  != 'NaN-NaN-NaN'){
+        url = url + '&startDate=' + this.startTime + '&endDate=' + this.endTime;
       }
 
-      this.$get(this.placeUrl + '/places', formdata).then((res) => {
+      if(this.cityCode != ""){
+        url = url + '&cityCode=' + this.cityCode;
+      }
+
+      if(this.price.value[0] != 0 && this.price.isfilter != false || this.price.value[1] != 5000 && this.price.isfilter !== false){
+        url = url + '&minPrice=' + this.price.value[0] + '&maxPrice=' + this.price.value[1];
+      }
+
+      if(this.rating.isfilter != false){
+        url = url + '&placeScore=' + this.rating.level;
+      }
+
+      if(this.guests.isfilter != false){
+        url = url + '&minGuestNumber=' + (this.guests.adults + this.guests.children);
+      }
+
+      if(this.more.home.length != 0){
+
+        if(this.more.home[0] === '0' & this.more.isfilter !== false){
+          url = url + '&category=' + 'Entire place';
+        }else if(this.more.home[0] === '1' & this.more.isfilter !== false){
+          url = url + '&category=' + 'Private Room';
+        }else{
+          url = url + '&category=' + 'Share room';
+        }
+
+      }
+
+      if(this.more.beds != 0){
+        url = url + '&minBedNumber=' + this.more.beds;
+      }
+
+      if(this.more.bedrooms != 0){
+        url = url + '&minBedroomNumber=' + this.more.bedrooms;
+      }
+
+      if(this.more.bathrooms != 0){
+        url = url + '&minBathNumber=' + this.more.bathrooms;
+      }
+
+      if(this.more.Amenities.length != 0){
+        url = url + '&amenityIds=' + this.more.Amenities.join(',');
+      }
+
+      if(this.more.safeAmenities.length != 0){
+        url = url + '&safeAmenityIds=' + this.more.safeAmenities.join(',');
+      }
+
+      if(this.more.spaceids.length != 0){
+        url = url + '&spaceIds=' + this.more.spaceids.join(',');
+      }
+
+
+
+
+      // let formdata = {
+      //   startDate: this.startTime,
+      //   endDate: this.endTime,
+      //   cityCode: this.cityCode,
+      //   minPrice: this.price.value[0] === 0 & this.price.isfilter !== false ? '' : this.price.value[0],
+      //   maxPrice: this.price.value[1] === 5000 & this.price.isfilter !== false ? '' : this.price.value[1],
+      //   placeScore: this.rating.isfilter !== false ? this.rating.level : '',
+      //   minGuestNumber: this.guests.isfilter !== false ? this.guests.adults + this.guests.children : 0,
+      //   category: this.more.home[0] === '0' & this.more.isfilter !== false ? 'Entire place' : this.more.home[0] === '1' & this.more.isfilter !== false ? 'Private Room' : this.more.home[0] === '2' & this.more.isfilter !== false ? 'Share room' : [],
+      //   minBedNumber: this.more.isfilter !== false ? this.more.beds : 0,
+      //   minBedroomNumber: this.more.isfilter !== false ? this.more.bedrooms : 0,
+      //   minBathNumber: this.more.isfilter !== false ? this.more.bathrooms : 0,
+      //   amenityIds: this.more.isfilter !== false ? this.more.spaceids.join('') : [],
+      //   safeAmenityIds: this.more.isfilter !== false ? this.more.safeAmenities.join('') : [],
+      //   spaceIds: this.more.isfilter !== false ? this.more.spaceids.join('') : [],
+      //   pageNo: 1,
+      //   pageSize: 20
+      // }
+
+      this.$get(this.placeUrl + '/places'+url).then((res) => {
         if (res.code === 200) {
           res.data.dataList.forEach((val, key) => {
             if (val.review.length === 0) {
@@ -473,32 +544,30 @@ export default {
           show: false,
           text: '',
           isfilter: false,
-          level: 1
+          level: 0
         }
-        return false
       } else {
         val.text = val.level + ' Star'
         val.show = false
         val.isfilter = true
-        this.search()
       }
+      this.search()
     },
     // 星级
     guestss (val, type) {
       if (type === 'hide') {
         this.guests = {
           show: false,
-          adults: 0,
+          adults: 1,
           children: 0,
           infants: 0,
           isfilter: false
         }
-        return false
       } else {
         val.show = false
         val.isfilter = true
-        this.search()
       }
+      this.search()
     },
     moreFilters (val, type) {
       if (type === 'hide') {
@@ -513,12 +582,11 @@ export default {
           spaceids: [],
           isfilter: false
         }
-        return false
       } else {
         val.show = false
         val.isfilter = true
-        this.search()
       }
+      this.search()
     },
     toListing (id) {
       this.$router.push({path: 'listing/lstHome', query: {id: id}})
@@ -573,6 +641,9 @@ export default {
 
 <style lang="scss" scoped>
 $red-color: #F4436C;
+.redborder{
+  border: 1px solid $red-color !important;
+}
 .middle {
   width: 1500px;
   margin: 0 auto;
@@ -595,12 +666,21 @@ $red-color: #F4436C;
       color: #4A4A4A;
       // z-index: 20;
       // position: relative;
+
+      i.clonetime{
+        position: absolute;
+        right: 5px;
+        bottom:5px;
+        color: $red-color;
+        font-size: 14px;
+      }
       .text {
         width: 100%;
         height: 46px;
         padding-top: 8px;
         line-height: 16px;
         box-sizing: border-box;
+
         p {
           font-family: Roboto-Regular;
           font-size: 16px;
@@ -611,6 +691,11 @@ $red-color: #F4436C;
           font-size: 14px;
           color: #B1B3B6;
         }
+      }
+      .text1{
+        justify-content: center;
+        line-height: 46px;
+        padding-top:0px;
       }
       &:focus {
         border-color: $red-color;
