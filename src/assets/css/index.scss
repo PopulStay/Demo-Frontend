@@ -154,11 +154,11 @@ li {
 }
 ::-moz-placeholder{
     color:#B1B3B6;
-}           
+}
 :-ms-input-placeholder{
     color:#B1B3B6;
 }
-textarea::-webkit-input-placeholder { 
+textarea::-webkit-input-placeholder {
     color:#B1B3B6;
 }
 textarea:-moz-placeholder {
@@ -201,6 +201,9 @@ textarea::-ms-input-placeholder {
 }
 .el-input-number {
     width: 120px;
+}
+.el-range-editor .el-range-input{
+  cursor: pointer;
 }
 .el-popover {
     padding: 30px;
@@ -282,7 +285,7 @@ textarea::-ms-input-placeholder {
 }
 .el-slider__bar {
     background-color: #F4436C;
-    height: 1px; 
+    height: 1px;
 }
 .el-slider__runway {
     height: 1px;
@@ -352,12 +355,12 @@ textarea::-ms-input-placeholder {
   .sign-up-model-out .el-dialog {
     width: 90%;
     max-height: 500px;
-    overflow-y: auto;  
+    overflow-y: auto;
   }
   .el-dialog {
     width: 90%!important;
     max-height: 500px;
-    overflow-y: auto; 
+    overflow-y: auto;
   }
   .el-dialog__body {
     padding: 30px 15px;

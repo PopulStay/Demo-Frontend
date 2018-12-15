@@ -219,7 +219,7 @@
               <li v-for="(item, index) in list" :key="index"  @click="toListing(item.placeId)">
                 <img :src="item.picture.length>0 ? item.picture[0].smallPictureUrl : ''" alt="">
                 <p class="title">{{ listName[index] }}</p>
-                <p class="text">{{ item.placeName ? item.placeName : '' }}</p>
+                <p class="text">{{ placeName ? placeName : '' }}</p>
                 <p class="number">{{ item.prices[0].bestPrice }} pps per night</p>
                 <el-rate v-model="item.review" disabled show-score
                 :colors="['#99A9BF', '#f4436C', '#FF9900']" text-color="#4A4A4A" score-template="{value}">
@@ -266,6 +266,7 @@ export default {
       startTextTime: [],
       endTextTime: [],
       cityCode: '',
+      placeName:"",
       isList: true,
       guests: {
         show: false,
@@ -491,13 +492,12 @@ export default {
             }
             var citycode = val.citycode
             that.getName(citycode)
+            that.translation('placeName',val.placeName);
           })
           this.list = res.data.dataList
           if (res.data.dataList.length > 0) {
-            console.log('false')
             this.isList = true
           } else {
-            console.log('true')
             this.isList = false
           }
         }
@@ -527,11 +527,13 @@ export default {
         }
         return false
       } else {
-        if (val.value[0] !== 0 || val.value[0] !== 5000) {
-          val.text = '￥' + val.value[0] + ' - ￥' + val.value[1]
+
+        if (val.value[0] != 0 && val.value[0] != 5000) {
+          val.text = 'PPS ' + val.value[0] + ' - PPS ' + val.value[1]
         } else {
           val.text = ''
         }
+
         val.show = false
         val.isfilter = true
         this.search()
@@ -590,6 +592,7 @@ export default {
     },
     toListing (id) {
       this.$router.push({path: 'listing/lstHome', query: {id: id}})
+      console.log(123)
     },
     marck (item) {
       const content = `
@@ -634,6 +637,29 @@ export default {
       this.$get(this.placeUrl + '/place/spaces').then((res) => {
         this.spaceids = res.data.dataList
       })
+    },
+    translation(type,obj){
+
+      this.$jsonp(this.youdaoUrl+'/api',
+        {
+          q: obj,
+          appKey: this.$store.state.appKey,
+          salt: this.$store.state.salt,
+          from: '',
+          to: 'en',
+          sign:this.$md5(this.$store.state.appKey+obj+this.$store.state.salt+this.$store.state.secret_key)
+        }
+      ).then(json => {
+        if(type == "placeName"){
+          this.placeName = json.translation[0]
+        }else if(type == "description"){
+          this.description = json.translation[0].replace('\n','<br/>')
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+
+
     }
   }
 }
@@ -733,7 +759,8 @@ $red-color: #F4436C;
     ul {
     overflow: hidden;
     li {
-      float: left;
+      display: inline-block;
+      vertical-align: top;
       margin: 20px 25px 20px 0;
       width: 350px;
       font-size: 16px;
@@ -755,9 +782,10 @@ $red-color: #F4436C;
         letter-spacing: 0.62px;
         font-family: Roboto-Medium;
         text-align: left;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
         overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
       }
       .number {
         font-family: Roboto-Light;

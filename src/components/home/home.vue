@@ -185,6 +185,7 @@ export default {
     this.startTimestamp = Date.parse(this.timeStart)
     this.endTimestamp = Date.parse(this.timeEnd)
     this.getHomeSearch()
+
   },
   methods: {
     selectTime (e) {
@@ -337,6 +338,7 @@ $red-color: #F4436C;
     font-size: 16px;
     color: #4A4A4A;
     cursor: pointer;
+
     p {
       margin-bottom: 5px;
     }
@@ -347,6 +349,7 @@ $red-color: #F4436C;
       padding: 0 30px;
       box-sizing: border-box;
       border: 1px solid #e6e7e8;
+      cursor:pointer;
     }
     .select-time-start {
       margin-right: 10px;

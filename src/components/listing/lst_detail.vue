@@ -8,15 +8,15 @@
       <div class="lst-home-right">
         <div class="top flex-wrap flex-center-between">
           <div class="top-wrap flex-wrap flex-center">
-            <p class="pps-p">PPS</p>
+            <p class="pps-p">{{data.prices[0].currency}}</p>
             <i class="iconfont icon-54"></i>
           </div>
-          <!-- <p class="top-wrap-p"><em>PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p> -->
+           <p class="top-wrap-p"><em>{{data.prices[0].currency}} {{book_detail.total_price}}</em>per night</p>
         </div>
         <div class="detail-content">
           <div class="content-wrap">
             <i class="iconfont icon-rili"></i>
-            <span>{{book_detail.start_time}}</span>
+            <span>{{book_detail.strat_time}}</span>
             <i class="iconfont icon-54 icon-class"></i>
             <span>{{book_detail.end_time}}</span>
             <!-- <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime">
@@ -24,7 +24,7 @@
           </div>
           <div class="content-wrap mgt20">
             <i class="iconfont icon-geren"></i>
-            <span>2{{book_detail.guests}}</span>
+            <span>{{guest_number}} guests</span>
           </div>
         </div>
         <!-- <div class="select-time flex-wrap">
@@ -40,23 +40,23 @@
 
         <div class="gus-wrap flex-wrap flex-center-between">
           <div class="gus-div">
-            <div class="left">PPS 3 nights</div>
+            <div class="left">{{data.prices[0].currency}} {{(new Date(book_detail.end_time).getTime() - new Date(book_detail.strat_time).getTime())/ 1000 / 60 / 60 / 24}} nights</div>
             <div class="left">Cleaning Service fee</div>
             <!-- <div class="left">Service fee</div> -->
             <div class="left">Total</div>
           </div>
           <div class="gus-div ">
-            <div class="left">PPS {{book_detail.price}}</div>
+            <div class="left">{{data.prices[0].currency}} {{data.prices[0].bestPrice}}</div>
             <div class="left">{{book_detail.cleanup_service_fee}}</div>
             <!-- <div class="left">7.5</div> -->
-            <div class="left">{{book_detail.total_price}}</div>
+            <div class="left">{{data.prices[0].currency}} {{book_detail.total_price}}</div>
           </div>
         </div>
         <div class="foot-wrap flex-wrap flex-center-between">
           <div class="foot-wrap-left">
-            <p class="p-1">Flexible</p>
-            <p class="p-2">Full refund within limited period.</p>
-            <p class="p-3">More details</p>
+            <p class="p-1">{{data.cancellationPolicy ? data.cancellationPolicy.name : ''}}</p>
+            <p class="p-2">{{data.cancellationPolicy ? data.cancellationPolicy.title : ''}}</p>
+            <!--<p class="p-3">More details</p>-->
           </div>
           <img src="../../assets/images/listing/cancellation.svg" class="right-svg-img">
         </div>
@@ -64,17 +64,17 @@
       <div class="lst-home-left">
         <div class="top flex-wrap flex-center-between">
           <div class="top-left">
-            <p class="entire-p">ENTIRE APARTMENT</p>
-            <p class="name-p">Lorem ipsum dolor sit amet</p>
-            <p class="address-p">Tokyo, Japan</p>
+            <p class="entire-p">{{data.category}}</p>
+            <p class="name-p">{{placeName}}</p>
+            <p class="address-p">{{listName}}</p>
           </div>
         </div>
-        <div class="detail-name-wrap">
-          <p class="bolder-p">Lorem Ipsum</p>
-          <p class="normal-p">E12345671X</p>
-          <p class="normal-p">United States</p>
-          <p class="normal-p">lorem@mail.com</p>
-        </div>
+        <!--<div class="detail-name-wrap">-->
+          <!--<p class="bolder-p">Lorem Ipsum</p>-->
+          <!--<p class="normal-p">E12345671X</p>-->
+          <!--<p class="normal-p">United States</p>-->
+          <!--<p class="normal-p">lorem@mail.com</p>-->
+        <!--</div>-->
         <p class="spilt-p"></p>
         <!--<div class="read-more flex-wrap flex-align-center" v-show="!isShowMoreAddTitle" @click="isShowMoreAddTitle = true,isShowMoreAdd1Content = true,isShowMoreAddfooter = true">-->
           <!--<p>Add a guest</p>-->
@@ -133,23 +133,13 @@
         <p class="spilt-p" style="display:none;"></p>
         <p class="h1-p">Amenities</p>
         <ul>
-          <li class="function-p">Heating</li>
-          <li class="function-p">Laptop friendly workspace</li>
-          <li class="function-p">Air conditioning</li>
-          <li class="function-p">Crib</li>
+          <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 4 || isShowMore2">{{item.amenity}}</li>
         </ul>
-        <div class="read-more flex-wrap flex-align-center" v-show="!isShowMore2" @click="isShowMore2 = !isShowMore2">
-          <p>Show all 19 amenities</p>
-          <i class="iconfont icon-54"></i>
+        <div class="read-more flex-wrap flex-align-center" @click="isShowMore2 = !isShowMore2">
+          <p>{{isShowMore2 ? 'hide' : 'Show more amenities'}}</p>
+          <i class="iconfont icon-54" :class="isShowMore2 ? 'transform' : ''"></i>
         </div>
-        <div v-show="isShowMore2">
-          <p class="more-p-title">Nulla ut neque nec</p>
-          <p class="more-p-content">Arcu faucibus ullamcorper id sit amet augue. Nunc non sem non massa finibus pellentesque ut id lorem. In vitae mi a urna congue fringilla a suscipit arcu. Vestibulum non urna tincidunt leo faucibus ultricies dignissim interdum nibh. Nunc sollicitudin accumsan tellus quis pulvinar. Integer volutpat est a ante tempor pulvinar. Morbi rhoncus felis ac arcu </p>
-          <div class="read-more flex-wrap flex-align-center" v-show="isShowMore2" @click="isShowMore2 = !isShowMore2">
-            <p>hide</p>
-            <i class="iconfont icon-54" style="display:inline-block;transform: rotate(180deg)"></i>
-          </div>
-        </div>
+
         <p class="spilt-p"></p>
         <p class="h1-p">Sleeping arrangements</p>
         <div class="arrangement h1-p">
@@ -160,32 +150,20 @@
         <p class="spilt-p"></p>
         <p class="h1-p">House Rules</p>
         <ul>
-          <li class="rules-p">No smoking</li>
-          <li class="rules-p">No pets</li>
-          <li class="rules-p">No parties or events</li>
-          <li class="rules-p">Check-in time is 4PM - 9PM</li>
-          <li class="rules-p">Check out by 10AM</li>
-          <li class="rules-p">Self check-in with lockbox</li>
+          <li class="rules-p" v-for="(item, index) in data.rules" :key="index" v-show="index < 3 || isShowMore3">{{item.rule}}</li>
         </ul>
-        <div class="read-more flex-wrap flex-align-center" v-show="!isShowMore3" @click="isShowMore3 = !isShowMore3">
-          <p>Read all rules</p>
-          <i class="iconfont icon-54"></i>
-        </div>
-        <div v-show="isShowMore3">
-          <p class="more-p-title">Nulla ut neque nec</p>
-          <p class="more-p-content">Arcu faucibus ullamcorper id sit amet augue. Nunc non sem non massa finibus pellentesque ut id lorem. In vitae mi a urna congue fringilla a suscipit arcu. Vestibulum non urna tincidunt leo faucibus ultricies dignissim interdum nibh. Nunc sollicitudin accumsan tellus quis pulvinar. Integer volutpat est a ante tempor pulvinar. Morbi rhoncus felis ac arcu </p>
-          <div class="read-more flex-wrap flex-align-center" v-show="isShowMore3" @click="isShowMore3 = !isShowMore3">
-            <p>hide</p>
-            <i class="iconfont icon-54" style="display:inline-block;transform: rotate(180deg)"></i>
-          </div>
+        <div class="read-more flex-wrap flex-align-center" @click="isShowMore3 = !isShowMore3">
+          <p>{{isShowMore3 ? 'hide' : 'Read all rules'}}</p>
+          <i class="iconfont icon-54" :class="isShowMore3 ? 'transform' : ''"></i>
         </div>
         <p class="spilt-p"></p>
         <p class="h1-p">Cancellations</p>
-        <p class="arr-top">Flexible</p>
-        <p class="arr-down">Full refund within limited period.</p>
-        <div class="read-more flex-wrap flex-align-center" v-show="!isShowMore4" @click="isShowMore4 = !isShowMore4">
-          <p>Show all 19 amenities</p>
-          <i class="iconfont icon-54"></i>
+        <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.name : ''}}</p>
+        <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.title : ''}}</p>
+        <p class="arr-top" v-if="isShowMore4">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
+        <div class="read-more flex-wrap flex-align-center" @click="isShowMore4 = !isShowMore4">
+          <p>{{isShowMore4 ? 'hide' : 'Read more about the policy'}}</p>
+          <i class="iconfont icon-54" :class="isShowMore4 ? 'transform' : ''"></i>
         </div>
         <!-- <div v-show="isShowMore4">
           <p class="more-p-title">Nulla ut neque nec</p>
@@ -196,10 +174,10 @@
           </div>
         </div> -->
         <p class="spilt-p"></p>
-        <p class="h1-p">Say hello to your host</p>
-        <textarea name="" id="" class="textarea-say"></textarea>
-        <p class="spilt-p"></p>
-        <p class="detail-terms-p">I agree to the <em>House Rules</em>,<em> Terms and Conditions</em>,<em> Privacy Policy</em>,<em> Cancellation Policy</em>, and the <em>Guest Refund Policy</em>. I also agree to pay the total amount shown, which includes Service Fees.</p>
+        <!--<p class="h1-p">Say hello to your host</p>-->
+        <!--<textarea name="" id="" class="textarea-say"></textarea>-->
+        <!--<p class="spilt-p"></p>-->
+        <!--<p class="detail-terms-p">I agree to the <em>House Rules</em>,<em> Terms and Conditions</em>,<em> Privacy Policy</em>,<em> Cancellation Policy</em>, and the <em>Guest Refund Policy</em>. I also agree to pay the total amount shown, which includes Service Fees.</p>-->
         <button class="confirm-btn" style="margin-top:47px;" @click="pswInput = true">Confirm and pay</button>
         <!-- <p class="h1-p">Nearby landmarks</p>
         <el-amap></el-amap> -->
@@ -216,7 +194,7 @@
     </div>
     <div class="confirm-pay-model-out">
 
-      <el-dialog  :visible.sync="pswInput" class="checkoutWrap">
+      <el-dialog  :visible.sync="pswInput" class="checkoutWrap" :before-close="handleClose">
         <el-popover placement="bottom-start" width="300" trigger="manual" v-model="walletshow" popper-class="state-popover">
           <div slot="reference" class="walletList flex-wrap flex-center-between" @click="walletshow = !walletshow">
             <p>{{wallet}}</p>
@@ -245,6 +223,9 @@ import banner1 from '../../assets/images/index/banner-1.png'
 import banner2 from '../../assets/images/index/banner-2.png'
 import banner3 from '../../assets/images/index/banner-3.png'
 import banner4 from '../../assets/images/index/banner-4.png'
+
+const sha256 = require('js-sha256').sha256
+
 export default {
   name: 'listing-detail',
   components: {
@@ -288,6 +269,10 @@ export default {
       walletList:[],
       walletshow:false,
       userPassword:'',
+      data:{},
+      listName: '',
+      placeName:'',
+      guest_number:0
     }
   },
   methods: {
@@ -314,21 +299,83 @@ export default {
     },
     paynext () {
 
-      this.$post(this.paymentUrl + '/api/v1/payments/reserve ', {
+      this.$post(this.paymentUrl + '/api/v1/payments/deposit', {
         bookingId: this.PaymentHostID,
-        userWalletId:this.walletID,
+        userWalletId: this.walletID,
         userWalletEncryptedPassword:sha256(this.userPassword)
       }).then((res) => {
         console.log(res)
+      }).catch(err => {
+        console.log(err)
       })
 
+      this.$alert('Please wait, your order is being paid', 'Paying', {
+        confirmButtonText: 'OK',
+        callback: action => {
+          location.reload();
+        }
+      });
+
+    },
+    getPlace (id) {
+      var that = this
+      this.$get(this.placeUrl + '/place', {
+        placeId: id
+      }).then((res) => {
+        if (res.code === 200) {
+          var placeName = res.data.placeName
+          that.getName(res.data.citycode)
+          that.translation('placeName',placeName)
+          this.data = res.data
+        }
+      })
+    },
+    getName (val) {
+      this.$get(this.cityUrl + '/city', {
+        code: val
+      }).then((res) => {
+        if (res.code === 200) {
+          this.listName = res.data.fullAddress
+        }
+      })
+    },
+    translation(type,obj){
+      this.$jsonp(this.youdaoUrl+'/api',
+        {
+          q: obj,
+          appKey: this.$store.state.appKey,
+          salt: this.$store.state.salt,
+          from: '',
+          to: 'en',
+          sign:this.$md5(this.$store.state.appKey+obj+this.$store.state.salt+this.$store.state.secret_key)
+        }
+      ).then(json => {
+        if(type == "placeName"){
+          this.placeName = json.translation[0]
+        }else if(type == "description"){
+          this.description = json.translation[0]
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    handleClose(done) {
+      this.walletshow = false
+      this.pswInput = false
     }
   },
   mounted () {
     this.getWalletList()
+    this.getPlace(this.book_detail.place_id)
   },
   created () {
-    this.book_detail = JSON.parse(this.$route.query.book_detail)
+    if(this.$route.query.book_detail == undefined) {
+      this.$router.go(-1)
+    }else{
+      this.book_detail = JSON.parse(this.$route.query.book_detail)
+      this.guest_number = this.$route.query.guest_number
+    }
+    console.log(this.book_detail)
     // document.getElementsByClassName('footer')[0].style.cssText = 'border-top: none;'
   }
 }
@@ -378,6 +425,7 @@ $red-color: #F4436C;
             font-size: 28px;
             letter-spacing: 0.97px;
             margin-bottom: 19px;
+            line-height: 1.2;
           }
           .address-p{
             font-size: 18px;
@@ -491,7 +539,7 @@ $red-color: #F4436C;
     .lst-home-right{
       position: fixed;
       right: 12%;
-      top: 100px;
+      top: 150px;
       width:  400px;
       border: 1px solid #E6E7E8;
       // height: 509px;
@@ -777,7 +825,10 @@ $red-color: #F4436C;
     }
   }
 }
-
+.transform {
+  display: inline-block;
+  transform: rotate(180deg)
+}
 
 @media only screen and (max-width:1131px) {
   .lst-detail .lst-home{

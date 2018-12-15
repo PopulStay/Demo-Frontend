@@ -29,6 +29,7 @@
           </div>
         </div>
         <div class="detail-wrap">
+
           <div class="wrap-top flex-wrap">
             <div class="flex-wrap flex-align-center">
               <i class="iconfont icon-geren"></i>
@@ -49,47 +50,70 @@
               <span>{{data.bathNumber}} bath</span>
             </div>
           </div>
-          <p class="intro-p" :class="isShowMore1 ? 'intro-p2' : ''">{{description}}</p>
-          <!-- <p class="intro-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 0 || isShowMore1">{{item.space}}</p> -->
+
+          <p class="intro-p" :class="descriptionShowMore ? '' : 'intro-p2'" v-html="description"></p>
+          <!-- <p class="intro-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 0 || descriptionShowMore">{{item.space}}</p> -->
         </div>
-        <div class="read-more flex-wrap flex-align-center"  @click="isShowMore1 = !isShowMore1">
-          <p>{{isShowMore1 ? 'hide' : 'Read more about the space'}}</p>
-          <i class="iconfont icon-54" :class="isShowMore1 ? 'transform' : ''"></i>
+        <div class="read-more flex-wrap flex-align-center"  @click="descriptionShowMore = !descriptionShowMore" v-if="description.length>200">
+          <p>{{descriptionShowMore ? 'hide' : 'Read more about the space'}}</p>
+          <i class="iconfont icon-54" :class="descriptionShowMore ? 'transform' : ''"></i>
         </div>
         <p class="spilt-p"></p>
+
+        <div class="d_item" v-show="data.amenities.length">
+          <p class="h1-p">Sleeping arrangements</p>
+          <div class="arrangement h1-p">
+            <i class="iconfont icon-chuang1"></i>
+            <p class="arr-top">Bedroom 1</p>
+            <p class="arr-down">1 double bed</p>
+          </div>
+          <p class="spilt-p"></p>
+        </div>
+
         <div class="d_item" v-show="data.amenities.length">
           <p class="h1-p">Amenities</p>
           <ul>
-            <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 4 || isShowMore2">{{item.amenity}}</li>
+            <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 4 || amenitiesShowMore">{{item.amenity}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="isShowMore2 = !isShowMore2">
-            <p>{{isShowMore2 ? 'hide' : 'Show more amenities'}}</p>
-            <i class="iconfont icon-54" :class="isShowMore2 ? 'transform' : ''"></i>
+          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore">
+            <p>{{amenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
+            <i class="iconfont icon-54" :class="amenitiesShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
         <div class="d_item">
-          <p class="h1-p">Sleeping arrangements</p>
-          <!-- <div class="arrangement h1-p">
-            <i class="iconfont icon-chuang1"></i>
-            <p class="arr-top">Bedroom 1</p>
-            <p class="arr-down">1 double bed</p>
-          </div> -->
+          <p class="h1-p">Safe Amenities</p>
           <ul>
-            <li class="rules-p" v-for="(item, index) in data.safeAmenities" :key="index">{{item.safeAmenity}}</li>
+            <li class="rules-p" v-for="(item, index) in data.safeAmenities" :key="index" v-show="index < 3 || safeAmenitiesShowMore">{{item.safeAmenity}}</li>
           </ul>
+          <div class="read-more flex-wrap flex-align-center" @click="safeAmenitiesShowMore = !safeAmenitiesShowMore" v-if="data.safeAmenities.length>3">
+            <p>{{safeAmenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
+            <i class="iconfont icon-54" :class="safeAmenitiesShowMore ? 'transform' : ''"></i>
+          </div>
+          <p class="spilt-p"></p>
+        </div>
+
+        <div class="d_item">
+          <p class="h1-p">Spaces</p>
+          <ul>
+            <li class="rules-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 3 || spaceShowMore">{{item.space}}</li>
+          </ul>
+          <div class="read-more flex-wrap flex-align-center" @click="spaceShowMore = !spaceShowMore" v-if="data.spaces.length>3">
+            <p>{{spaceShowMore ? 'hide' : 'Read all Spaces'}}</p>
+            <i class="iconfont icon-54" :class="spaceShowMore ? 'transform' : ''"></i>
+          </div>
           <p class="spilt-p"></p>
         </div>
 
         <div class="d_item" v-show="data.rules.length">
           <p class="h1-p">House Rules</p>
           <ul>
-            <li class="rules-p" v-for="(item, index) in data.rules" :key="index" v-show="index < 3 || isShowMore3">{{item.rule}}</li>
+            <li class="rules-p" v-for="(item, index) in data.rules" :key="index" v-show="index < 3 || rulesShowMore">{{item.rule}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="isShowMore3 = !isShowMore3">
-            <p>{{isShowMore3 ? 'hide' : 'Read all rules'}}</p>
-            <i class="iconfont icon-54" :class="isShowMore3 ? 'transform' : ''"></i>
+          <div class="read-more flex-wrap flex-align-center" @click="rulesShowMore = !rulesShowMore" v-if="data.rules.length>3">
+            <p>{{rulesShowMore ? 'hide' : 'Read all rules'}}</p>
+            <i class="iconfont icon-54" :class="rulesShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
@@ -98,10 +122,10 @@
           <p class="h1-p">Cancellations</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.name : ''}}</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.title : ''}}</p>
-          <p class="arr-top" v-if="isShowMore4">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
-          <div class="read-more flex-wrap flex-align-center" @click="isShowMore4 = !isShowMore4">
-            <p>{{isShowMore4 ? 'hide' : 'Read more about the policy'}}</p>
-            <i class="iconfont icon-54" :class="isShowMore4 ? 'transform' : ''"></i>
+          <p class="arr-top" v-if="cancellationsShowMore">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
+          <div class="read-more flex-wrap flex-align-center" @click="cancellationsShowMore = !cancellationsShowMore">
+            <p>{{cancellationsShowMore ? 'hide' : 'Read more about the policy'}}</p>
+            <i class="iconfont icon-54" :class="cancellationsShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
@@ -121,35 +145,43 @@
 
       <el-col :span="7" class="scrool-fix-rili" :class="isShow?'scrool-fix-rili-show':'scrool-fix-rili-hide'"></el-col>
       <el-col :span="7" class="lst-home-right lst-home-right-xl" :class="isShow?'lst-home-right-xl-fix':'lst-home-right-xl-sta'">
-        <div class="top flex-wrap flex-center-between">
-          <div class="top-wrap flex-wrap flex-center">
-            <p class="pps-p">PPS</p>
-            <i class="iconfont icon-54"></i>
+        <div>
+          <div class="top flex-wrap flex-center-between">
+            <div class="top-wrap flex-wrap flex-center">
+              <p class="pps-p">PPS</p>
+              <i class="iconfont icon-54"></i>
+            </div>
+            <p class="top-wrap-p"><em>PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p>
           </div>
-          <p class="top-wrap-p"><em>PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p>
-        </div>
-        <div class="select-time flex-wrap">
-          <div class="select-time-start flex-1">
-            <p>Check-in</p>
-            <el-date-picker v-model="timeStart" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
-            </el-date-picker>
-            <div class="startTime text">
-              <p>{{startTextTime[2]}} {{startTextTime[1]}} {{startTextTime[3]}} </p>
-              <span> {{startTextTime[0]}}</span>
+          <div class="select-time flex-wrap">
+            <div class="select-time-start flex-1">
+              <p>Check-in</p>
+              <el-date-picker v-model="timeStart" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
+              </el-date-picker>
+              <div class="startTime text" v-if="timeStart != ''">
+                <p>{{startTextTime[2]}} {{startTextTime[1]}} {{startTextTime[3]}} </p>
+                <span> {{startTextTime[0]}}</span>
+              </div>
+              <div class="startTime text text1" v-if="timeStart == ''">
+                <span>Check in</span>
+              </div>
+            </div>
+            <div class="select-time-end flex-1">
+              <p>Check-out</p>
+              <el-date-picker v-model="timeEnd" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
+              <div class="endTime text" v-if="timeEnd != ''">
+                <p>{{endTextTime[2]}} {{endTextTime[1]}} {{endTextTime[3]}}</p>
+                <span>{{endTextTime[0]}}</span>
+              </div>
+              <div class="endTime text text1" v-if="timeEnd == ''">
+                <span>Check out</span>
+              </div>
+              <i v-if="timeEnd != ''" class="el-icon-error clonetime" @click="timeStart='';timeEnd='';"></i>
             </div>
           </div>
-          <div class="select-time-end flex-1">
-            <p>Check-out</p>
-            <el-date-picker v-model="timeEnd" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
-            <div class="endTime text">
-              <p>{{endTextTime[2]}} {{endTextTime[1]}} {{endTextTime[3]}}</p>
-              <span>{{endTextTime[0]}}</span>
-            </div>
-          </div>
-        </div>
-        <div class="guests listing_index">
-          <p>Guests</p>
-          <el-popover placement="bottom" width="300"  v-model="visible_xl" popper-class="c_guests">
+          <div class="guests listing_index">
+            <p>Guests</p>
+            <el-popover placement="bottom" width="300"  v-model="visible_xl" popper-class="c_guests">
               <div class="select flex-wrap flex-center-between" slot="reference" @click="visible_xl = !visible_xl">
                 <span>{{num1 + num2}} guests {{num3 >=1 ? "," + num3 + "infants":''}}</span>
                 <i class="icon iconfont" :class="visible_xl ? 'icon-arrow-up' : 'icon-54'"></i>
@@ -180,24 +212,25 @@
                 </div>
               </div>
             </el-popover>
-        </div>
-        <div class="gus-wrap flex-wrap flex-center-between ">
-          <div class="gus-div ">
-            <!-- <div class="left">PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}} x {{time | days}} nights</div> -->
-            <div class="left">PPS {{days('days')}} nights</div>
-            <!-- days('days') -->
-            <div class="left">Cleaning Service fee</div>
-            <!-- <div class="left">Service fee</div> -->
-            <div class="left">Total</div>
           </div>
-          <div class="gus-div ">
-            <div class="left">PPS {{days('place_price')}}</div>
-            <div class="left">{{days('clean')}}</div>
-            <!-- <div class="left">{{days('service')}}</div> -->
-            <div class="left">PPS {{days('total_price')}}</div>
+          <div class="gus-wrap flex-wrap flex-center-between " v-if="timeStart != ''">
+            <div class="gus-div ">
+              <!-- <div class="left">PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}} x {{time | days}} nights</div> -->
+              <div class="left">PPS {{days('days')}} nights</div>
+              <!-- days('days') -->
+              <div class="left">Cleaning Service fee</div>
+              <!-- <div class="left">Service fee</div> -->
+              <div class="left">Total</div>
+            </div>
+            <div class="gus-div ">
+              <div class="left">PPS {{days('place_price')}}</div>
+              <div class="left">{{days('clean')}}</div>
+              <!-- <div class="left">{{days('service')}}</div> -->
+              <div class="left">PPS {{days('total_price')}}</div>
+            </div>
           </div>
+          <button @click="Verify">Book</button>
         </div>
-        <button @click="Verify">Book</button>
       </el-col>
     </el-row>
     <!-- 移动端固定底部  -->
@@ -324,29 +357,46 @@ export default {
       visible_xs: false,
       visible_xl2: false,
       visible_xl: false,
-      isShowMore1: false,
-      isShowMore2: false,
-      isShowMore3: false,
-      isShowMore4: false,
+      descriptionShowMore: false,
+      amenitiesShowMore: false,
+      safeAmenitiesShowMore: false,
+      rulesShowMore: false,
+      spaceShowMore:false,
+      cancellationsShowMore: false,
       isBack: false,
       data: {},
       bookInfo: '',
       pickerOptions: {
         disabledDate: (time) => {
-          // let dates = new Date().getTime() + (1000 * 60 * 60 * 24) * this.data.guestMaxStayNight
-          // return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates
-          // return time.getTime() < Date.now() - 8.64e7
+          let dates = new Date().getTime() + (1000 * 60 * 60 * 24) * this.data.guestMaxStayNight
+
+          if(this.unavailableDate.length){
+            for(var item in this.unavailableDate){
+              var startDate = new Date(this.unavailableDate[item].startDate).getTime()-86400000;
+              var endDate = new Date(this.unavailableDate[item].endDate).getTime()-86400000;
+
+              if(time.getTime() > new Date(startDate).getTime() && time.getTime() < new Date(endDate).getTime()){
+
+                return time.getTime()
+              }
+
+            }
+          }
+          return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates
         }
+
+
       },
-      isShow: false
+      isShow: false,
+      unavailableDate:[]
     }
   },
   created () {
     this.getPlace(this.$route.query.id)
     this.place_id = this.$route.query.id
     let date = new Date().getTime()
-    this.timeStart = new Date()
-    this.timeEnd = new Date(date + (1000 * 60 * 60 * 24))
+    // this.timeStart = new Date()
+    // this.timeEnd = new Date(date + (1000 * 60 * 60 * 24))
     this.startTextTime = String(this.timeStart).split(' ')
     this.endTextTime = String(this.timeEnd).split(' ')
     this.startTimestamp = Date.parse(this.timeStart)
@@ -368,29 +418,37 @@ export default {
     },
     Verify () {
       let user = this.$store.state.userInfo
-      if(user.user_identity_confirmation.document_verified === 'true'){
-        this.$post(this.bookUrl + '/booking ', {
-        action: 'makeBooking',
-        data: {
-          user_id: user.user_id,
-          place_id: this.place_id,
-          check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
-          check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
-          guest_number: this.num1 + this.num2,
-          currency: 'PPS'
-        }
-        }).then((res) => {
-          console.log(res)
-          if (res.msg.code === 200) {
-            // console.log()
-            this.$router.push({path: 'lstDetail', query: {book_detail: JSON.stringify(res.data)}})
-          }else if(res.msg.code === 952){
 
-          }
-        })
-      }else {
-        this.isVerify = !this.isVerify
+      if (!user) {
+
+        this.$store.state.show_login = true
+
+      } else {
+
+        if(user.user_identity_confirmation.document_verified === 'true' && user.user_identity_confirmation.email_verified === 'true' && user.user_identity_confirmation.phone_verified === 'true' ){
+          this.$post(this.bookUrl + '/booking ', {
+            action: 'makeBooking',
+            data: {
+              user_id: user.user_id,
+              place_id: this.place_id,
+              check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
+              check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
+              guest_number: this.num1 + this.num2,
+              currency: 'PPS'
+            }
+          }).then((res) => {
+            if (res.msg.code === 200) {
+              this.$router.push({path: 'lstDetail', query: {book_detail: JSON.stringify(res.data),guest_number:this.num1 + this.num2}})
+            }else if(res.msg.code === 952){
+
+            }
+          })
+        }else {
+          this.isVerify = !this.isVerify
+        }
+
       }
+
 
     },
     toDetail () {
@@ -412,6 +470,12 @@ export default {
           that.getUserName(hostname)
           that.translation('placeName',placeName)
           that.translation('description',description)
+
+          if(res.data.arrangements[0].unavailableDate){
+            for(var item in res.data.arrangements[0].unavailableDate){
+              this.unavailableDate.push(res.data.arrangements[0].unavailableDate[item])
+            }
+          }
           this.data = res.data
         }
       })
@@ -430,7 +494,6 @@ export default {
       let dayTime = ''
       let day = ''
       let data = ''
-      console.log(this.timeEnd)
       dayTime = this.endTimestamp - this.startTimestamp
       day = dayTime / (1000 * 60 * 60 * 24)
       if (type === 'days') {
@@ -482,10 +545,10 @@ export default {
         }
       }).then((res) => {
         this.hostName = res.data.first_name + res.data.last_name
-        console.log(this.hostName)
       })
     },
     getBookInfo () {
+
       this.$post(this.bookUrl + '/booking ', {
         action: 'estimateBookingPrice',
         data: {
@@ -497,31 +560,35 @@ export default {
         }
       }).then((res) => {
         if (res.msg.code === 200) {
-          console.log(res.data)
           this.bookInfo = res.data
         }
       })
+
     },
     translation(type,obj){
+
       this.$jsonp(this.youdaoUrl+'/api',
-        {
-          q: obj,
-          appKey: this.$store.state.appKey,
-          salt: this.$store.state.salt,
-          from: '',
-          to: 'en',
-          sign:this.$md5(this.$store.state.appKey+obj+this.$store.state.salt+this.$store.state.secret_key)
-        }
+          {
+            q: obj,
+            appKey: this.$store.state.appKey,
+            salt: this.$store.state.salt,
+            from: '',
+            to: 'en',
+            sign:this.$md5(this.$store.state.appKey+obj+this.$store.state.salt+this.$store.state.secret_key)
+          }
       ).then(json => {
-        if(type == "placeName"){
-          this.placeName = json.translation[0]
-        }else if(type == "description"){
-          this.description = json.translation[0]
-        }
+          if(type == "placeName"){
+            this.placeName = json.translation[0]
+          }else if(type == "description"){
+            this.description = json.translation[0].replace('\n','<br/>')
+          }
       }).catch(err => {
         console.log(err)
       })
+
+
     }
+
   },
   computed: {
     days () {
@@ -727,7 +794,10 @@ $red-color: #F4436C;
           // overflow: hidden;
         }
         .intro-p2 {
-          height: auto;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
         }
       }
       .read-more{
@@ -813,20 +883,20 @@ $red-color: #F4436C;
   margin-top: 60px;
   // margin-left: 10%;
   max-width: 400px;
-  border: 1px solid #E6E7E8;
-  height: 575px;
-  border-radius: 3px;
   font-family: Roboto-Regular;
   font-size: 16px;
   color: #4A4A4A;
-  padding: 34px 20px;
   // margin-right: 21%;
+  &>div{
+    border: 1px solid #E6E7E8;
+    padding: 34px 20px;
+    border-radius: 3px;
+  }
   .left{
     margin-top: 10px;
   }
   .gus-wrap{
     margin-top: 15px;
-    margin-bottom: 20px;
   }
   button{
     background: #F4436C;
@@ -840,6 +910,7 @@ $red-color: #F4436C;
     outline: none;
     border: none;
     cursor: pointer;
+    margin-top: 20px;
   }
   .top{
     padding-bottom: 24px;
@@ -995,6 +1066,17 @@ $red-color: #F4436C;
     margin: 30px 0;
     font-size: 16px;
     color: #4A4A4A;
+    cursor:pointer;
+
+    i.clonetime{
+      position: absolute;
+      right: 5px;
+      bottom:5px;
+      color: #F4436C;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
     p {
       margin-bottom: 5px;
     }
@@ -1005,6 +1087,7 @@ $red-color: #F4436C;
       padding: 0 30px;
       box-sizing: border-box;
       border: 1px solid #e6e7e8;
+      cursor:pointer;
     }
     .select-time-start {
       margin-right: 10px;

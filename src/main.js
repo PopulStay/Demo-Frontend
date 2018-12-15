@@ -36,21 +36,16 @@ Vue.config.productionTip = false
 // 路由拦截器
 router.beforeEach((to, from, next) => {
   let userList = ['propertyTypes', 'tripsList', 'messages', 'walletHome']
-  if (store.state.userInfo === null) {
-    if (to.path === '/') {
-      next()
+
+  if(store.state.userInfo == null){
+    if (userList.indexOf(to.name) !== -1) {
+      store.state.show_login = true
     } else {
-      next('/')
-      if (userList.indexOf(to.name) !== -1) {
-        store.state.show_login = true
-      } else {
-        next()
-      }
+      next()
     }
-  } else {
+  }else{
     next()
   }
-
 
 
 })
