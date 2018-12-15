@@ -60,12 +60,15 @@
         </div>
         <p class="spilt-p"></p>
 
-        <div class="d_item" v-show="data.amenities.length">
+        <div class="d_item" >
           <p class="h1-p">Sleeping arrangements</p>
-          <div class="arrangement h1-p">
+          <div class="arrangement h1-p" v-for="(item, index) in data.arrangements"  :key="index" v-show="index < 4 || arrangementsShowMore">
             <i class="iconfont icon-chuang1"></i>
-            <p class="arr-top">Bedroom 1</p>
-            <p class="arr-down">1 double bed</p>
+            <p class="arr-top" v-for="(items, index) in item.utilities" :key="index">{{items.count}} {{items.utility}}</p>
+          </div>
+          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore">
+            <p>{{arrangementsShowMore ? 'hide' : 'Show more sleeping arrangements'}}</p>
+            <i class="iconfont icon-54" :class="arrangementsShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
@@ -82,7 +85,7 @@
           <p class="spilt-p"></p>
         </div>
 
-        <div class="d_item">
+        <div class="d_item" v-show="data.safeAmenities.length">
           <p class="h1-p">Safe Amenities</p>
           <ul>
             <li class="rules-p" v-for="(item, index) in data.safeAmenities" :key="index" v-show="index < 3 || safeAmenitiesShowMore">{{item.safeAmenity}}</li>
@@ -94,13 +97,13 @@
           <p class="spilt-p"></p>
         </div>
 
-        <div class="d_item">
+        <div class="d_item" v-show="data.spaces.length">
           <p class="h1-p">Spaces</p>
           <ul>
             <li class="rules-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 3 || spaceShowMore">{{item.space}}</li>
           </ul>
           <div class="read-more flex-wrap flex-align-center" @click="spaceShowMore = !spaceShowMore" v-if="data.spaces.length>3">
-            <p>{{spaceShowMore ? 'hide' : 'Read all Spaces'}}</p>
+            <p>{{spaceShowMore ? 'hide' : 'Read all spaces'}}</p>
             <i class="iconfont icon-54" :class="spaceShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
@@ -252,7 +255,7 @@
         <div class="select-time flex-wrap">
           <div class="select-time-start flex-1">
             <p>Check-in</p>
-            <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
+            <el-date-picker v-model="time" type="daterange" range-separator="" @input="selectTime" :picker-options="pickerOptions">
             </el-date-picker>
             <div class="startTime text">
               <p>{{startTextTime[2]}} {{startTextTime[1]}} {{startTextTime[3]}} </p>
@@ -261,7 +264,7 @@
           </div>
           <div class="select-time-end flex-1">
             <p>Check-out</p>
-            <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
+            <el-date-picker v-model="time" type="daterange" range-separator="" @input="selectTime" :picker-options="pickerOptions"></el-date-picker>
             <div class="endTime text">
               <p>{{endTextTime[2]}} {{endTextTime[1]}} {{endTextTime[3]}}</p>
               <span>{{endTextTime[0]}}</span>
@@ -358,6 +361,7 @@ export default {
       visible_xl2: false,
       visible_xl: false,
       descriptionShowMore: false,
+      arrangementsShowMore:false,
       amenitiesShowMore: false,
       safeAmenitiesShowMore: false,
       rulesShowMore: false,
@@ -367,25 +371,58 @@ export default {
       data: {},
       bookInfo: '',
       pickerOptions: {
+        onPick: ({maxDate, minDate}) => {
+          this.maxDate = new Date(maxDate).getTime();
+          this.minDate = new Date(minDate).getTime();
+        },
         disabledDate: (time) => {
+
           let dates = new Date().getTime() + (1000 * 60 * 60 * 24) * this.data.guestMaxStayNight
 
+          let startdateArr = [];
+          let enddateArr = [];
+
           if(this.unavailableDate.length){
+
             for(var item in this.unavailableDate){
+
               var startDate = new Date(this.unavailableDate[item].startDate).getTime()-86400000;
               var endDate = new Date(this.unavailableDate[item].endDate).getTime()-86400000;
 
-              if(time.getTime() > new Date(startDate).getTime() && time.getTime() < new Date(endDate).getTime()){
+              if(!this.minDate){
+                if (time.getTime() > startDate && time.getTime() < endDate) {
+                  return time.getTime()
+                }
+              }
 
-                return time.getTime()
+              if(this.minDate <= startDate) {
+                startdateArr.push(startDate)
+              }
+
+              if(this.minDate >= endDate) {
+                enddateArr.push(endDate)
               }
 
             }
+
+
+            if(this.minDate){
+              if(startdateArr.length && time.getTime() > Math.min.apply(Math,startdateArr)+86400000) {
+                return time.getTime();
+              }
+
+              if(enddateArr.length && time.getTime() < Math.min.apply(Math,enddateArr)){
+                return time.getTime();
+              }
+            }
+
           }
-          return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates
+
+          if(dates){
+            return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates
+          }
+
         }
-
-
       },
       isShow: false,
       unavailableDate:[]
@@ -402,6 +439,7 @@ export default {
     this.startTimestamp = Date.parse(this.timeStart)
     this.endTimestamp = Date.parse(this.timeEnd)
     this.getBookInfo()
+
   },
   methods: {
     selectTime (e) {
@@ -412,6 +450,8 @@ export default {
       this.startTimestamp = Date.parse(this.timeStart)
       this.endTimestamp = Date.parse(this.timeEnd)
       this.getBookInfo()
+      this.maxDate = null;
+      this.minDate = null;
     },
     HandleChangeAdult(){
       this.getBookInfo()
@@ -828,11 +868,14 @@ $red-color: #F4436C;
       }
       .arrangement{
         width: 150px;
-        height: 140px;
+        min-height: 140px;
         border-radius: 3px;
         border: 1px solid #E6E7E8;
         box-sizing: border-box;
         padding: 20px;
+        display: inline-block;
+        margin-right: 20px;
+
         i{
           font-size: 30px;
         }

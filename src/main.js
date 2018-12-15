@@ -35,7 +35,7 @@ Vue.config.productionTip = false
 
 // 路由拦截器
 router.beforeEach((to, from, next) => {
-  let userList = ['propertyTypes', 'tripsList', 'messages', 'walletHome']
+  let userList = ['propertyTypes', 'tripsList', 'messages', 'walletHome','lstDetail']
 
   if(store.state.userInfo == null){
     if (userList.indexOf(to.name) !== -1) {

@@ -130,40 +130,77 @@
           <!--<p>Add a guest</p>-->
           <!--<i class="iconfont icon-54"></i>-->
         <!--</div>-->
-        <p class="spilt-p" style="display:none;"></p>
-        <p class="h1-p">Amenities</p>
-        <ul>
-          <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 4 || isShowMore2">{{item.amenity}}</li>
-        </ul>
-        <div class="read-more flex-wrap flex-align-center" @click="isShowMore2 = !isShowMore2">
-          <p>{{isShowMore2 ? 'hide' : 'Show more amenities'}}</p>
-          <i class="iconfont icon-54" :class="isShowMore2 ? 'transform' : ''"></i>
+        <div class="d_item" >
+          <p class="h1-p">Sleeping arrangements</p>
+          <div class="arrangement h1-p" v-for="(item, index) in data.arrangements"  :key="index" v-show="index < 4 || arrangementsShowMore">
+            <i class="iconfont icon-chuang1"></i>
+            <p class="arr-top" v-for="(items, index) in item.utilities" :key="index">{{items.count}} {{items.utility}}</p>
+          </div>
+          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore">
+            <p>{{arrangementsShowMore ? 'hide' : 'Show more sleeping arrangements'}}</p>
+            <i class="iconfont icon-54" :class="arrangementsShowMore ? 'transform' : ''"></i>
+          </div>
+          <p class="spilt-p"></p>
         </div>
 
-        <p class="spilt-p"></p>
-        <p class="h1-p">Sleeping arrangements</p>
-        <div class="arrangement h1-p">
-           <i class="iconfont icon-chuang1"></i>
-           <p class="arr-top">Bedroom 1</p>
-           <p class="arr-down">1 double bed</p>
+        <div class="d_item" v-show="data.amenities.length">
+          <p class="h1-p">Amenities</p>
+          <ul>
+            <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 4 || amenitiesShowMore">{{item.amenity}}</li>
+          </ul>
+          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore">
+            <p>{{amenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
+            <i class="iconfont icon-54" :class="amenitiesShowMore ? 'transform' : ''"></i>
+          </div>
+          <p class="spilt-p"></p>
         </div>
-        <p class="spilt-p"></p>
-        <p class="h1-p">House Rules</p>
-        <ul>
-          <li class="rules-p" v-for="(item, index) in data.rules" :key="index" v-show="index < 3 || isShowMore3">{{item.rule}}</li>
-        </ul>
-        <div class="read-more flex-wrap flex-align-center" @click="isShowMore3 = !isShowMore3">
-          <p>{{isShowMore3 ? 'hide' : 'Read all rules'}}</p>
-          <i class="iconfont icon-54" :class="isShowMore3 ? 'transform' : ''"></i>
+
+        <div class="d_item" v-show="data.safeAmenities.length">
+          <p class="h1-p">Safe Amenities</p>
+          <ul>
+            <li class="rules-p" v-for="(item, index) in data.safeAmenities" :key="index" v-show="index < 3 || safeAmenitiesShowMore">{{item.safeAmenity}}</li>
+          </ul>
+          <div class="read-more flex-wrap flex-align-center" @click="safeAmenitiesShowMore = !safeAmenitiesShowMore" v-if="data.safeAmenities.length>3">
+            <p>{{safeAmenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
+            <i class="iconfont icon-54" :class="safeAmenitiesShowMore ? 'transform' : ''"></i>
+          </div>
+          <p class="spilt-p"></p>
         </div>
-        <p class="spilt-p"></p>
-        <p class="h1-p">Cancellations</p>
-        <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.name : ''}}</p>
-        <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.title : ''}}</p>
-        <p class="arr-top" v-if="isShowMore4">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
-        <div class="read-more flex-wrap flex-align-center" @click="isShowMore4 = !isShowMore4">
-          <p>{{isShowMore4 ? 'hide' : 'Read more about the policy'}}</p>
-          <i class="iconfont icon-54" :class="isShowMore4 ? 'transform' : ''"></i>
+
+        <div class="d_item" v-show="data.spaces.length">
+          <p class="h1-p">Spaces</p>
+          <ul>
+            <li class="rules-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 3 || spaceShowMore">{{item.space}}</li>
+          </ul>
+          <div class="read-more flex-wrap flex-align-center" @click="spaceShowMore = !spaceShowMore" v-if="data.spaces.length>3">
+            <p>{{spaceShowMore ? 'hide' : 'Read all spaces'}}</p>
+            <i class="iconfont icon-54" :class="spaceShowMore ? 'transform' : ''"></i>
+          </div>
+          <p class="spilt-p"></p>
+        </div>
+
+        <div class="d_item" v-show="data.rules.length">
+          <p class="h1-p">House Rules</p>
+          <ul>
+            <li class="rules-p" v-for="(item, index) in data.rules" :key="index" v-show="index < 3 || rulesShowMore">{{item.rule}}</li>
+          </ul>
+          <div class="read-more flex-wrap flex-align-center" @click="rulesShowMore = !rulesShowMore" v-if="data.rules.length>3">
+            <p>{{rulesShowMore ? 'hide' : 'Read all rules'}}</p>
+            <i class="iconfont icon-54" :class="rulesShowMore ? 'transform' : ''"></i>
+          </div>
+          <p class="spilt-p"></p>
+        </div>
+
+        <div class="d_item">
+          <p class="h1-p">Cancellations</p>
+          <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.name : ''}}</p>
+          <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.title : ''}}</p>
+          <p class="arr-top" v-if="cancellationsShowMore">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
+          <div class="read-more flex-wrap flex-align-center" @click="cancellationsShowMore = !cancellationsShowMore">
+            <p>{{cancellationsShowMore ? 'hide' : 'Read more about the policy'}}</p>
+            <i class="iconfont icon-54" :class="cancellationsShowMore ? 'transform' : ''"></i>
+          </div>
+          <p class="spilt-p"></p>
         </div>
         <!-- <div v-show="isShowMore4">
           <p class="more-p-title">Nulla ut neque nec</p>
@@ -173,7 +210,6 @@
             <i class="iconfont icon-54" style="display:inline-block;transform: rotate(180deg)"></i>
           </div>
         </div> -->
-        <p class="spilt-p"></p>
         <!--<p class="h1-p">Say hello to your host</p>-->
         <!--<textarea name="" id="" class="textarea-say"></textarea>-->
         <!--<p class="spilt-p"></p>-->
@@ -255,10 +291,12 @@ export default {
       selectValue: '1 guest',
       isVerify: false,
       visible: false,
-      isShowMore1: false,
-      isShowMore2: false,
-      isShowMore3: false,
-      isShowMore4: false,
+      arrangementsShowMore:false,
+      amenitiesShowMore: false,
+      safeAmenitiesShowMore: false,
+      rulesShowMore: false,
+      spaceShowMore:false,
+      cancellationsShowMore: false,
       isShowMoreAddTitle: false,
       isShowMoreAdd1Content: false,
       isShowMoreAddfooter: false,
@@ -392,8 +430,8 @@ $red-color: #F4436C;
     position: relative;
     .lst-home-left{
       // margin-right: 21%;
-      margin-left: 13%;
-      width: 30%;
+      margin-left: 10%;
+      width: 37.5%;
       .more-p-title{
         font-family: Roboto-Medium;
         margin-top: 30px;
@@ -496,11 +534,14 @@ $red-color: #F4436C;
       }
       .arrangement{
         width: 150px;
-        height: 140px;
+        min-height: 140px;
         border-radius: 3px;
         border: 1px solid #E6E7E8;
         box-sizing: border-box;
         padding: 20px;
+        display: inline-block;
+        margin-right: 20px;
+
         i{
           font-size: 30px;
         }
