@@ -8,6 +8,7 @@ Vue.prototype.placeUrl = 'https://tesapi.place.populstay.com'
 Vue.prototype.cityUrl = 'https://testapi.citycode.populstay.com'
 Vue.prototype.bookUrl = 'https://testapi.booking.populstay.com'
 Vue.prototype.paymentUrl = 'http://testapi.payment.populstay.com'
+Vue.prototype.partialplaceUrl = 'https://testapi.partialplace.populstay.com'
 Vue.prototype.imageUrl = 'https://testapi.image.populstay.com/image?dir=populstay_placeimage'
 
 Vue.prototype.$axios = axios

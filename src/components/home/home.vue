@@ -455,7 +455,9 @@ $red-color: #F4436C;
         font-family: Roboto-Medium;
         text-align: left;
         display: -webkit-box;
+        /*! autoprefixer: off */
         -webkit-box-orient: vertical;
+        /* autoprefixer: on */
         -webkit-line-clamp: 2;
         overflow: hidden;
       }

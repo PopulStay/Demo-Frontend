@@ -60,13 +60,13 @@
         </div>
         <p class="spilt-p"></p>
 
-        <div class="d_item" >
+        <div class="d_item" v-show="data.arrangements.length">
           <p class="h1-p">Sleeping arrangements</p>
           <div class="arrangement h1-p" v-for="(item, index) in data.arrangements"  :key="index" v-show="index < 4 || arrangementsShowMore">
             <i class="iconfont icon-chuang1"></i>
             <p class="arr-top" v-for="(items, index) in item.utilities" :key="index">{{items.count}} {{items.utility}}</p>
           </div>
-          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore">
+          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore" v-if="data.safeAmenities.length>4">
             <p>{{arrangementsShowMore ? 'hide' : 'Show more sleeping arrangements'}}</p>
             <i class="iconfont icon-54" :class="arrangementsShowMore ? 'transform' : ''"></i>
           </div>
@@ -78,7 +78,7 @@
           <ul>
             <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 4 || amenitiesShowMore">{{item.amenity}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore">
+          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.safeAmenities.length>4">
             <p>{{amenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
             <i class="iconfont icon-54" :class="amenitiesShowMore ? 'transform' : ''"></i>
           </div>
