@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @scroll="gd_add">
     <e-header></e-header>
     <!-- price.show = false,rating.show = false,guests.show = false,more.show = false -->
     <div class="middle search">
@@ -215,21 +215,28 @@
       </div>
       <div class="m-content flex-wrap" v-if="isList === true">
         <div class="left">
-            <ul>
-              <li v-for="(item, index) in list" :key="index"  @click="toListing(item.placeId)">
-                <img :src="item.picture.length>0 ? item.picture[0].smallPictureUrl : ''" alt="">
-                <p class="title">{{ listName[index] }}</p>
-                <p class="text">{{ placeName ? placeName : '' }}</p>
-                <p class="number">{{ item.prices[0].bestPrice }} pps per night</p>
-                <el-rate v-model="item.review" disabled show-score
-                :colors="['#99A9BF', '#f4436C', '#FF9900']" text-color="#4A4A4A" score-template="{value}">
-                </el-rate>
-              </li>
-            </ul>
+          <div class="listitem left"  v-for="(item, index) in HouseList">
+            <House-Item :key="index" :houselist="item"></House-Item>
+          </div>
         </div>
+
+        <!--<div class="left">-->
+          <!---->
+            <!--<ul>-->
+              <!--<li v-for="(item, index) in list" :key="index"  @click="toListing(item.placeId)">-->
+                <!--<img :src="item.picture.length>0 ? item.picture[0].smallPictureUrl : ''" alt="">-->
+                <!--<p class="title">{{ listName[index] }}</p>-->
+                <!--<p class="text">{{ placeName ? placeName : '' }}</p>-->
+                <!--<p class="number">{{ item.prices[0].bestPrice }} pps per night</p>-->
+                <!--<el-rate v-model="item.review" disabled show-score-->
+                <!--:colors="['#99A9BF', '#f4436C', '#FF9900']" text-color="#4A4A4A" score-template="{value}">-->
+                <!--</el-rate>-->
+              <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
         <div class="right flex-1">
           <el-amap vid="amapDemo" :zoom="zoom" :center="center" class="amap">
-            <el-amap-marker v-for="(item, index) in list" :key="index"
+            <el-amap-marker v-for="(item, index) in HouseList" :key="index"
             :position="[item.lng, item.lat]"
             :clickable="true"
             :template="marck(item)"
@@ -252,21 +259,21 @@
 import header from '../common/header'
 import footer from '../common/footer'
 import formatdata from '../../utils/formatdata.js'
-
+import HouseItem from '@/components/common/HouseItem';
 export default {
   components: {
     'e-header': header,
-    'e-footer': footer
+    'e-footer': footer,
+    'House-Item': HouseItem,
   },
   data () {
     return {
       list: [],
+      HouseList: [],
       listName: [],
       time: '',
       startTextTime: [],
       endTextTime: [],
-      cityCode: '',
-      placeName:"",
       isList: true,
       guests: {
         show: false,
@@ -309,7 +316,7 @@ export default {
       safeAmenitiesList: [],
       spaceids: [],
       pageNo:1,
-      pageSize:20,
+      pageSize:9,
       startTime:'',
       endTime:''
     }
@@ -347,16 +354,13 @@ export default {
       console.log(this.more.Amenities)
       if (this.more.Amenities.length !== 0) {
         this.more.Amenities = this.more.Amenities
-        console.log(this.more.Amenities.join(''))
       } else {
         this.more.Amenities = []
-        console.log(this.more.Amenities.join(''))
       }
     },
     changeSafeAment () {
       if (this.more.safeAmenities.length !== 0) {
         this.more.safeAmenities = this.more.safeAmenities
-        console.log(this.more.safeAmenities)
       } else {
         this.more.safeAmenities = []
       }
@@ -364,7 +368,6 @@ export default {
     changeSpace () {
       if (this.more.spaceids.length !== 0) {
         this.more.spaceids = this.more.spaceids
-        console.log(this.more.spaceids)
       } else {
         this.more.spaceids = []
       }
@@ -490,29 +493,17 @@ export default {
             } else {
               val.review = 5
             }
-            var citycode = val.citycode
-            that.getName(citycode)
-            that.translation('placeName',val.placeName);
           })
-          this.list = res.data.dataList
+
+          for(var item in res.data.dataList){
+            this.HouseList.push(res.data.dataList[item])
+          }
+
           if (res.data.dataList.length > 0) {
             this.isList = true
           } else {
             this.isList = false
           }
-        }
-      })
-    },
-    // 获取名字
-    getName (val) {
-      let listName = this.listName
-      // viewCount = this.viewCount
-      this.$get(this.cityUrl + '/city', {
-        code: val
-      }).then((res) => {
-        if (res.code === 200) {
-          listName.push(res.data.fullAddress)
-          this.listName = listName
         }
       })
     },
@@ -638,28 +629,35 @@ export default {
         this.spaceids = res.data.dataList
       })
     },
-    translation(type,obj){
+    getScrollBottomHeight() {
+      return this.getPageHeight() - this.getScrollTop() - this.getWindowHeight();
 
-      this.$jsonp(this.youdaoUrl+'/api',
-        {
-          q: obj,
-          appKey: this.$store.state.appKey,
-          salt: this.$store.state.salt,
-          from: '',
-          to: 'en',
-          sign:this.$md5(this.$store.state.appKey+obj+this.$store.state.salt+this.$store.state.secret_key)
-        }
-      ).then(json => {
-        if(type == "placeName"){
-          this.placeName = json.translation[0]
-        }else if(type == "description"){
-          this.description = json.translation[0].replace('\n','<br/>')
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-
-
+    },
+    getPageHeight() {
+      return document.querySelector("html").scrollHeight
+    },
+    getScrollTop() {
+      var scrollTop = 0, bodyScrollTop = 0, documentScrollTop = 0;
+      if (document.body) {
+        bodyScrollTop = document.body.scrollTop;
+      }
+      if (document.documentElement) {
+        documentScrollTop = document.documentElement.scrollTop;
+      }
+      scrollTop = (bodyScrollTop - documentScrollTop > 0) ? bodyScrollTop : documentScrollTop;
+      return scrollTop;
+    },
+    getWindowHeight() {
+      var windowHeight = 0;
+      if (document.compatMode == "CSS1Compat") {
+        windowHeight = document.documentElement.clientHeight;
+      } else {
+        windowHeight = document.body.clientHeight;
+      }
+      return windowHeight;
+    },
+    gd_add(){
+      console.log(123)
     }
   }
 }
@@ -755,48 +753,13 @@ $red-color: #F4436C;
     }
   }
   .left {
-    flex: 1.2;
-    ul {
-    overflow: hidden;
-    li {
+    flex: 1.5;
+
+    .listitem{
+      width:33.33%;
       display: inline-block;
       vertical-align: top;
-      margin: 20px 25px 20px 0;
-      width: 350px;
-      font-size: 16px;
-      img{
-        width: 100%;
-        height: 260px;
-        border-radius: 3px;
-      }
-      .title {
-        color: $red-color;
-        margin-top: 5px;
-        letter-spacing: 0.62px;
-        font-family: Roboto-Medium;
-        text-align: left;
-      }
-      .text {
-        font-size: 18px;
-        color: #000000;
-        letter-spacing: 0.62px;
-        font-family: Roboto-Medium;
-        text-align: left;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        overflow: hidden;
-      }
-      .number {
-        font-family: Roboto-Light;
-        font-size: 16px;
-        color: #4a4a4a;
-        margin-top: 8px;
-        margin-bottom: 3px;
-        letter-spacing: 0.62px;
-        text-align: left;
-      }
-    }
+      margin: 20px 0;
     }
   }
   .right {

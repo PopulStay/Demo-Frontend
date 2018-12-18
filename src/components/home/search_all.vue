@@ -48,11 +48,12 @@ export default {
     }
   },
   created () {
-
+    this.gd_add()
   },
   methods: {
     gd_add(){
       if (this.getScrollBottomHeight() == 0 && this.nowPage < this.Page && this.loading == false) {
+        console.log(123)
         this.loading = true
         this.$get(this.placeUrl + '/places', {
           pageNo: this.nowPage,
