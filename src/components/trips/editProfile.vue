@@ -278,6 +278,7 @@ $red-color: #F4436C;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+    cursor: pointer;
   }
   p {
     font-family: Roboto-Regular;
@@ -363,6 +364,7 @@ $red-color: #F4436C;
   font-family: Roboto-Regular;
   font-size: 16px;
   color: #4A4A4A;
+  cursor: default;
 }
 .warning {
   font-family: Roboto-Regular;

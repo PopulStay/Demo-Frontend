@@ -57,6 +57,8 @@
       }
     }
     .language {
+      display: none;
+
       span {
         font-family: PingFangSC-Regular;
         font-size: 14px;

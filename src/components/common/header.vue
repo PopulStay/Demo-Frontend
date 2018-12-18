@@ -341,6 +341,7 @@ header {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+    cursor: pointer;
   }
 }
 .phoneNav {

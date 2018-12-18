@@ -71,8 +71,21 @@ export function post (url, data = {}) {
   })
 }
 
+export function urldelete (url, params = {}) {
+  return new Promise((resolve, reject) => {
+    axios.delete(url, {
+      params: params
+    }).then(response => {
+      resolve(response.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 Vue.prototype.$post = post
 Vue.prototype.$get = get
+Vue.prototype.$delete = urldelete
 export default {}
 
 /* 登录 start */

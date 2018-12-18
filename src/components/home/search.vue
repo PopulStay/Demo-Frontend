@@ -84,14 +84,14 @@
             <ul class="rooms guests search-guests">
               <li class="flex-wrap flex-center-between">
                 <span class="r-title">Adults</span>
-                <el-input-number v-model="guests.adults" :min="1" :max="10"></el-input-number>
+                <el-input-number v-model="guests.adults" :min="1" :max="16"></el-input-number>
               </li>
               <li class="flex-wrap flex-center-between">
                 <span class="r-title">
                   Children
                   <p>Ages 2-12</p>
                 </span>
-                <el-input-number v-model="guests.children" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="guests.children" :min="0" :max="16"></el-input-number>
               </li>
               <li class="flex-wrap flex-center-between">
                 <span class="r-title">Infants

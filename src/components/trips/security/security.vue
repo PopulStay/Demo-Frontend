@@ -321,6 +321,7 @@ $red-color: #F4436C;
     }
     .verfied{
       opacity: .5;
+      cursor: default;
     }
     .item-input {
       margin-bottom: 20px;

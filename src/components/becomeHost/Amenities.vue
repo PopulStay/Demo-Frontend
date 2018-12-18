@@ -6,7 +6,9 @@
     </div>
     <div class="amenities flex-wrap">
       <ul>
-        <li v-for="(item, index) in amenities" :key="index"><el-checkbox>{{item.amenity}}</el-checkbox></li>
+        <el-checkbox-group v-model="AmenitiesArr"  @change="changeAment">
+          <li v-for="(item, index) in amenities" :key="item.amenityId"><el-checkbox :label="item.amenityId">{{item.amenity}}</el-checkbox></li>
+        </el-checkbox-group>
       </ul>
     </div>
     <div class="safeAmenities">
@@ -23,17 +25,43 @@ export default {
     return {
       checked: true,
       amenities: {},
-      SafeAmenities: {}
+      SafeAmenities: {},
+      AmenitiesArr:[1071]
     }
   },
   created () {
+
     this.$get(this.placeUrl + '/place/safe_amenities').then((res) => {
       this.SafeAmenities = res.data.dataList
     })
+
     this.$get(this.placeUrl + '/place/amenities').then((res) => {
       this.amenities = res.data.dataList
     })
+
+    if(this.$route.query.id){
+      this.getAmenities(this.$route.query.id)
+    }
+
+  },
+  methods: {
+    changeAment () {
+      console.log(this.AmenitiesArr)
+    },
+    getAmenities (id) {
+
+      this.$get(this.partialplaceUrl + '/temp/place', {
+        tempPlaceId: id
+      }).then((res) => {
+        if(res.code == 200){
+
+          this.amenities = res.data.amenities
+        }
+      })
+
+    }
   }
+
 }
 </script>
 

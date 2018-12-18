@@ -119,7 +119,7 @@ export default {
     }
   },
   created () {
-    this.$router.push('/becomeHost/propertyTypes')
+
   },
   methods: {
     next () {
@@ -136,7 +136,11 @@ export default {
       } else if (item[0].url === 'Submit') {
         this.$router.push('success')
       } else {
-        this.$router.push(this[type][index + 1].url)
+        if(this.$route.query.id){
+          this.$router.push({path: '/becomeHost/'+this[type][index + 1].url, query: {id: this.$route.query.id}})
+        }else{
+          this.$router.push(this[type][index + 1].url)
+        }
       }
     },
     route (value, type) {

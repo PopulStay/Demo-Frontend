@@ -152,7 +152,7 @@
           <div class="top flex-wrap flex-center-between">
             <div class="top-wrap flex-wrap flex-center">
               <p class="pps-p">PPS</p>
-              <i class="iconfont icon-54"></i>
+              <!--<i class="iconfont icon-54"></i>-->
             </div>
             <p class="top-wrap-p"><em>PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p>
           </div>
@@ -1164,6 +1164,7 @@ $red-color: #F4436C;
     }
   }
   .guests {
+    cursor: pointer;
     p {
       margin-bottom: 5px;
     }

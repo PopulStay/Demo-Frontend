@@ -5,19 +5,19 @@
     </ul>
     <ul class="list" v-if="hostsTabTitle == 'Published'">
       <li v-for="(item, index) in dataList" :key="index" @click="toListing(item.placeId)">
+
         <div class="imgWrap" :style="{backgroundImage: 'url(' + item.picture[0].smallPictureUrl +')'}">
           <div class="hover" v-if="hostsTabTitle == 'Drafts'">
-            <el-popover placement="bottom-end" width="70" trigger="hover" popper-class="hosts">
+            <div slot="reference" class="modification">
               <ul class="popover-content">
                 <li class="red">Edit</li>
-                <li>Unpublish</li>
+                <li>Delete</li>
               </ul>
-              <div slot="reference" class="modification">
-                <i class="icon iconfont icon-xiugai"></i>
-              </div>
-            </el-popover>
+              <i class="icon iconfont icon-xiugai"></i>
+            </div>
           </div>
         </div>
+
         <p class="text">{{ placeName[index] }}</p>
         <p class="number">{{ item.prices[0].bestPrice }} {{ item.prices[0].currency }} per night</p>
       </li>
@@ -30,8 +30,8 @@
           <div class="hover" v-if="hostsTabTitle == 'Drafts'">
               <div slot="reference" class="modification">
                 <ul class="popover-content">
-                  <li class="red">Edit</li>
-                  <li>Delete</li>
+                  <li class="red"  @click="hostsEdit(item.tempPlaceId)">Edit</li>
+                  <li @click="hostsDelete(item.tempPlaceId)">Delete</li>
                 </ul>
                 <i class="icon iconfont icon-xiugai"></i>
               </div>
@@ -135,6 +135,35 @@ export default {
     },
     toListing (placeId) {
       this.$router.push({path: '/listing/lstHome', query: {id: placeId}})
+    },
+    hostsEdit(tempPlaceId){
+      this.$router.push({path: '/becomeHost/propertyTypes', query: {id: tempPlaceId}})
+    },
+    hostsDelete(tempPlaceId){
+      this.$confirm('This action will permanently delete the listing, Whether to continue?', 'prompt', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+
+        this.$delete(this.partialplaceUrl + '/temp/place', {
+          tempPlaceId: tempPlaceId
+        }).then((res) => {
+          console.log(res)
+          if(res.code == 200){
+            this.$message({
+              type: 'success',
+              message: 'successfully deleted!'
+            });
+            this.hostsDrafts()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Undelete'
+        });
+      });
     }
   }
 }
@@ -235,13 +264,13 @@ $red-color: #F4436C;
     }
   }
 }
-/*.modification:hover .popover-content{*/
-  /*display: block;*/
-/*}*/
+.modification:hover .popover-content{
+  display: block;
+}
 .popover-content {
   position: absolute;
-  right: 10px;
-  top: 55px;
+  right: 0px;
+  top: 37px;
   z-index: 1;
   width: 70px;
   padding: 0 20px;
@@ -256,6 +285,8 @@ $red-color: #F4436C;
     line-height: 16px;
     height: 20px;
     cursor: pointer;
+    width: auto;
+    margin: 20px 0 ;
   }
 
   .red {

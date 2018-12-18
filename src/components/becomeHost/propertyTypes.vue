@@ -5,7 +5,7 @@
       <h3>Property types</h3>
     </div>
     <div class="propertyTypes">
-       <el-select v-model="$store.state.host.category" placeholder="Please choose your  property type">
+       <el-select v-model="$store.state.host.Propertytypes.property" placeholder="Please choose your  property type">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -32,10 +32,28 @@ export default {
         label: 'Private room'
       },
       {
-        value: 'Shared room',
-        label: 'Shared room'
+        value: 'Share room',
+        label: 'Share room'
       }],
       value: ''
+    }
+  },
+  created () {
+    if(this.$route.query.id){
+      this.getPlace(this.$route.query.id)
+    }
+  },
+  methods: {
+    getPlace(id){
+
+      this.$get(this.partialplaceUrl + '/temp/place', {
+        tempPlaceId: id
+      }).then((res) => {
+        if(res.data.Propertytypes){
+          this.$store.state.host.Propertytypes.property = res.data.Propertytypes.property;
+        }
+      })
+
     }
   }
 }

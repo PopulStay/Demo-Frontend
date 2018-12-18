@@ -34,21 +34,21 @@
         <li class="flex-wrap flex-align-center">
           <div class="title">Address</div>
           <div>
-            <el-input placeholder="Street and number, P.O. box, c/o."></el-input>
+            <el-input placeholder="Street and number, P.O. box, c/o." v-model="$store.state.host.streetLineOne"></el-input>
           </div>
         </li>
         <li class="flex-wrap flex-align-center">
           <div class="title"></div>
           <div>
-            <el-input placeholder="Apartment, suite, unit, building, floor, etc."></el-input>
+            <el-input placeholder="Apartment, suite, unit, building, floor, etc." v-model="$store.state.host.streetLineTwo"></el-input>
           </div>
         </li>
-        <li class="flex-wrap flex-align-center">
-          <div class="title">Zip code</div>
-          <div>
-            <el-input></el-input>
-          </div>
-        </li>
+        <!--<li class="flex-wrap flex-align-center">-->
+          <!--<div class="title">Zip code</div>-->
+          <!--<div>-->
+            <!--<el-input></el-input>-->
+          <!--</div>-->
+        <!--</li>-->
       </ul>
     </div>
    </div>
@@ -64,6 +64,29 @@ export default {
       }],
       value: 'United States',
       input: ''
+    }
+  },
+  created () {
+    if(this.$route.query.id){
+      this.getLocation(this.$route.query.id)
+    }
+  },
+  methods: {
+    getLocation(id){
+
+      this.$get(this.partialplaceUrl + '/temp/place', {
+        tempPlaceId: id
+      }).then((res) => {
+        if(res.data.streetLineOne){
+          this.$store.state.host.streetLineOne = res.data.streetLineOne;
+        }
+
+        if(res.data.streetLineTwo){
+          this.$store.state.host.streetLineTwo = res.data.streetLineTwo;
+        }
+
+      })
+
     }
   }
 }
