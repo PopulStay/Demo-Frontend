@@ -1,5 +1,5 @@
 <template>
-  <div @scroll="gd_add">
+  <div>
     <e-header></e-header>
     <!-- price.show = false,rating.show = false,guests.show = false,more.show = false -->
     <div class="middle search">
@@ -215,9 +215,19 @@
       </div>
       <div class="m-content flex-wrap" v-if="isList === true">
         <div class="left">
+
           <div class="listitem left"  v-for="(item, index) in HouseList">
             <House-Item :key="index" :houselist="item"></House-Item>
           </div>
+
+          <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            :page-size="pageSize"
+            layout="prev, pager, next"
+            :total="pageTotal">
+          </el-pagination>
+
         </div>
 
         <!--<div class="left">-->
@@ -317,6 +327,7 @@ export default {
       spaceids: [],
       pageNo:1,
       pageSize:9,
+      pageTotal:0,
       startTime:'',
       endTime:''
     }
@@ -461,30 +472,9 @@ export default {
         url = url + '&spaceIds=' + this.more.spaceids.join(',');
       }
 
-
-
-
-      // let formdata = {
-      //   startDate: this.startTime,
-      //   endDate: this.endTime,
-      //   cityCode: this.cityCode,
-      //   minPrice: this.price.value[0] === 0 & this.price.isfilter !== false ? '' : this.price.value[0],
-      //   maxPrice: this.price.value[1] === 5000 & this.price.isfilter !== false ? '' : this.price.value[1],
-      //   placeScore: this.rating.isfilter !== false ? this.rating.level : '',
-      //   minGuestNumber: this.guests.isfilter !== false ? this.guests.adults + this.guests.children : 0,
-      //   category: this.more.home[0] === '0' & this.more.isfilter !== false ? 'Entire place' : this.more.home[0] === '1' & this.more.isfilter !== false ? 'Private Room' : this.more.home[0] === '2' & this.more.isfilter !== false ? 'Share room' : [],
-      //   minBedNumber: this.more.isfilter !== false ? this.more.beds : 0,
-      //   minBedroomNumber: this.more.isfilter !== false ? this.more.bedrooms : 0,
-      //   minBathNumber: this.more.isfilter !== false ? this.more.bathrooms : 0,
-      //   amenityIds: this.more.isfilter !== false ? this.more.spaceids.join('') : [],
-      //   safeAmenityIds: this.more.isfilter !== false ? this.more.safeAmenities.join('') : [],
-      //   spaceIds: this.more.isfilter !== false ? this.more.spaceids.join('') : [],
-      //   pageNo: 1,
-      //   pageSize: 20
-      // }
-
       this.$get(this.placeUrl + '/places'+url).then((res) => {
         if (res.code === 200) {
+
           res.data.dataList.forEach((val, key) => {
             if (val.review.length === 0) {
               val.review = 5
@@ -495,15 +485,15 @@ export default {
             }
           })
 
-          for(var item in res.data.dataList){
-            this.HouseList.push(res.data.dataList[item])
-          }
+          this.HouseList = res.data.dataList;
+          this.pageTotal = res.data.count
 
           if (res.data.dataList.length > 0) {
             this.isList = true
           } else {
             this.isList = false
           }
+
         }
       })
     },
@@ -656,8 +646,9 @@ export default {
       }
       return windowHeight;
     },
-    gd_add(){
-      console.log(123)
+    handleCurrentChange(val) {
+      this.pageNo = val;
+      this.search()
     }
   }
 }
@@ -907,6 +898,9 @@ $red-color: #F4436C;
 </style>
 
 <style lang="scss">
+.el-pagination{
+  text-align: center;
+}
 .select-time .el-input__inner {
   height: 46px;
   width: 100%;

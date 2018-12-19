@@ -246,6 +246,9 @@ textarea::-ms-input-placeholder {
     color: #4A4A4A;
     padding-left: 15px;
 }
+.el-pagination.is-background .el-pager li:not(.disabled).active{
+  background-color: #F4436C!important;
+}
 .step .el-input__inner:hover, .rooms .el-input__inner:hover{
     border: 0
 }
