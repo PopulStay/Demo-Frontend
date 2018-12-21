@@ -7,17 +7,16 @@
             <div class="wallet-wrap-top flex-wrap flex-align-center" :class="item.primary===1?'flex-center-between':'flex-content-end'">
                 <div class="top-left" v-if="item.primary===1">Default wallet</div>
                 <div class="top-right">
-                  <span @click="toWalletDetail(index)">Edit</span>
-                  <span>buy</span>
+                  <!--<span @click="toWalletDetail(index)">Edit</span>-->
+                  <span @click="walletTransfer(index)">Transfer</span>
                   <span v-if="item.primary!==1" @click="setDefault($event)" :name="item.name" :id="item.user_wallet_id">Set as Default</span>
                 </div>
             </div>
             <div class="wallet-wrap-down flex-wrap flex-center-between">
                 <div class="down-left">{{item.name}}</div>
                 <div class="down-right">
-                  <span>{{item.eth_balance > 0 ? 'ETH Balance' : 'PPS Balance'}}</span>
-                  <span class="pps-price">{{item.eth_balance > 0 ? item.eth_balance : item.pps_balance}}</span>
-                  <span class="pps-pps">{{item.eth_balance > 0 ? 'ETH' : 'PPS'}}</span>
+                  <span class="pps-price">{{item.primary}}</span>
+                  <span class="pps-pps">PPS</span>
                 </div>
             </div>
         </div>
@@ -34,15 +33,7 @@ export default {
   data () {
     return {
       tripsTabTitle: 'All',
-      walletList: [
-        // {
-        //   name: 'Lorem Ipsum',
-        //   isDetault: true,
-        //   title: 'Available balance',
-        //   pps: '567',
-        //   type: 'PPS'
-        // }
-      ]
+      walletList: {}
     }
   },
   created () {
@@ -52,7 +43,7 @@ export default {
     getUserWallets () {
       let user = JSON.parse(localStorage.getItem('user'))
       this.$post(this.userUrl + '/user', {
-        action: 'getUserWallets',
+        action: 'getUserWallet',
         data: {
           user_id: user.user_id
         }
@@ -109,6 +100,12 @@ export default {
       var List = JSON.stringify(this.walletList[idx])
       this.$router.push(
         {name: 'walletDetail', query: {List: List}}
+      )
+    },
+    walletTransfer(idx){
+      var List = JSON.stringify(this.walletList[idx])
+      this.$router.push(
+        {name: 'walletTransfer', query: {List: List}}
       )
     }
   }

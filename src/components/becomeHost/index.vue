@@ -126,10 +126,14 @@ export default {
       let type = this.stepIndex
       let item = this[type].filter((item) => item.url === this.$route.name)
       let index = this[type].findIndex((item) => item.url === this.$route.name)
-      item[0].step = true
+
       if (item[0].url === 'Amenities') {
         this.stepIndex = 'SpaceList'
-        this.$router.push(this['SpaceList'][0].url)
+        if(this.$route.query.id){
+          this.$router.push({path: '/becomeHost/'+this['SpaceList'][0].url, query: {id: this.$route.query.id}})
+        }else{
+          this.$router.push(this['SpaceList'][0].url)
+        }
       } else if (item[0].url === 'Requirements') {
         this.stepIndex = 'readyList'
         this.$router.push(this['readyList'][0].url)
@@ -137,11 +141,24 @@ export default {
         this.$router.push('success')
       } else {
         if(this.$route.query.id){
-          this.$router.push({path: '/becomeHost/'+this[type][index + 1].url, query: {id: this.$route.query.id}})
+          this.$router.push({path:this[type][index + 1].url, query: {id: this.$route.query.id}})
         }else{
           this.$router.push(this[type][index + 1].url)
         }
       }
+
+      // if (item[0].url === 'Amenities') {
+      //   this.stepIndex = 'SpaceList'
+      //   this.$router.push(this['SpaceList'][0].url)
+      // } else if (item[0].url === 'Requirements') {
+      //   this.stepIndex = 'readyList'
+      //   this.$router.push(this['readyList'][0].url)
+      // } else if (item[0].url === 'Submit') {
+      //   this.$router.push('success')
+      // } else {
+      //   this.$router.push(this[type][index + 1].url)
+      // }
+
     },
     route (value, type) {
       if (value.step) {
@@ -169,7 +186,7 @@ $red-color: #F4436C;
 .middle {
   width: 1500px;
   margin: 0 auto;
-  padding: 80px 0;
+  padding: 90px 0;
   .left {
     flex: 1;
     .active {
@@ -226,7 +243,7 @@ $red-color: #F4436C;
 }
 @media only screen and (min-width: 1000px) and (max-width: 1500px) {
   .middle {
-    padding: 80px 30px;
+    padding: 90px 30px;
     width: auto;
     .right {
       padding-left: 5%;
@@ -235,7 +252,7 @@ $red-color: #F4436C;
 }
 @media only screen and (min-width: 800px) and (max-width: 1000px) {
   .middle {
-    padding: 80px 10px;
+    padding: 90px 10px;
     width: auto;
     .left {
       li {

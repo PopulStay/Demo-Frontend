@@ -17,12 +17,9 @@
       <div class="item">
         <h3 class="h3">House Rules</h3>
          <ul>
-          <li><el-checkbox>No smoking</el-checkbox></li>
-          <li><el-checkbox>No pets</el-checkbox></li>
-          <li><el-checkbox>No parties or events</el-checkbox></li>
-          <li><el-checkbox>Check-in time is 4PM - 9PM</el-checkbox></li>
-          <li><el-checkbox>Check out by 10AM</el-checkbox></li>
-          <li><el-checkbox>Self check-in with lockbox</el-checkbox></li>
+           <el-checkbox-group v-model="AmenitiesArr"  @change="changeRule">
+             <li v-for="(item, index) in rulesObj" :key="item.ruleId"><el-checkbox :label="item.ruleId">{{item.rule}}</el-checkbox></li>
+           </el-checkbox-group>
         </ul>
       </div>
       <div class="item">
@@ -45,6 +42,73 @@
     </div>
   </div>
 </template>
+
+<script>
+  export default {
+    data () {
+      return {
+        checked: true,
+        rulesObj: {},
+        cancellationsObj: {},
+        AmenitiesArr:[],
+        cancellations:''
+      }
+    },
+    created () {
+
+      this.$get(this.placeUrl + '/place/rules').then((res) => {
+        this.rulesObj = res.data.dataList
+      })
+
+      this.$get(this.placeUrl + '/place/cancellation_policies').then((res) => {
+        this.cancellations = res.data.dataList
+      })
+
+      if(this.$route.query.id){
+        this.getRequirements(this.$route.query.id)
+      }
+
+    },
+    methods: {
+
+      getRequirements(id){
+        this.$get(this.partialplaceUrl + '/temp/place', {
+          tempPlaceId: id
+        }).then((res) => {
+          if(res.code == 200){
+            // if(res.data.amenities){
+            //   res.data.amenities.forEach((val, key) => {
+            //     this.AmenitiesArr.push(val.pamenityId)
+            //   })
+            // }
+            // if(res.data.safeAmenities){
+            //   res.data.safeAmenities.forEach((val, key) => {
+            //     this.safeAmenitiesArr.push(val.psafeAmenityId)
+            //   })
+            // }
+          }
+        })
+      },
+      changeRule(){
+
+        let RulesArr = [];
+
+        this.AmenitiesArr.forEach((val,key) =>{
+          let pamenityObj = {};
+          pamenityObj['ruleId'] = val
+          RulesArr.push(pamenityObj)
+        })
+
+        this.$store.state.host.RulesArr = RulesArr;
+        console.log(this.$store.state.host.RulesArr)
+
+      }
+
+    }
+
+  }
+</script>
+
 
 <style scoped lang='scss'>
 .requirements {

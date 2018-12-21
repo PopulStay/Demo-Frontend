@@ -35,6 +35,7 @@ import exportKeystore from '@/components/trips/myWallet/exportKeystore'
 import importWallet from '@/components/trips/myWallet/importWallet'
 import walletHome from '@/components/trips/myWallet/wallet_home'
 import walletDetail from '@/components/trips/myWallet/walletDetail'
+import walletTransfer from '@/components/trips/myWallet/walletTransfer'
 import reset from '@/components/trips/myWallet/reset'
 import Floating from '@/components/becomeHost/Floating'
 import Fixed from '@/components/becomeHost/Fixed'
@@ -146,6 +147,11 @@ export default new Router({
           path: 'walletDetail',
           name: 'walletDetail',
           component: walletDetail
+        },
+        {
+          path: 'walletTransfer',
+          name: 'walletTransfer',
+          component: walletTransfer
         },
         {
           path: 'importWallet',

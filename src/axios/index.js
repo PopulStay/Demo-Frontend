@@ -10,6 +10,7 @@ Vue.prototype.bookUrl = 'https://testapi.booking.populstay.com'
 Vue.prototype.paymentUrl = 'http://testapi.payment.populstay.com'
 Vue.prototype.partialplaceUrl = 'https://testapi.partialplace.populstay.com'
 Vue.prototype.imageUrl = 'https://testapi.image.populstay.com/image?dir=populstay_placeimage'
+Vue.prototype.walletUrl = 'https://testapi.wallet.populstay.com'
 
 Vue.prototype.$axios = axios
 // axios.defaults.baseURL = Vue.prototype.HOST

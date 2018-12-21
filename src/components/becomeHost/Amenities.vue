@@ -14,7 +14,9 @@
     <div class="safeAmenities">
       <h3>Safe Amenities</h3>
       <ul>
-        <li v-for="(item, index) in SafeAmenities" :key="index"><el-checkbox>{{item.safeAmenity}}</el-checkbox></li>
+        <el-checkbox-group v-model="safeAmenitiesArr"  @change="changesafeAment">
+          <li v-for="(item, index) in SafeAmenities" :key="item.safeAmenityId"><el-checkbox :label="item.safeAmenityId">{{item.safeAmenity}}</el-checkbox></li>
+        </el-checkbox-group>
       </ul>
     </div>
   </div>
@@ -26,7 +28,8 @@ export default {
       checked: true,
       amenities: {},
       SafeAmenities: {},
-      AmenitiesArr:[1071]
+      AmenitiesArr:[],
+      safeAmenitiesArr:[]
     }
   },
   created () {
@@ -46,7 +49,24 @@ export default {
   },
   methods: {
     changeAment () {
-      console.log(this.AmenitiesArr)
+      let AmenitiesArr = [];
+      this.AmenitiesArr.forEach((val,key) =>{
+        let pamenityObj = {};
+        pamenityObj['pamenityId'] = val
+        AmenitiesArr.push(pamenityObj)
+      })
+
+      this.$store.state.host.AmenitiesArr = AmenitiesArr;
+    },
+    changesafeAment(){
+      let changesafeAmentArr = [];
+      this.safeAmenitiesArr.forEach((val,key) =>{
+        let psafeAmenityObj = {};
+        psafeAmenityObj['psafeAmenityId'] = val
+        changesafeAmentArr.push(psafeAmenityObj)
+      })
+
+      this.$store.state.host.safeAmenitiesArr = changesafeAmentArr
     },
     getAmenities (id) {
 
@@ -54,8 +74,16 @@ export default {
         tempPlaceId: id
       }).then((res) => {
         if(res.code == 200){
-
-          this.amenities = res.data.amenities
+          if(res.data.amenities){
+            res.data.amenities.forEach((val, key) => {
+              this.AmenitiesArr.push(val.pamenityId)
+            })
+          }
+          if(res.data.safeAmenities){
+            res.data.safeAmenities.forEach((val, key) => {
+              this.safeAmenitiesArr.push(val.psafeAmenityId)
+            })
+          }
         }
       })
 

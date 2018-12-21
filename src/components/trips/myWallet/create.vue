@@ -49,25 +49,32 @@ export default {
   methods: {
     toCreate () {
       let user = JSON.parse(localStorage.getItem('user'))
-      if (this.psw !== this.repsw) {
-        this.$alert('Two inconsistent passwords', 'Warning', {
-          confirmButtonText: 'Confirm'
+
+      if (this.name != "" && this.psw != "" && this.psw === this.repsw && this.psw_pro != "") {
+
+        this.$post(this.userUrl + '/user', {
+          action: 'createUserWallet',
+          data: {
+            user_id: user.user_id,
+            wallet_name: this.name,
+            encrypted_password: sha256(this.psw),
+            password_prompt: this.repsw
+          }
+        }).then((res) => {
+          console.log(res)
+          if (res.msg.code === 200) {
+            this.$router.replace('walletHome')
+          }
         })
-        return false
+
+      }else{
+
+        this.$message({
+          message: 'Please confirm user information',
+          type: 'warning'
+        });
+
       }
-      this.$post(this.userUrl + '/user', {
-        action: 'createUserWallet',
-        data: {
-          user_id: user.user_id,
-          wallet_name: this.name,
-          encrypted_password: sha256(this.psw),
-          password_prompt: this.repsw
-        }
-      }).then((res) => {
-        if (res.msg.code === 200) {
-          this.$router.replace('walletHome')
-        }
-      })
     }
   },
   filters: {

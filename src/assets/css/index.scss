@@ -349,6 +349,18 @@ textarea::-ms-input-placeholder {
     transition: transform .15s ease-in .05s,-webkit-transform .15s ease-in .05s;
     transform-origin: center;
 }
+.el-message{
+  top:50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.el-message i{
+  color: #F4436C !important;
+}
+.el-message p{
+  color: #F4436C !important;
+  font-size: 20px;
+}
 
 @media only screen and (max-width: 700px) {
   .el-date-range-picker {

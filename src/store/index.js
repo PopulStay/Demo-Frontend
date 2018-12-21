@@ -51,16 +51,23 @@ export default new vuex.Store({
       }
     ],
     host: {
-      Propertytypes: {
-        property: ""
-      },
+      placeName:'',
+      description:'',
+      picture:{},
       guestNumber: 0,
       bedroomNumber: 0,
       bedNumber: 0,
       bathNumber: 0,
       arrangements:[],
+      citycode:"",
       streetLineOne:"",
       streetLineTwo:"",
+      AmenitiesArr:[],
+      safeAmenitiesArr:[],
+      Propertytypes: {
+        property: ""
+      },
+      RulesArr:[]
     }
   },
   mutations: {

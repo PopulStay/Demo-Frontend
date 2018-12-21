@@ -9,12 +9,12 @@
         <li class="flex-wrap flex-align-center">
           <div class="title">Country / Region</div>
           <div>
-            <el-select v-model="value">
+            <el-select v-model="Countryvalue" @change="getStateList();Statevalue=''">
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="(item,index) in Countryoptions"
+                :key="index"
+                :label="item"
+                :value="item">
               </el-option>
             </el-select>
           </div>
@@ -22,13 +22,27 @@
         <li class="flex-wrap flex-align-center">
           <div class="title">State / Province / Region</div>
           <div>
-            <el-input></el-input>
+            <el-select v-model="Statevalue" @change="getCityList();Cityvalue=''">
+              <el-option
+                v-for="(item,index) in Stateoptions"
+                :key="index"
+                :label="item"
+                :value="item">
+              </el-option>
+            </el-select>
           </div>
         </li>
-        <li class="flex-wrap flex-align-center">
+        <li class="flex-wrap flex-align-center" v-if="Statevalue">
           <div class="title">City</div>
           <div>
-            <el-input></el-input>
+            <el-select v-model="Cityvalue" @change="$store.state.host.citycode = Cityvalue">
+              <el-option
+                v-for="(item,index) in Cityoptions"
+                :key="index"
+                :label="item.name"
+                :value="item.name">
+              </el-option>
+            </el-select>
           </div>
         </li>
         <li class="flex-wrap flex-align-center">
@@ -58,11 +72,12 @@
 export default {
   data () {
     return {
-      options: [{
-        value: '选项1',
-        label: 'United States'
-      }],
-      value: 'United States',
+      Countryoptions: [],
+      Countryvalue: 'China',
+      Stateoptions: [],
+      Statevalue: '',
+      Cityoptions:[],
+      Cityvalue:'',
       input: ''
     }
   },
@@ -70,6 +85,7 @@ export default {
     if(this.$route.query.id){
       this.getLocation(this.$route.query.id)
     }
+    this.getCountryList()
   },
   methods: {
     getLocation(id){
@@ -77,6 +93,11 @@ export default {
       this.$get(this.partialplaceUrl + '/temp/place', {
         tempPlaceId: id
       }).then((res) => {
+        if(res.data.citycode){
+          this.$store.state.host.citycode = res.data.citycode;
+          this.getcitycode(res.data.citycode)
+        }
+
         if(res.data.streetLineOne){
           this.$store.state.host.streetLineOne = res.data.streetLineOne;
         }
@@ -87,6 +108,46 @@ export default {
 
       })
 
+    },
+    getCountryList(){
+      this.$get(this.cityUrl + '/countries').then((res) => {
+        if(res.code == 200){
+          this.Countryoptions = res.data
+          this.getStateList()
+        }
+      })
+    },
+    getStateList(){
+      this.$get(this.cityUrl + '/states',{
+        country:this.Countryvalue
+      }).then((res) => {
+        if(res.code == 200){
+          this.Stateoptions = res.data
+          this.getCityList()
+        }
+      })
+    },
+    getCityList(){
+      this.$get(this.cityUrl + '/city/by/state',{
+        state:this.Statevalue
+      }).then((res) => {
+        if(res.code == 200){
+          this.Cityoptions = res.data
+        }
+      })
+    },
+    getcitycode(code){
+      this.$get(this.cityUrl + '/city', {
+        code: code
+      }).then((res) => {
+        if (res.code === 200) {
+          this.Countryvalue=res.data.country;
+          this.Statevalue= res.data.state;
+          this.Cityvalue=res.data.name;
+          this.getStateList()
+          this.getCityList()
+        }
+      })
     }
   }
 }
@@ -106,9 +167,11 @@ export default {
     line-height: 19px;
   }
 }
+
 </style>
 
 <style>
+
 .location .el-input__inner {
   width: 512px;
   height: 46px;
