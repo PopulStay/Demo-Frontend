@@ -246,7 +246,7 @@
         </el-popover>
 
         <div class="input-wrap">
-          <input type="password" placeholder="Payment password" v-model="userPassword">
+          <input type="password"  autocomplete="off" placeholder="Payment password" v-model="userPassword">
         </div>
         <div class="button" @click="paynext">Confirm and pay</div>
       </el-dialog>
@@ -324,12 +324,13 @@ export default {
     getWalletList(){
 
       this.$post(this.userUrl + '/user', {
-        action: 'getUserWallets',
+        action: 'getUserPPSBalance',
         data: {
           user_id: this.$store.state.userInfo.user_id
         }
       }).then((res) => {
         if(res.msg.code == 200){
+          console.log(res.data.user_wallets)
           this.walletList = res.data.user_wallets
         }
       })
@@ -338,7 +339,7 @@ export default {
     paynext () {
 
       this.$post(this.paymentUrl + '/api/v1/payments/deposit', {
-        bookingId: this.PaymentHostID,
+        bookingId: this.book_detail.booking_id,
         userWalletId: this.walletID,
         userWalletEncryptedPassword:sha256(this.userPassword)
       }).then((res) => {
@@ -347,7 +348,7 @@ export default {
         console.log(err)
       })
 
-      this.$alert('Please wait, your order is being paid', 'Paying', {
+      this.$alert('The transaction is going on, please check the order status in time.', 'Paying', {
         confirmButtonText: 'OK',
         callback: action => {
           location.reload();
@@ -413,7 +414,6 @@ export default {
       this.book_detail = JSON.parse(this.$route.query.book_detail)
       this.guest_number = this.$route.query.guest_number
     }
-    console.log(this.book_detail)
     // document.getElementsByClassName('footer')[0].style.cssText = 'border-top: none;'
   }
 }

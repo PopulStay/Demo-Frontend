@@ -19,7 +19,7 @@
       <div class="listitem"  v-for="(item, index) in HouseList">
         <House-Item :key="index" :houselist="item"></House-Item>
       </div>
-      <li class="loading" v-if="loading">加载中<i class="el-icon-loading"></i></li>
+      <p class="loading" v-if="loading">加载中<i class="el-icon-loading"></i></p>
     </div>
     <e-footer></e-footer>
   </div>
@@ -52,8 +52,7 @@ export default {
   },
   methods: {
     gd_add(){
-      if (this.getScrollBottomHeight() == 0 && this.nowPage < this.Page && this.loading == false) {
-        console.log(123)
+      if (this.getScrollBottomHeight() <= 0 && this.nowPage < this.Page && this.loading == false) {
         this.loading = true
         this.$get(this.placeUrl + '/places', {
           pageNo: this.nowPage,

@@ -465,7 +465,9 @@ export default {
 
       } else {
 
+
         if(user.user_identity_confirmation.document_verified === 'true' && user.user_identity_confirmation.email_verified === 'true' && user.user_identity_confirmation.phone_verified === 'true' ){
+
           this.$post(this.bookUrl + '/booking ', {
             action: 'makeBooking',
             data: {
@@ -483,6 +485,7 @@ export default {
 
             }
           })
+
         }else {
           this.isVerify = !this.isVerify
         }
@@ -537,6 +540,7 @@ export default {
       dayTime = this.endTimestamp - this.startTimestamp
       day = dayTime / (1000 * 60 * 60 * 24)
       if (type === 'days') {
+        console.log()
         data = this.data.prices[0].bestPrice + ' x ' + day
       }
       else if (type === 'place_price') {
@@ -605,6 +609,7 @@ export default {
       })
 
     },
+    //翻译
     translation(type,obj){
 
       this.$jsonp(this.youdaoUrl+'/api',
@@ -625,10 +630,16 @@ export default {
       }).catch(err => {
         console.log(err)
       })
-
-
+    },
+    //book吸顶
+    handleBook () {
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      console.log(scrollTop)
     }
 
+  },
+  mounted () {
+    window.addEventListener('scroll', this.handleBook)
   },
   computed: {
     days () {

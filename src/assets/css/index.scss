@@ -173,6 +173,11 @@ textarea::-ms-input-placeholder {
 :focus {
     outline: none;
 }
+h6.loading{
+  text-align: center;
+  font-size: 20px;
+  color: #F4436C;
+}
 /***********element样式修改****************/
 .el-dialog {
     border-radius: 3px;
@@ -349,17 +354,37 @@ textarea::-ms-input-placeholder {
     transition: transform .15s ease-in .05s,-webkit-transform .15s ease-in .05s;
     transform-origin: center;
 }
+
 .el-message{
   top:50%;
   left: 50%;
   transform: translate(-50%,-50%);
 }
+
 .el-message i{
   color: #F4436C !important;
 }
+
 .el-message p{
   color: #F4436C !important;
   font-size: 20px;
+}
+
+.el-rate__icon{
+  color:#F4436C !important;
+}
+
+.disabledbtn{
+  opacity: 0.6;
+  cursor: default !important;
+}
+
+.wechatconfirm{
+  min-width: 500px;
+}
+
+.wechatconfirm img{
+    width: 100%;
 }
 
 @media only screen and (max-width: 700px) {

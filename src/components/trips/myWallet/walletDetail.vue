@@ -1,7 +1,7 @@
 <template>
   <div class="wallet-detail">
     <button @click="toCreate">Create</button>
-    <button class="imp" @click="toImport">Import</button>
+    <!-- <button class="imp" @click="toImport">Import</button> -->
     <div>
         <div class="wallet-list">
             <div class="wallet-wrap-top flex-wrap flex-center-between">
@@ -13,39 +13,26 @@
             <div class="wallet-wrap-down flex-wrap flex-center-between">
               <div class="flex-wrap flex-column-center">
                 <p>Wallet name</p>
-                <input class="down-left" placeholder="请输入名字" v-model="name" value="walletList.name"/>
+                <input class="down-left" placeholder="Please enter a name" v-model="name" value="walletList.name"/>
               </div>
               <div class="down-right">
-                <span>{{walletList.eth_balance > 0 ? 'ETH Balance' : 'PPS Balance'}}</span>
-                <span class="pps-price">{{walletList.eth_balance > 0 ? walletList.eth_balance : walletList.pps_balance}}</span>
+                <span>PPS Balance</span>
+                <span class="pps-price">{{walletList.balance}}</span>
                 <span class="pps-pps">{{walletList.eth_balance > 0 ? 'ETH' : 'PPS'}}</span>
               </div>
             </div>
             <div class="wallet-wrap-down flex-wrap flex-center-between">
               <div class="flex-wrap flex-column-center">
-                <p>{{walletList.pps_address}}</p>
+                <p>{{walletList.address}}</p>
               </div>
               <div class="down-right">
                 <span style="margin-right:15px;">PPS address</span>
                 <!-- <span class="pps-price">{{walletList.pps}}567</span> -->
                 <button
-                v-clipboard:copy="walletList.pps_address"
+                v-clipboard:copy="walletList.address"
                 v-clipboard:success="CopyPPS"
                 >Copy</button>
               </div>
-            </div>
-            <div class="wallet-wrap-down flex-wrap flex-center-between">
-                <div class="flex-wrap flex-column-center">
-                    <p>{{walletList.eth_address}}</p>
-                </div>
-                <div class="down-right">
-                    <span style="margin-right:15px;">ETH address</span>
-                    <!-- <span class="pps-price">{{walletList.pps}}567</span> -->
-                    <button
-                v-clipboard:copy="walletList.eth_address"
-                v-clipboard:success="CopyETH"
-                >Copy</button>
-                </div>
             </div>
             <div class="wallet-wrap-set flex-wrap flex-center-between">
                 <p>Password</p>

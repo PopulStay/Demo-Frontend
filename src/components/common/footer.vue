@@ -19,7 +19,7 @@
       <p>© PopulStay, 2018. All Rights Reserved.</p>
       <ul class="flex-wrap flex-align-center">
         <li><a href="https://t.me/populstayEN" target="_blank" class="icon iconfont icon-telegram1"></a></li>
-        <li><a href="" target="_blank" class="icon iconfont icon-wechat1"></a></li>
+        <li><a @click="openwechat" target="_blank" class="icon iconfont icon-wechat1"></a></li>
         <li><a href="https://twitter.com/PopulStay" target="_blank" class="icon iconfont icon-twitter"></a></li>
         <li><a href="https://medium.com/PopulStay" target="_blank" class="icon iconfont icon-medium-m"></a></li>
         <li><a href="https://www.instagram.com/PopulStay/" target="_blank" class="icon iconfont icon-instagram1"></a></li>
@@ -35,7 +35,20 @@
 </template>
 
 <script>
-
+const wechatimg = require("../../assets/images/qrcode.jpg");
+  export default {
+    methods: {
+      openwechat() {
+        this.$confirm('<img src='+wechatimg+'/>', '', {
+          dangerouslyUseHTMLString: true,
+          showCancelButton:false,
+          showConfirmButton:false,
+          customClass:"wechatconfirm",
+          center: true
+        })
+      }
+    }
+  }
 </script>
 
 <style scoped lang="scss">

@@ -1,172 +1,166 @@
 <template>
   <div class="wallet-detail">
     <button @click="toCreate">Create</button>
-    <!--<button class="imp" @click="toImport">Import</button>-->
     <div>
         <div class="wallet-list">
             <div class="wallet-wrap-top flex-wrap flex-center-between">
-              <div class="top-left">{{walletList.primary===1?'Default wallet':''}}</div>
-              <!--<div class="top-right">-->
-                <!--<span>Delete</span>-->
-              <!--</div>-->
+              <div class="top-left">Transfer</div>
             </div>
-            <div class="wallet-wrap-down flex-wrap flex-center-between">
-              <div class="flex-wrap flex-column-center">
-                <p>Wallet name</p>
-                <input class="down-left" placeholder="请输入名字" v-model="name" value="walletList.name"/>
-              </div>
-              <div class="down-right">
-                <span>{{walletList.eth_balance > 0 ? 'ETH Balance' : 'PPS Balance'}}</span>
-                <span class="pps-price">{{walletList.eth_balance > 0 ? walletList.eth_balance : walletList.pps_balance}}</span>
-                <span class="pps-pps">{{walletList.eth_balance > 0 ? 'ETH' : 'PPS'}}</span>
-              </div>
+          <div class="wallet-wrap-down flex-wrap flex-center-between">
+            <div class="flex-wrap flex-column-center">
+              <p>PPS</p>
+              <input type="number" class="down-left" placeholder="Amount" v-model="Amount" value="walletList.name"/>
             </div>
-            <div class="wallet-wrap-down flex-wrap flex-center-between">
-              <div class="flex-wrap flex-column-center">
-                <p>{{walletList.pps_address}}</p>
-              </div>
-              <div class="down-right">
-                <span style="margin-right:15px;">PPS address</span>
-                <!-- <span class="pps-price">{{walletList.pps}}567</span> -->
-                <button
-                v-clipboard:copy="walletList.pps_address"
-                v-clipboard:success="CopyPPS"
-                >Copy</button>
-              </div>
+            <div class="down-right">
+              <span>Balance</span>
+              <span class="pps-price">{{walletList.balance}}</span>
+              <span class="pps-pps">PPS</span>
             </div>
-            <div class="wallet-wrap-down flex-wrap flex-center-between">
-                <div class="flex-wrap flex-column-center">
-                    <p>{{walletList.eth_address}}</p>
-                </div>
-                <div class="down-right">
-                    <span style="margin-right:15px;">ETH address</span>
-                    <!-- <span class="pps-price">{{walletList.pps}}567</span> -->
-                    <button
-                v-clipboard:copy="walletList.eth_address"
-                v-clipboard:success="CopyETH"
-                >Copy</button>
-                </div>
+          </div>
+
+          <div class="wallet-wrap-down flex-wrap flex-center-between">
+            <div class="flex-wrap flex-column-center">
+              <p>TO</p>
+              <input class="down-left" placeholder="Pleade enter PPS address" v-model="TOaddress" value="walletList.name"/>
+              <span class="warning"  v-show="Wallettype">Please enter the correct wallet address</span>
             </div>
-            <div class="wallet-wrap-set flex-wrap flex-center-between">
-                <p>Password</p>
-                <button @click="toReset">Reset</button>
-            </div>
-            <div class="wallet-wrap-set flex-wrap flex-center-between">
-                <p>Export private key</p>
-                <button @click="showEnterpsw_p">Export</button>
-            </div>
-            <div class="wallet-wrap-set flex-wrap flex-center-between">
-                <p>Export keystore</p>
-                <button @click="showEnterpsw_k">Export</button>
-            </div>
+          </div>
+
             <div class="choose-btn">
-                <button @click="$router.go(-1);">Back</button>
-                <button @click="Save">Save</button>
-            </div>
-        </div>
-        <div class="transactions">
-            <p class="tran-text">transactions</p>
-            <div class="transactions-wrap" v-for="(item,index) in transActions" :key="index">
-                <p class="tran-title">{{item.title}}</p>
-                <p class="tran-date">{{item.date}}</p>
+              <button class="back-btn" @click="$router.go(-1);">Back</button>
+              <button class="create-btn" @click="dialogTransfer">Confirm</button>
             </div>
         </div>
     </div>
+    <el-dialog
+      :visible.sync="dialogTransfershow" class="checkoutWrap">
+      <div class="input-wrap">
+        <input type="password" placeholder="Payment password" v-model="userPassword">
+      </div>
+      <div class="button" @click="toTransfer">Confirm and pay</div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-// import header from '../common/header'
-export default {
+  import utils from '../../../utils/utils.js'
+  const sha256 = require('js-sha256').sha256
+  export default {
   name: 'walletDetail',
-  components: {
-  },
   data () {
     return {
-      tripsTabTitle: 'All',
-      walletList: {
-        // name: 'Lorem Ipsum',
-        // isDetault: true,
-        // title: 'Available balance',
-        // pps: '567',
-        // type: 'PPS'
-      },
-      name: '',
-      transActions: [
-        {
-          title: 'Lorem ipsum',
-          date: '22 Sep 2018'
-        },
-        {
-          title: 'Lorem ipsum',
-          date: '22 Sep 2018'
-        },
-        {
-          title: 'Lorem ipsum',
-          date: '22 Sep 2018'
-        }
-      ]
+      walletList: {},
+      Amount:'',
+      TOaddress: '',
+      userPassword:'',
+      dialogTransfershow:false,
+      Wallettype:false
     }
   },
   created () {
-    console.log(JSON.parse(this.$route.query.List))
     this.walletList = JSON.parse(this.$route.query.List)
-    this.name = this.walletList.name
   },
   methods: {
-    Save () {
-      let user = JSON.parse(localStorage.getItem('user'))
-      this.$post(this.userUrl + '/user', {
-        action: 'updateUserWallet',
-        data: {
-          user_id: user.user_id,
-          user_wallet_id: this.walletList.user_wallet_id,
-          name: this.name,
-          primary: this.walletList.primary === 1 ? 'true' : 'false'
+    dialogTransfer(){
+      if(this.Amount != "" || this.TOaddress != ""){
+        if(this.walletList.balance < this.Amount){
+          
+          this.$message({
+            message: 'Insufficient balance',
+            type: 'warning'
+          });
+
+        }else{
+
+          if(!utils.checkAddress(this.TOaddress)) {
+            this.Wallettype = false
+            this.dialogTransfershow = true
+          }else{
+            this.Wallettype = true
+          }
+        }
+      }
+    },
+    toTransfer(){
+      if(this.userPassword != ""){
+        this.$post(this.userUrl + '/user', {
+        action : "sendPPS",
+        data:{
+          user_id : this.$store.state.userInfo.user_id,
+          user_wallet_id : this.walletList.user_wallet_id,
+          amount : this.Amount,
+          encrypted_password : sha256(this.userPassword),
+          address : "0x6d4D1EC45057E6326e5Fc3a5306A07b225e78c27"
         }
       }).then((res) => {
         if (res.msg.code === 200) {
-          this.$router.push({path: 'walletHome'})
+          this.$message({
+            message: 'Successful transfer',
+            type: 'success'
+          });
+          this.dialogTransfer = false;
+        } else {
+          var message = 0;
+          if(res.msg.code == 952){
+              message = "The password is incorrect"
+          }
+          this.$alert(message, 'Warning', {
+            confirmButtonText: 'Confirm'
+          })
         }
       })
-    },
-    toReset () {
-      this.$router.push({path: 'reset'})
+
+      }
+      
+
     },
     toCreate () {
       this.$router.push({path: 'create'})
-    },
-    toImport () {
-      this.$router.push({path: 'importWallet'})
-    },
-    showEnterpsw_p () {
-      this.$store.state.show_enterpsw = true
-      this.$store.state.show_state = 1
-    },
-    showEnterpsw_k () {
-      this.$store.state.show_enterpsw = true
-      this.$store.state.show_state = 2
-    },
-    CopyPPS () {
-      alert('Copied')
-    },
-    CopyETH () {
-      alert('Copied')
     }
-    // copyETH () {
-    //   this.$copyText(this.walletList.eth_address).then(function (e) {
-    //     alert('Copied')
-    //     console.log(e)
-    //   }, function (e) {
-    //     alert('Can not copy')
-    //     console.log(e)
-    //   })
-    // }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+
+  .warning {
+    color: red;
+    margin:10px 0;
+    font-family: Roboto-Regular;
+  }
+
+.checkoutWrap {
+  .input-wrap {
+    border-bottom: 1px solid #E6E7E8;
+    height: 60px;
+    line-height: 60px;
+    input {
+      border: none;
+      font-size: 16px;
+      font-family: Roboto-Regular;
+      color: #B1B3B6;
+      letter-spacing: 0;
+      width: 100%;
+      padding: 0 15px;
+      color: #B1B3B6;
+      box-sizing: border-box;
+    }
+  }
+  .button {
+    width: 100%;
+    height: 50px;
+    background: #F4436C;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    color: #FFFFFF;
+    letter-spacing: 3px;
+    cursor: pointer;
+    margin-top: 30px;
+    border-radius: 4px;
+  }
+}
+
 .wallet-detail {
   font-family: Roboto-Regular;
   font-size: 16px;
@@ -215,8 +209,19 @@ export default {
     }
     .wallet-wrap-down{
       margin: 30px 30px 0;
-      padding-bottom: 30px;
       border-bottom: 1px solid #E6E7E8;
+
+      .flex-column-center{
+        width: 50%;
+        p{
+          font-family: Roboto-Medium;
+          font-size: 20px;
+        }
+        input{
+          height: 50px;
+          border: none;
+        }
+      }
       .down-left{
         font-family: Roboto-Medium;
         margin-top: 25px;
@@ -250,7 +255,6 @@ export default {
       }
     }
     .choose-btn{
-      text-align: right;
       margin: 30px;
       button:first-child{
         margin-right: 10px;
@@ -284,5 +288,12 @@ export default {
       margin-right: 0px;
       margin-bottom: 15px;
     }
+}
+</style>
+
+<style>
+.el-dialog{
+  max-width: 440px;
+  min-width: 300px;
 }
 </style>

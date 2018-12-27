@@ -223,7 +223,12 @@ export default {
           this.user.city = data.city
           this.user.occupation = data.occupation
           this.$store.commit('userUpdate', this.user)
-          this.$store.commit('hint', {show: true, text: 'Operation is successful'})
+          // this.$store.commit('hint', {show: true, text: 'Operation is successful'})
+          this.$message({
+            showClose: true,
+            message: 'Operation is successful',
+            type: 'success'
+          });
         } else {
           this.$store.commit('hint', {show: false})
         }
@@ -323,7 +328,7 @@ $red-color: #F4436C;
     line-height: 36px;
     margin: 0;
     font-weight: 100;
-    text-align: left;
+    text-align: center;
     padding-bottom: 30px;
   }
   i {

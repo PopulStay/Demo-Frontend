@@ -17,7 +17,7 @@
           </ul>
           <div class="input-wrap flex-wrap flex-align-center" v-show="searchBarFixed" slot="reference" offset="20">
             <i class="icon iconfont icon-search"></i>
-            <input type="text" placeholder="Enter a destination or keyword" @input="input" v-model="searchValue">
+            <input type="text" autocomplete="off" placeholder="Enter a destination or keyword" @input="input" v-model="searchValue">
           </div>
         </el-popover>
       </div>

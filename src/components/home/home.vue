@@ -91,18 +91,9 @@
     <!-- 列表  -->
     <div class="list home-list">
       <h3>Recommended for you</h3>
-      <ul>
-        <li v-for="(item, index) in list" :key="index" @click="toListing(item.placeId)">
-            <img :src="item.picture.length>0 ? item.picture[0].smallPictureUrl : ''" alt="">
-            <p class="title">{{ listName[index] }}</p>
-            <p class="text">{{ placeName[index] ? placeName[index] : '' }}</p>
-            <!-- <p class="number">{{ item.prices.length !== 0 ? item.prices[0].smallPictureUrl : '' }} pps per night</p> -->
-            <p class="number">{{ item.prices[0].bestPrice }} pps per night</p>
-            <el-rate v-model="item.review" disabled show-score
-            :colors="['#99A9BF', '#f4436C', '#FF9900']" text-color="#4A4A4A" score-template="{value}">
-            </el-rate>
-        </li>
-      </ul>
+      <div class="listitem left"  v-for="(item, index) in HouseList">
+        <House-Item :key="index" :houselist="item"></House-Item>
+      </div>
       <p class="more" @click="toSearchAll">Show all &nbsp;<i class="el-icon-arrow-right"></i></p>
     </div>
     <!-- 国家  -->
@@ -130,15 +121,18 @@ import banner4 from '../../assets/images/index/banner-4.png'
 import header from '../common/header'
 import footer from '../common/footer'
 import formatdata from '../../utils/formatdata.js'
+import HouseItem from '@/components/common/HouseItem';
 export default {
   name: 'home',
   components: {
     'e-header': header,
-    'e-footer': footer
+    'e-footer': footer,
+    'House-Item': HouseItem,
   },
   data () {
     return {
       list: '',
+      HouseList: [],
       listName: [],
       placeName: [],
       viewCount: [],
@@ -236,7 +230,7 @@ export default {
             that.getName(citycode)
             this.translation(val.placeName)
           })
-          this.list = res.data.dataList
+          this.HouseList = res.data.dataList
 
         }
       })
@@ -555,6 +549,14 @@ $red-color: #F4436C;
     cursor: pointer;
   }
 }
+
+.listitem{
+  width:25%;
+  display: inline-block;
+  vertical-align: top;
+  margin: 20px 0;
+}
+
 @media only screen and (max-width: 1500px) {
   .list {
     width: auto;

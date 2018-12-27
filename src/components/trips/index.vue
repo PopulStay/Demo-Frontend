@@ -117,6 +117,7 @@ $red-color: #F4436C;
 .middle {
   width: 80.129%;
   margin: 0 auto;
+  min-height: 700px;
   padding: 4.26% 0;
   flex-wrap: wrap;
   .left {

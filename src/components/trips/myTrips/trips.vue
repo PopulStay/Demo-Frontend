@@ -25,9 +25,11 @@
           <div class="list-operation flex-wrap" :class="item.status == 'Pending' || item.status == 'Completed' ? 'flex-column-center flex-wrap' : ''">
             <div>
               <p class="details"><router-link :to="{path:'/trips/trips_details',query: {tripsitem:item,tripstitle:item.status}}">View details</router-link></p>
-              <p class="cancel">Cancel</p>
+              <p class="cancel" v-if="item.status != 'Completed'">Cancel</p>
             </div>
             <div class="checkout" v-if="item.status == 'Pending'" @click="checkoutShow = true; PaymentHostID = item.booking_id">Payment</div>
+            <div class="checkout" v-if="item.status == 'Completed' && !item.have_place_review" @click="ReviewShow = true; PaymentHostID = item.booking_id">Review</div>
+            <div class="checkout disabledbtn" v-if="item.status == 'Completed' && item.have_place_review">Reviewed</div>
             <!--<div class="checkout" v-else-if="item.status == 'Completed'">Confirm</div>-->
             <!--<div class="checkout Edit" v-else-if="item.status == 'Cancelled'">-->
               <!--<p>Edit</p>-->
@@ -75,10 +77,61 @@
       <div class="button" @click="cancelShow = false">Cancel</div>
     </el-dialog>
 
+    <!-- 评价  -->
+    <el-dialog  :visible.sync="ReviewShow" class="cancelReview">
+      <div class="content">
+        <div class="c-left">
+          <img src="../../../assets/images/trips/checked-in.png" alt="">
+          <p></p>
+          <span>Booking ID: {{PaymentHostID}}</span>
+        </div>
+        <div class="c-right">
+          <ul>
+            <li>
+              <p>Accuracy</p>
+              <el-rate v-model="Review.Accuracy" disabled-void-color="#F4436C"></el-rate>
+            </li>
+            <li>
+              <p>Location</p>
+              <el-rate v-model="Review.Location"></el-rate>
+            </li>
+            <li>
+              <p>Communication</p>
+              <el-rate v-model="Review.Communication"></el-rate>
+            </li>
+            <li>
+              <p>Check-in</p>
+              <el-rate v-model="Review.Checkin"></el-rate>
+            </li>
+            <li>
+              <p>Cleanliness</p>
+              <el-rate v-model="Review.Cleanliness"></el-rate>
+            </li>
+            <li>
+              <p>Value</p>
+              <el-rate v-model="Review.Value"></el-rate>
+            </li>
+          </ul>
+
+          <div class="Description">
+            <p>Description</p>
+            <textarea v-model="Review.Description"></textarea>
+          </div>
+
+
+          <div class="Submit flex-wrap">
+            <div class="button r-button" @click="SubmitReview">Submit</div>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
+  import qs from 'qs'
+
 var moment = require('moment')
 const sha256 = require('js-sha256').sha256
 export default {
@@ -91,6 +144,7 @@ export default {
       islist: true,
       list: [],
       checkoutShow: false,
+      ReviewShow: false,
       cancelShow: false,
       user: '',
       wallet:'Please choose a wallet',
@@ -98,7 +152,16 @@ export default {
       walletList:[],
       walletshow:false,
       userPassword:'',
-      PaymentHostID:0
+      PaymentHostID:0,
+      Review:{
+        Accuracy:0,
+        Location:0,
+        Communication:0,
+        Checkin:0,
+        Cleanliness:0,
+        Value:0,
+        Description:""
+      }
     }
   },
   created () {
@@ -142,12 +205,12 @@ export default {
       this.$post(this.bookUrl + '/booking', {
         action: 'listGuestBookings',
         data: {
-          // host_id: user.user_id,
           guest_id: this.user.user_id,
           page: 0,
           status:status
         }
       }).then((res) => {
+        console.log(res.data)
         res.data.length > 0 ? this.islist = true : this.islist = false;
 
           for (let i in res.data) {
@@ -189,7 +252,7 @@ export default {
     getWalletList(){
 
       this.$post(this.userUrl + '/user', {
-        action: 'getUserWallets',
+        action: 'getUserPPSBalance',
         data: {
           user_id: this.user.user_id
         }
@@ -225,6 +288,41 @@ export default {
           location.reload();
         }
       });
+
+    },
+    SubmitReview(){
+
+      this.$post(this.placeUrl + '/place/place_review', {
+        userId: this.user.user_id,
+        bookId: this.PaymentHostID,
+        message: this.Review.Description,
+        accuracy_score:  this.Review.Accuracy,
+        checkin_score: this.Review.Checkin,
+        cleanlines_score: this.Review.Cleanliness,
+        communication_score: this.Review.Communication,
+        location_score: this.Review.Location,
+        value_score: "0",
+      }).then((res) => {
+        if(res.code == 200){
+          this.$message({
+            customClass:"centermessage",
+            showClose: true,
+            message: 'Comment successful',
+            type: 'success',
+          });
+          this.ReviewShow = false
+          this.getTripsList()
+        }else{
+          this.$message({
+            customClass:"centermessage",
+            showClose: true,
+            message: 'The order has been reviewed',
+            type: 'success',
+          });
+          this.ReviewShow = false
+          this.getTripsList()
+        }
+      })
 
     }
   }
@@ -432,6 +530,88 @@ $red-color: #F4436C;
     font-family: Roboto-Medium;
   }
 }
+
+.cancelReview{
+
+  .content{
+    overflow: hidden;
+  }
+
+  .c-left{
+    width:23%;
+    float: left;
+    img{
+      width: 100%;
+    }
+    p{
+      font-family: Roboto-Medium;
+      font-size: 16px;
+      color: #4A4A4A;
+      letter-spacing: 1px;
+      margin: 10px 0;
+    }
+    span{
+      font-family: Roboto-Regular;
+      font-size: 14px;
+      color: #4A4A4A;
+      letter-spacing: 0.88px;
+    }
+  }
+
+  .c-right{
+
+    float: left;
+    width: 67%;
+    padding-left: 5%;
+
+    ul{
+
+      li{
+        display: inline-block;
+        width: 48%;
+        margin-bottom: 20px;
+
+        &:nth-child(2n){
+          float: right;
+        }
+
+        p{
+          font-family: Roboto-Medium;
+          font-size: 16px;
+          color: #4A4A4A;
+          letter-spacing: 0;
+          display: inline-block;
+        }
+
+       div{
+          display: inline-block;
+         float: right;
+       }
+      }
+    }
+
+    .Description{
+      p{
+        font-family: Roboto-Medium;
+        font-size: 16px;
+        color: #4A4A4A;
+        letter-spacing: 0;
+      }
+      textarea{
+        width: 97%;
+        height: 100px;
+        margin: 10px 0 ;
+      }
+    }
+
+    .Submit{
+      div{
+        padding: 10px 15px;
+      }
+    }
+  }
+
+}
 @media only screen and (max-width: 1100px) {
   .dataList {
     li {
@@ -513,4 +693,10 @@ $red-color: #F4436C;
   }
 }
 
+.cancelReview {
+  .el-dialog {
+    width: 40%;
+    min-width: 800px;
+  }
+}
 </style>

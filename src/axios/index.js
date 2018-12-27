@@ -11,10 +11,11 @@ Vue.prototype.paymentUrl = 'http://testapi.payment.populstay.com'
 Vue.prototype.partialplaceUrl = 'https://testapi.partialplace.populstay.com'
 Vue.prototype.imageUrl = 'https://testapi.image.populstay.com/image?dir=populstay_placeimage'
 Vue.prototype.walletUrl = 'https://testapi.wallet.populstay.com'
+Vue.prototype.walletUrl = 'https://testapi.wallet.populstay.com'
 
 Vue.prototype.$axios = axios
 // axios.defaults.baseURL = Vue.prototype.HOST
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 100000
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=UTF-8'
 // 带cookie请求
 axios.defaults.withCredentials = true

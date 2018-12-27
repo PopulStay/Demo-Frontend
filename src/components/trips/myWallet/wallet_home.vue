@@ -7,33 +7,35 @@
             <div class="wallet-wrap-top flex-wrap flex-align-center" :class="item.primary===1?'flex-center-between':'flex-content-end'">
                 <div class="top-left" v-if="item.primary===1">Default wallet</div>
                 <div class="top-right">
-                  <!--<span @click="toWalletDetail(index)">Edit</span>-->
-                  <span @click="walletTransfer(index)">Transfer</span>
+                  <span @click="toWalletDetail(index)">Edit</span>
                   <span v-if="item.primary!==1" @click="setDefault($event)" :name="item.name" :id="item.user_wallet_id">Set as Default</span>
                 </div>
             </div>
-            <div class="wallet-wrap-down flex-wrap flex-center-between">
-                <div class="down-left">{{item.name}}</div>
-                <div class="down-right">
-                  <span class="pps-price">{{item.primary}}</span>
-                  <span class="pps-pps">PPS</span>
-                </div>
+          <div class="wallet-wrap-down flex-wrap flex-center-between">
+            <div class="down-left">{{item.name}}</div>
+            <div class="down-right">
+              <span class="pps-price">{{item.balance}}</span>
+              <span class="pps-pps">PPS</span>
             </div>
+          </div>
+          <div class="wallet-wrap-down flex-wrap flex-center-between">
+            <div class="down-left">{{item.address}}</div>
+            <button @click="towalletTransfer(index)">Transfer</button>
+          </div>
         </div>
+      <h6 class="loading" v-if="loading">Loading<i class="el-icon-loading"></i></h6>
     </div>
   </div>
 </template>
 
 <script>
-// import header from '../common/header'
 export default {
   name: 'wallet',
-  components: {
-  },
   data () {
     return {
       tripsTabTitle: 'All',
-      walletList: {}
+      walletList: {},
+      loading:false
     }
   },
   created () {
@@ -41,14 +43,16 @@ export default {
   },
   methods: {
     getUserWallets () {
+      this.loading = true
       let user = JSON.parse(localStorage.getItem('user'))
       this.$post(this.userUrl + '/user', {
-        action: 'getUserWallet',
+        action: 'getUserPPSBalance',
         data: {
           user_id: user.user_id
         }
       }).then((res) => {
         if (res.msg.code === 200) {
+          this.loading = false
           if (res.data.user_wallets.length === 0) {
             this.$router.replace('create')
           } else {
@@ -66,7 +70,6 @@ export default {
                 }
               }
               this.walletList = newData.sort(sort)
-              console.log(this.walletList)
             }
           }
         }
@@ -102,7 +105,7 @@ export default {
         {name: 'walletDetail', query: {List: List}}
       )
     },
-    walletTransfer(idx){
+    towalletTransfer(idx){
       var List = JSON.stringify(this.walletList[idx])
       this.$router.push(
         {name: 'walletTransfer', query: {List: List}}
@@ -146,8 +149,6 @@ export default {
         text-align: left;
       }
       .top-right {
-        display: inline-block;
-        text-align: right;
         span {
           padding: 0 10px;
           cursor: pointer;
@@ -166,10 +167,11 @@ export default {
         span:first-child::after {
           display: none;
         }
+
       }
     }
     .wallet-wrap-down {
-      padding: 30px;
+      padding: 15px 30px;
       .down-left {
         font-family: Roboto-Medium;
         text-align: left;
@@ -185,6 +187,7 @@ export default {
         color: #f4436c;
       }
     }
+
   }
 }
 @media only screen and (max-width: 375px) {
