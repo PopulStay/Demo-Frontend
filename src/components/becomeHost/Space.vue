@@ -21,14 +21,16 @@
         <li class="flex-wrap">
           <div class="title padding-top">Photos</div>
           <div class="photos-wrap">
+
            <el-upload
              v-if="$store.state.host.picture.length"
               v-for="(item,index) in $store.state.host.picture"
               :key="index"
               class="avatar-uploader"
               action=""
+              :on-remove="handleRemove"
               :show-file-list="false">
-              <div v-if="item.smallUrl" :style="{backgroundImage: 'url(' + item.smallUrl +')'}" class="avatar"></div>
+              <div v-if="item.smallPictureUrl" :style="{backgroundImage: 'url(' + item.smallPictureUrl +')'}" class="avatar"></div>
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
             <el-upload
@@ -43,6 +45,7 @@
               <div v-if="loading" class="avatar"></div>
               <i v-if="!loading" class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
+
           </div>
         </li>
       </ul>
@@ -56,7 +59,7 @@ export default {
     return {
       input: '',
       imageUrl: '',
-      loading:false
+      loading:false,
     }
   },
   created () {
@@ -93,9 +96,9 @@ export default {
       pictureARR.title = "";
       pictureARR.placePart = "";
       pictureARR.bigUrl = res.data.bigUrl;
-      pictureARR.mediumUrl = res.data.mediumUrl;
+      pictureARR.mediumPictureUrl = res.data.mediumUrl;
       pictureARR.originalUrl = res.data.originalUrl;
-      pictureARR.smallUrl = res.data.smallUrl;
+      pictureARR.smallPictureUrl = res.data.smallUrl;
       this.$store.state.host.picture.push(pictureARR);
 
     },
@@ -104,6 +107,9 @@ export default {
       this.$alert('Please confirm whether the picture has been updated', 'Warning', {
         confirmButtonText: 'Confirm'
       })
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
     },
     handleAvatarProgress (event, file, fileList) {
       this.loading = true
@@ -143,6 +149,7 @@ export default {
     }
     .avatar-uploader {
       display: inline-block;
+      margin-bottom: 20px;
 
       &:nth-child(2n){
         float: right;
@@ -181,16 +188,17 @@ export default {
   }
   .avatar-uploader-icon {
     width: 243px;
-    height: 200px;
-    line-height: 200px;
+    height: 170px;
+    line-height: 170px;
     font-size: 28px;
     color: #8c939d;
     text-align: center;
   }
   .avatar {
     width: 249px;
-    height: 200px;
+    height: 170px;
     display: block;
+    background-size: cover;
   }
   @media only screen and (max-width: 800px) {
     .Space ul li {

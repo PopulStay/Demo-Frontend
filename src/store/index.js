@@ -54,6 +54,9 @@ export default new vuex.Store({
       placeName:'',
       description:'',
       picture:{},
+      weeklyDiscount:"",
+      monthlyDiscount:"",
+      checkOutTime:"",
       guestNumber: 0,
       bedroomNumber: 0,
       bedNumber: 0,
@@ -67,7 +70,18 @@ export default new vuex.Store({
       Propertytypes: {
         property: ""
       },
-      RulesArr:[]
+      RulesArr:[],
+      cancellations:'',
+      prices:[
+        {
+          currency:"PPS",
+          bestPrice:"",
+          minPrice:"",
+          maxPrice:"",
+          cleanupServiceFee:""
+        }
+      ],
+
     }
   },
   mutations: {

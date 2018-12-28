@@ -126,11 +126,18 @@
       </div>
     </el-dialog>
 
+    <el-pagination
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-size="10"
+      layout="prev, pager, next"
+      :total="totalPage">
+    </el-pagination>
+
   </div>
 </template>
 
 <script>
-  import qs from 'qs'
 
 var moment = require('moment')
 const sha256 = require('js-sha256').sha256
@@ -161,7 +168,9 @@ export default {
         Cleanliness:0,
         Value:0,
         Description:""
-      }
+      },
+      currentPage:1,
+      totalPage:0
     }
   },
   created () {
@@ -206,45 +215,45 @@ export default {
         action: 'listGuestBookings',
         data: {
           guest_id: this.user.user_id,
-          page: 0,
+          page: this.currentPage-1,
           status:status
         }
       }).then((res) => {
-        console.log(res.data)
-        res.data.length > 0 ? this.islist = true : this.islist = false;
+        res.data.booking_list.length > 0 ? this.islist = true : this.islist = false;
 
-          for (let i in res.data) {
-            switch (res.data[i].status) {
+          for (let i in res.data.booking_list) {
+            switch (res.data.booking_list[i].status) {
               case 'pending_for_payment':
-                res.data[i].status = 'Pending'
+                res.data.booking_list[i].status = 'Pending'
                 break
               case 'pending_for_checking':
-                res.data[i].status = 'Upcoming'
+                res.data.booking_list[i].status = 'Upcoming'
                 break
               case 'checked_in':
-                res.data[i].status = 'Checked-in'
+                res.data.booking_list[i].status = 'Checked-in'
                 break
               case 'completed':
-                res.data[i].status = 'Completed'
+                res.data.booking_list[i].status = 'Completed'
                 break
               case 'cancelled':
-                res.data[i].status = 'Cancelled'
+                res.data.booking_list[i].status = 'Cancelled'
                 break
               default:
-                res.data[i].status = 'Pending'
+                res.data.booking_list[i].status = 'Pending'
                 break
             }
-            res.data[i].strat_time = moment(res.data[i].strat_time).format('DD MMM YYYY')
-            res.data[i].end_time = moment(res.data[i].end_time).format('DD MMM YYYY')
-            // console.log(moment.duration(res.data[i].end_time - res.data[i].strat_time), 'days')
-            let m1 = moment(res.data[i].strat_time)
-            let m2 = moment(res.data[i].end_time)
+            res.data.booking_list[i].strat_time = moment(res.data.booking_list[i].strat_time).format('DD MMM YYYY')
+            res.data.booking_list[i].end_time = moment(res.data.booking_list[i].end_time).format('DD MMM YYYY')
+            // console.log(moment.duration(res.data.booking_list[i].end_time - res.data.booking_list[i].strat_time), 'days')
+            let m1 = moment(res.data.booking_list[i].strat_time)
+            let m2 = moment(res.data.booking_list[i].end_time)
             // console.log(m1)
             // console.log(m2)
-            res.data[i].cha_time = m2.diff(m1, 'day') + 'night'
+            res.data.booking_list[i].cha_time = m2.diff(m1, 'day') + 'night'
 
           }
-          this.tripsList = res.data;
+          this.tripsList = res.data.booking_list;
+          this.totalPage = res.data.total
 
       })
 
@@ -264,6 +273,7 @@ export default {
     },
     tripsTabClick (value, index) {
       this.tripsTabTitle = value
+      this.currentPage = 1;
       this.getTripsList()
 
 
@@ -324,6 +334,10 @@ export default {
         }
       })
 
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getTripsList()
     }
   }
 }
@@ -698,5 +712,8 @@ $red-color: #F4436C;
     width: 40%;
     min-width: 800px;
   }
+}
+.el-pagination{
+  text-align: right;
 }
 </style>

@@ -16,27 +16,20 @@
       </div>
       <div class="item">
         <h3 class="h3">House Rules</h3>
-         <ul>
-           <el-checkbox-group v-model="AmenitiesArr"  @change="changeRule">
-             <li v-for="(item, index) in rulesObj" :key="item.ruleId"><el-checkbox :label="item.ruleId">{{item.rule}}</el-checkbox></li>
-           </el-checkbox-group>
+        <ul>
+          <el-checkbox-group v-model="rulesArr"  @change="changeRule">
+            <li v-for="(item, index) in rules" :key="item.ruleId"><el-checkbox :label="item.ruleId">{{item.rule}}</el-checkbox></li>
+          </el-checkbox-group>
         </ul>
       </div>
       <div class="item">
         <h3 class="h3">Cancellations</h3>
          <ul>
-          <li>
-            <el-checkbox>Flexible</el-checkbox>
-            <p>Full refund within limited period.</p>
-          </li>
-          <li>
-            <el-checkbox>Moderate</el-checkbox>
-            <p>Full refund within limited period.</p>
-          </li>
-          <li>
-            <el-checkbox>Strict</el-checkbox>
-            <p>50% refund up until 1 week prior to check in.</p>
-          </li>
+           <el-radio-group v-model="$store.state.host.cancellations">
+              <li v-for="(item, index) in cancellationsObj" :key="item.cancellationPolicyId">
+                <el-radio :label="item.cancellationPolicyId">{{item.name}}<p>{{item.title}}</p></el-radio>
+              </li>
+           </el-radio-group>
         </ul>
       </div>
     </div>
@@ -48,20 +41,20 @@
     data () {
       return {
         checked: true,
-        rulesObj: {},
+        rules: {},
+        rulesArr:[],
         cancellationsObj: {},
-        AmenitiesArr:[],
-        cancellations:''
+        cancellations:1
       }
     },
     created () {
 
       this.$get(this.placeUrl + '/place/rules').then((res) => {
-        this.rulesObj = res.data.dataList
+        this.rules = res.data.dataList
       })
 
       this.$get(this.placeUrl + '/place/cancellation_policies').then((res) => {
-        this.cancellations = res.data.dataList
+        this.cancellationsObj = res.data.dataList
       })
 
       if(this.$route.query.id){
@@ -76,11 +69,15 @@
           tempPlaceId: id
         }).then((res) => {
           if(res.code == 200){
-            // if(res.data.amenities){
-            //   res.data.amenities.forEach((val, key) => {
-            //     this.AmenitiesArr.push(val.pamenityId)
-            //   })
-            // }
+
+            if(res.data.rules){
+              res.data.rules.forEach((val, key) => {
+                this.rulesArr.push(val.placeRuleId)
+              })
+            }
+
+            console.log( this.rulesArr)
+
             // if(res.data.safeAmenities){
             //   res.data.safeAmenities.forEach((val, key) => {
             //     this.safeAmenitiesArr.push(val.psafeAmenityId)
@@ -93,15 +90,13 @@
 
         let RulesArr = [];
 
-        this.AmenitiesArr.forEach((val,key) =>{
+        this.rulesArr.forEach((val,key) =>{
           let pamenityObj = {};
-          pamenityObj['ruleId'] = val
+          pamenityObj['placeRuleId'] = val
           RulesArr.push(pamenityObj)
         })
 
         this.$store.state.host.RulesArr = RulesArr;
-        console.log(this.$store.state.host.RulesArr)
-
       }
 
     }

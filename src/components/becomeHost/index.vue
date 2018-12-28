@@ -84,19 +84,24 @@ export default {
         }
       ],
       readyList: [
-        {
-          title: 'Set a price',
-          url: 'getReady',
-          step: false
-        },
+        // {
+        //   title: 'Set a price',
+        //   url: 'getReady',
+        //   step: false
+        // },
         {
           title: 'Floating price',
           url: 'Floating',
           step: false
         },
+        // {
+        //   title: 'Fixed price',
+        //   url: 'Fixed',
+        //   step: false
+        // },
         {
-          title: 'Fixed price',
-          url: 'Fixed',
+          title: 'Service Fee',
+          url: 'ServiceFee',
           step: false
         },
         {
@@ -126,17 +131,26 @@ export default {
       let type = this.stepIndex
       let item = this[type].filter((item) => item.url === this.$route.name)
       let index = this[type].findIndex((item) => item.url === this.$route.name)
+      // item[0].step = true
 
       if (item[0].url === 'Amenities') {
+
         this.stepIndex = 'SpaceList'
         if(this.$route.query.id){
           this.$router.push({path: '/becomeHost/'+this['SpaceList'][0].url, query: {id: this.$route.query.id}})
         }else{
           this.$router.push(this['SpaceList'][0].url)
         }
+
       } else if (item[0].url === 'Requirements') {
         this.stepIndex = 'readyList'
-        this.$router.push(this['readyList'][0].url)
+
+        if(this.$route.query.id){
+          this.$router.push({path: '/becomeHost/'+this['readyList'][0].url, query: {id: this.$route.query.id}})
+        }else{
+          this.$router.push(this['readyList'][0].url)
+        }
+
       } else if (item[0].url === 'Submit') {
         this.$router.push('success')
       } else {
@@ -158,6 +172,8 @@ export default {
       // } else {
       //   this.$router.push(this[type][index + 1].url)
       // }
+
+      console.log(this.$store.state.host)
 
     },
     route (value, type) {

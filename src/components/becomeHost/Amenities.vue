@@ -27,8 +27,8 @@ export default {
     return {
       checked: true,
       amenities: {},
-      SafeAmenities: {},
       AmenitiesArr:[],
+      SafeAmenities: {},
       safeAmenitiesArr:[]
     }
   },
@@ -110,6 +110,13 @@ ul {
   min-width: 300px;
   li {
     margin-bottom: 15px;
+    width: 50%;
+    display: inline-block;
+    span{
+      display:inline-block;
+      word-wrap:break-word;
+      white-space:normal;
+    }
   }
 }
 @media only screen and (max-width: 800px) {

@@ -2,29 +2,14 @@
   <div>
      <div class="becomeHost-header">
       <div class="title">Get ready</div>
-      <h3>Long-term reservation</h3>
+      <h3>Cleanup Service Fee</h3>
     </div>
-    <div class="reservation">
+    <div class="fixed">
       <ul>
         <li>
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
-          <p class="label">Weekly Discount</p>
-          <el-input type="number" v-model="$store.state.host.weeklyDiscount"></el-input>
-        </li>
-        <li>
-          <p class="label">Monthly Discount</p>
-          <el-input type="number" v-model="$store.state.host.monthlyDiscount"></el-input>
-        </li>
-        <li>
-          <p class="label">Check Out Time</p>
-          <el-select v-model="$store.state.host.checkOutTime" placeholder="Select time">
-            <el-option
-              v-for="item in 24"
-              :key="item"
-              :label="item+' : 00'"
-              :value="item">
-            </el-option>
-          </el-select>
+          <p class="label">PPS</p>
+          <el-input v-model="$store.state.host.prices[0].cleanupServiceFee" type="number"></el-input>
         </li>
       </ul>
     </div>
@@ -35,6 +20,7 @@
 export default {
   data () {
     return {
+      input: ''
     }
   },
   created () {
@@ -50,16 +36,8 @@ export default {
         tempPlaceId: id
       }).then((res) => {
         if(res.code == 200){
-          if(res.data.weeklyDiscount){
-            this.$store.state.host.weeklyDiscount = res.data.weeklyDiscount;
-          }
-
-          if(res.data.monthlyDiscount){
-            this.$store.state.host.monthlyDiscount = res.data.monthlyDiscount;
-          }
-
-          if(res.data.checkOutTime){
-            this.$store.state.host.checkOutTime = res.data.checkOutTime;
+          if(res.data.prices[0].cleanupServiceFee){
+            this.$store.state.host.prices[0].cleanupServiceFee = res.data.prices[0].cleanupServiceFee;
           }
         }
       })
@@ -70,10 +48,9 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-.reservation {
+.fixed {
   ul {
     li {
-      margin-bottom: 30px;
       .text {
         font-family: Roboto-Regular;
         font-size: 16px;
@@ -93,12 +70,12 @@ export default {
 </style>
 
 <style>
-.reservation .el-input__inner{
+.fixed .el-input__inner{
   width: 394px;
   height: 46px;
 }
 @media only screen and (max-width: 800px) {
-  .reservation .el-input__inner {
+  .fixed .el-input__inner {
     width: 100%
   }
 }

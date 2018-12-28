@@ -1,7 +1,20 @@
 <template>
   <div>
-     <div class="becomeHost-header">
+    <div class="becomeHost-header">
       <div class="title">Get ready</div>
+      <h3>Fixed price</h3>
+    </div>
+    <div class="floating">
+      <ul>
+        <li>
+          <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
+          <p class="label">PPS</p>
+          <el-input v-model="$store.state.host.prices[0].bestPrice" type="number"></el-input>
+        </li>
+      </ul>
+    </div>
+
+    <div class="becomeHost-header">
       <h3>Floating price</h3>
     </div>
     <div class="floating">
@@ -10,13 +23,13 @@
           <h5>Lowest price</h5>
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">PPS</p>
-          <el-input></el-input>
+          <el-input v-model="$store.state.host.prices[0].minPrice" type="number"></el-input>
         </li>
         <li>
           <h5>Highest price</h5>
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">PPS</p>
-          <el-input></el-input>
+          <el-input v-model="$store.state.host.prices[0].maxPrice" type="number"></el-input>
         </li>
       </ul>
     </div>
@@ -27,7 +40,35 @@
 export default {
   data () {
     return {
-      input: ''
+    }
+  },
+  created () {
+
+    if(this.$route.query.id){
+      this.getprice(this.$route.query.id)
+    }
+  },
+  methods: {
+    getprice (id) {
+
+      this.$get(this.partialplaceUrl + '/temp/place', {
+        tempPlaceId: id
+      }).then((res) => {
+        if(res.code == 200){
+          if(res.data.prices[0].bestPrice){
+            this.$store.state.host.prices[0].bestPrice = res.data.prices[0].bestPrice;
+          }
+
+          if(res.data.prices[0].maxPrice){
+            this.$store.state.host.prices[0].maxPrice = res.data.prices[0].maxPrice;
+          }
+
+          if(res.data.prices[0].minPrice){
+            this.$store.state.host.prices[0].minPrice = res.data.prices[0].minPrice;
+          }
+        }
+      })
+
     }
   }
 }

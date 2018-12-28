@@ -39,6 +39,7 @@ import walletTransfer from '@/components/trips/myWallet/walletTransfer'
 import reset from '@/components/trips/myWallet/reset'
 import Floating from '@/components/becomeHost/Floating'
 import Fixed from '@/components/becomeHost/Fixed'
+import ServiceFee from '@/components/becomeHost/ServiceFee'
 import reservation from '@/components/becomeHost/reservation'
 import address from '@/components/becomeHost/address'
 import Submit from '@/components/becomeHost/Submit'
@@ -261,6 +262,11 @@ export default new Router({
           path: 'Fixed',
           name: 'Fixed',
           component: Fixed
+        },
+        {
+          path: 'ServiceFee',
+          name: 'ServiceFee',
+          component: ServiceFee
         },
         {
           path: 'reservation',

@@ -28,6 +28,8 @@
               <p class="cancel" >Cancel</p>
               <!-- v-if="item.title === 'Pending'" -->
             </div>
+            <!--item.title === Completed 评价房客 -->
+            <div class="checkout" v-if="item.status == 'Completed' && !item.have_user_review" @click="ReviewShow = true; PaymentHostID = item.booking_id">Review</div>
             <div class="checkout">Confirm</div>
              <!-- v-if="item.title === 'Upcoming'" -->
           </div>
@@ -59,6 +61,42 @@
       </div>
       <div class="button" @click="cancelShow = false">Cancel</div>
     </el-dialog>
+
+    <!-- 评价  -->
+    <el-dialog  :visible.sync="ReviewShow" class="cancelReview">
+      <div class="content">
+        <div class="c-left">
+          <img src="../../../assets/images/trips/checked-in.png" alt="">
+          <p></p>
+          <span>Booking ID: {{PaymentHostID}}</span>
+        </div>
+        <div class="c-right">
+          <div class="Boxrate">
+            <p>score</p>
+            <el-rate v-model="Review.score"></el-rate>
+          </div>
+
+          <div class="Description">
+            <p>Description</p>
+            <textarea v-model="Review.Description"></textarea>
+          </div>
+
+
+          <div class="Submit flex-wrap">
+            <div class="button r-button" @click="SubmitReview">Submit</div>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
+
+
+    <el-pagination
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-size="10"
+      layout="prev, pager, next"
+      :total="totalPage">
+    </el-pagination>
   </div>
 </template>
 
@@ -75,7 +113,15 @@
         list: [],
         checkoutShow: false,
         cancelShow: false,
-        user: ''
+        user: '',
+        PaymentHostID:"",
+        currentPage:1,
+        ReviewShow:false,
+        totalPage:0,
+        Review:{
+          score:0,
+          Description:""
+        },
       }
     },
     created () {
@@ -90,7 +136,6 @@
     },
     methods: {
       getguestsList () {
-        // let user = JSON.parse(localStorage.getItem('user'))
 
         var status = '';
 
@@ -119,84 +164,98 @@
           action: 'listHostBookings',
           data: {
             // host_id: user.user_id,
-            host_id: 2732,
-            page: 0,
+            host_id: 2790,
+            page: this.currentPage-1,
             status:status
           }
         }).then((res) => {
-          res.data.length > 0 ? this.islist = true : this.islist = false;
+          res.data.booking_list.length > 0 ? this.islist = true : this.islist = false;
 
-          for (let i in res.data) {
+          for (let i in res.data.booking_list) {
 
-            switch (res.data[i].status) {
+            switch (res.data.booking_list[i].status) {
               case 'pending_for_payment':
-                res.data[i].status = 'Pending'
+                res.data.booking_list[i].status = 'Pending'
                 break
               case 'pending_for_checking':
-                res.data[i].status = 'Upcoming'
+                res.data.booking_list[i].status = 'Upcoming'
                 break
               case 'checked_in':
-                res.data[i].status = 'Checked-in'
+                res.data.booking_list[i].status = 'Checked-in'
                 break
               case 'completed':
-                res.data[i].status = 'Completed'
+                res.data.booking_list[i].status = 'Completed'
                 break
               case 'cancelled ':
-                res.data[i].status = 'Cancelled'
+                res.data.booking_list[i].status = 'Cancelled'
                 break
               default:
-                res.data[i].status = ''
+                res.data.booking_list[i].status = ''
                 break
 
-              res.data[i].strat_time = moment(res.data[i].strat_time).format('DD MMM YYYY')
-              res.data[i].end_time = moment(res.data[i].end_time).format('DD MMM YYYY')
-              // console.log(moment.duration(res.data[i].end_time - res.data[i].strat_time), 'days')
-              let m1 = moment(res.data[i].strat_time)
-              let m2 = moment(res.data[i].end_time)
-              // console.log(m1)
-              // console.log(m2)
-              res.data[i].cha_time = m2.diff(m1, 'day') + 'night'
-              // du = moment(res.data[i].end_time - res.data[i].strat_time).format('D night');
-              // console.log(res.data[i].strat_time.substring(7))
-              // res.data[i].time_cha = res.data[i].strat_time.substring(7) - res.data[i].end_time.substring(7)
+              res.data.booking_list[i].strat_time = moment(res.data.booking_list[i].strat_time).format('DD MMM YYYY')
+              res.data.booking_list[i].end_time = moment(res.data.booking_list[i].end_time).format('DD MMM YYYY')
+              let m1 = moment(res.data.booking_list[i].strat_time)
+              let m2 = moment(res.data.booking_list[i].end_time)
+              res.data.booking_list[i].cha_time = m2.diff(m1, 'day') + 'night'
             }
-            this.list = res.data
-            this.guestsList = res.data
+
+            this.list = res.data.booking_list
+            this.guestsList = res.data.booking_list
+
           }
-          this.guestsList = res.data;
+
+          this.guestsList = res.data.booking_list;
+          this.totalPage = res.data.total;
 
         })
       },
       guestsTabClick (value, index) {
         this.guestsTabTitle = value
         this.getguestsList()
-
       },
       next () {
         this.checkoutShow = false
         this.cancelShow = true
-      }
-    },
-    tripsTabClick (value, index) {
-      this.tripsTabTitle = value
-      this.getguestsList()
-      // let list = this.dataList.filter((item) => item.title === value)
-      // list.length ? this.list = list : this.list = this.dataList
-      // if (this.list.length > 0) {
-      //   // if (value === 'All') {
-      //   //   console.log('all')
-      //   //   this.guestsList = this.list
-      //   //   this.islist = true
-      //   //   return false
-      //   // }
-      //   let list = this.list.filter((item) => item.status === value)
-      //   list.length > 0 ? this.guestsList = list : this.guestsList = ''
-      //   list.length > 0 ? this.islist = true : this.islist = false
-      // }
-    },
-    next () {
-      this.checkoutShow = false
-      this.cancelShow = true
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+        this.getguestsList()
+      },
+      SubmitReview(){
+
+        this.$post(this.userUrl + '/user', {
+          action : "addUserReview",
+          data : {
+            book_id : "911",
+            // host_id : this.user.user_id,
+            host_id : '2732',
+            message : this.Review.Description,
+            score : this.Review.score
+          }
+        }).then((res) => {
+          if(res.msg.code == 200){
+            this.$message({
+              customClass:"centermessage",
+              showClose: true,
+              message: 'Comment successful',
+              type: 'success',
+            });
+            this.ReviewShow = false
+            this.getguestsList()
+          }else{
+            this.$message({
+              customClass:"centermessage",
+              showClose: true,
+              message: 'The order has been reviewed',
+              type: 'success',
+            });
+            this.ReviewShow = false
+            this.getguestsList()
+          }
+        })
+
+      },
     }
   }
 </script>
@@ -398,6 +457,80 @@ $red-color: #F4436C;
     font-family: Roboto-Medium;
   }
 }
+
+.cancelReview{
+
+  .content{
+    overflow: hidden;
+  }
+
+  .c-left{
+    width:23%;
+    float: left;
+    img{
+      width: 100%;
+    }
+    p{
+      font-family: Roboto-Medium;
+      font-size: 16px;
+      color: #4A4A4A;
+      letter-spacing: 1px;
+      margin: 10px 0;
+    }
+    span{
+      font-family: Roboto-Regular;
+      font-size: 14px;
+      color: #4A4A4A;
+      letter-spacing: 0.88px;
+    }
+  }
+
+  .c-right{
+
+    float: left;
+    width: 67%;
+    padding-left: 5%;
+
+    .Boxrate{
+      overflow: hidden;
+      margin-bottom: 20px;
+      p{
+        font-family: Roboto-Medium;
+        font-size: 16px;
+        color: #4A4A4A;
+        letter-spacing: 0;
+        float: left;
+      }
+
+      div{
+        margin-left: 20px;
+        float: left;
+      }
+    }
+
+
+    .Description{
+      p{
+        font-family: Roboto-Medium;
+        font-size: 16px;
+        color: #4A4A4A;
+        letter-spacing: 0;
+      }
+      textarea{
+        width: 97%;
+        height: 100px;
+        margin: 10px 0 ;
+      }
+    }
+
+    .Submit{
+      div{
+        padding: 10px 15px;
+      }
+    }
+  }
+
+}
 @media only screen  and (max-width: 1100px) {
   .dataList {
     li {
@@ -441,8 +574,18 @@ $red-color: #F4436C;
   border: 1px solid;
 }
 </style>
-<style>
+<style lang="scss">
 .checkoutWrap .el-dialog__body {
   padding: 30px 40px;
+}
+
+.cancelReview {
+  .el-dialog {
+    width: 40%;
+    min-width: 800px;
+  }
+}
+.el-pagination{
+  text-align: right;
 }
 </style>

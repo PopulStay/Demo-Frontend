@@ -64,7 +64,7 @@
     dialogTransfer(){
       if(this.Amount != "" || this.TOaddress != ""){
         if(this.walletList.balance < this.Amount){
-          
+
           this.$message({
             message: 'Insufficient balance',
             type: 'warning'
@@ -84,7 +84,7 @@
     toTransfer(){
       if(this.userPassword != ""){
         this.$post(this.userUrl + '/user', {
-        action : "sendPPS",
+        action : "sendPPSFromUser",
         data:{
           user_id : this.$store.state.userInfo.user_id,
           user_wallet_id : this.walletList.user_wallet_id,
@@ -111,7 +111,7 @@
       })
 
       }
-      
+
 
     },
     toCreate () {
