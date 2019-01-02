@@ -15,7 +15,7 @@ Vue.prototype.walletUrl = 'https://testapi.wallet.populstay.com'
 
 Vue.prototype.$axios = axios
 // axios.defaults.baseURL = Vue.prototype.HOST
-axios.defaults.timeout = 100000
+axios.defaults.timeout = 10000000
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=UTF-8'
 // 带cookie请求
 axios.defaults.withCredentials = true

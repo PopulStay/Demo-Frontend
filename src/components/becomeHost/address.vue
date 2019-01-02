@@ -8,7 +8,7 @@
       <ul>
         <li>
           <p class="label">Receiving code</p>
-          <textarea cols="30" rows="10" placeholder="Wallet address"></textarea>
+          <textarea cols="30" rows="10" placeholder="Wallet address" v-model="$store.state.host.userwallet"></textarea>
         </li>
       </ul>
     </div>
@@ -19,8 +19,11 @@
 export default {
   data () {
     return {
-      input: ''
+      userwallet:''
     }
+  },
+  created(){
+
   }
 }
 </script>

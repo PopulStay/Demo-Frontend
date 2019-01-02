@@ -2,22 +2,58 @@
   <div>
      <div class="becomeHost-header">
       <div class="title">Get ready</div>
-      <h3>Long-term reservation</h3>
+      <h3>Receive notification</h3>
     </div>
     <div class="reservation">
       <ul>
         <li>
-          <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
-          <p class="label">Weekly Discount</p>
-          <el-input type="number" v-model="$store.state.host.weeklyDiscount"></el-input>
-        </li>
-        <li>
-          <p class="label">Monthly Discount</p>
-          <el-input type="number" v-model="$store.state.host.monthlyDiscount"></el-input>
-        </li>
-        <li>
           <p class="label">Check Out Time</p>
-          <el-select v-model="$store.state.host.checkOutTime" placeholder="Select time">
+          <el-select v-model="$store.state.host.checkOutTime">
+            <el-option
+              v-for="item in 24"
+              :key="item"
+              :label="item+' : 00'"
+              :value="item">
+            </el-option>
+          </el-select>
+        </li>
+        <li>
+          <p class="label">Need Notice Day</p>
+          <el-select v-model="needNoticeDay" @change="needNoticeDayFUN">
+            <el-option
+              v-for="item in needNoticeDayoptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </li>
+        <li>
+          <p class="label">Need Notice Before Time</p>
+          <el-select v-model="$store.state.host.needNoticeBeforeTime" @change="needNoticeDayFUN">
+            <el-option
+              v-for="item in 24"
+              v-if="item > 5 "
+              :key="item"
+              :label="item+' : 00'"
+              :value="item">
+            </el-option>
+          </el-select>
+        </li>
+        <li>
+          <p class="label">Available Checkin Time From</p>
+          <el-select v-model="$store.state.host.availableCheckinTimeFrom">
+            <el-option
+              v-for="item in 24"
+              :key="item"
+              :label="item+' : 00'"
+              :value="item">
+            </el-option>
+          </el-select>
+        </li>
+        <li>
+          <p class="label">Available Checkin Time To</p>
+          <el-select v-model="$store.state.host.availableCheckinTimeTo">
             <el-option
               v-for="item in 24"
               :key="item"
@@ -35,6 +71,29 @@
 export default {
   data () {
     return {
+      needNoticeDayoptions: [
+        {
+          value: '0',
+          label: 'today'
+        },
+        {
+          value: '1',
+          label: '1 day'
+        },
+        {
+          value: '2',
+          label: '2 day'
+        },
+        {
+          value: '3',
+          label: '3 day'
+        },
+        {
+          value: '7',
+          label: '7 day'
+        }
+      ],
+      needNoticeDay:''
     }
   },
   created () {
@@ -64,6 +123,9 @@ export default {
         }
       })
 
+    },
+    needNoticeDayFUN(e){
+      this.$store.state.host.needNoticeDay = e
     }
   }
 }

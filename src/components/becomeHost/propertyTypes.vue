@@ -1,21 +1,53 @@
 <template>
   <div>
+
     <div class="becomeHost-header">
       <div class="title">Basics</div>
       <h3>Property types</h3>
     </div>
+
     <div class="propertyTypes">
-       <el-select v-model="$store.state.host.Propertytypes.property" placeholder="Please choose your  property type">
+      <el-select v-model="$store.state.host.category" placeholder="Please choose your  property type">
         <el-option
           v-for="item in options"
           :key="item.value"
           :label="item.label"
           :value="item.value">
-          <span class="icon-CHECKMARK-wrap"><i class="icon iconfont icon-CHECKMARK" v-if="$store.state.hostcategory == item.value"></i></span>
+          <span class="icon-CHECKMARK-wrap"><i class="icon iconfont icon-CHECKMARK" v-if="$store.state.host.category == item.value"></i></span>
           <span class="icon-CHECKMARK-text">{{item.label}}</span>
         </el-option>
       </el-select>
     </div>
+
+    <div class="propertyTypes">
+      <el-select v-model="placeType" placeholder="Please choose your  property type" @change="placeTypeSelect">
+        <el-option
+          v-for="item in placeTypesList"
+          :key="item.placeTypeId"
+          :label="item.placeName"
+          :value="item.placeTypeId">
+          <span class="icon-CHECKMARK-wrap"><i class="icon iconfont icon-CHECKMARK" v-if="placeType == item.placeTypeId"></i></span>
+          <span class="icon-CHECKMARK-text">{{item.placeName}}</span>
+        </el-option>
+      </el-select>
+    </div>
+
+    <div class="propertyTypes">
+      <el-select v-model="$store.state.host.propertyTypeId" placeholder="Please choose your  property type">
+        <el-option
+          v-for="item in propertyTypesList"
+          v-if="placeTypeid == item.placeTypeId"
+          :key="item.propertyTypeId"
+          :label="item.propertyName"
+          :value="item.propertyTypeId">
+          <span class="icon-CHECKMARK-wrap"><i class="icon iconfont icon-CHECKMARK" v-if="$store.state.host.propertyTypeId == item.propertyTypeId"></i></span>
+          <span class="icon-CHECKMARK-text">{{item.propertyName}}</span>
+        </el-option>
+      </el-select>
+    </div>
+
+    <button class="r-button next" :class="$store.state.host.propertyTypeId == '' ? 'disable' : null" :disabled="$store.state.host.propertyTypeId == ''" @click="next" v-if="$route.name !== 'success'">Next</button>
+
   </div>
 </template>
 
@@ -35,10 +67,21 @@ export default {
         value: 'Share room',
         label: 'Share room'
       }],
-      value: ''
+      value: '',
+      propertyTypesList:[],
+      placeTypesList:[],
+      placeType:'',
+      placeTypeid:'',
+      disable:true
     }
   },
   created () {
+
+    this.$get(this.placeUrl + '/place/properties').then((res) => {
+      this.propertyTypesList = res.data.propertyTypes.dataList
+      this.placeTypesList = res.data.placeTypes.dataList
+    })
+
     if(this.$route.query.id){
       this.getPlace(this.$route.query.id)
     }
@@ -50,10 +93,19 @@ export default {
         tempPlaceId: id
       }).then((res) => {
         if(res.data.Propertytypes){
-          this.$store.state.host.Propertytypes.property = res.data.Propertytypes.property;
+          this.$store.state.host.category = res.data.category;
         }
       })
 
+    },
+    placeTypeSelect(e){
+      this.placeTypeid = e
+    },
+    next () {
+      if(this.$store.state.host.category != '' && this.placeType !='' && this.$store.state.host.propertyTypeId != ''){
+        this.$router.push({path: '/becomeHost/Rooms', query: {id: this.$route.query.id}})
+        this.$store.state.becomehostPath = 'propertyTypes'
+      }
     }
   }
 }
@@ -67,13 +119,17 @@ export default {
 .icon-CHECKMARK {
   font-size: 20px;
 }
-.propertyTypes .el-input__inner {
-  width: 400px;
-  height: 46px;
-  font-family: Roboto-Regular;
-  font-size: 16px;
-  color: #4A4A4A;
-  line-height: 24px;
+.propertyTypes{
+  margin-bottom: 40px;
+
+  .el-input__inner {
+    width: 400px;
+    height: 46px;
+    font-family: Roboto-Regular;
+    font-size: 16px;
+    color: #4A4A4A;
+    line-height: 24px;
+  }
 }
 .icon-CHECKMARK-text {
   font-family: Roboto-Regular;

@@ -6,31 +6,63 @@
         <h2>Become a host</h2>
         <ul>
           <li>Basics</li>
-          <li v-for="(item, index) in BasicsList" :key="index" class="flex-wrap flex-center-between "
-           :class="$route.name == item.url  ? 'active' : ''" @click="route(item, 'BasicsList')">
-            {{item.title}} <i class="icon iconfont icon-CHECKMARK active" v-if="item.step"></i>
+          <li class="flex-wrap flex-center-between "
+              :class="this.$route.name == 'propertyTypes' ? 'active' : ''" @click="route('propertyTypes')">
+            Property types<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'propertyTypes'"></i>
           </li>
+
+          <li class="flex-wrap flex-center-between "
+              :class="this.$route.name == 'Rooms' ? 'active' : ''" @click="route()">
+            Rooms<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'Rooms'"></i>
+          </li>
+
+          <li class="flex-wrap flex-center-between "
+              :class="this.$route.name == 'Location' ? 'active' : ''" @click="route()">
+            Location<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'Location'"></i>
+          </li>
+
+          <li class="flex-wrap flex-center-between "
+              :class="this.$route.name == 'Amenities' ? 'active' : ''" @click="route()">
+            Amenities<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'Amenities'"></i>
+          </li>
+
+          <!--<li v-for="(item, index) in BasicsList" :key="index" class="flex-wrap flex-center-between "-->
+           <!--:class="$route.name == item.url  ? 'active' : ''" @click="route(item, 'BasicsList')">-->
+            <!--{{item.title}} <i class="icon iconfont icon-CHECKMARK active" v-if="item.step"></i>-->
+          <!--</li>-->
         </ul>
         <ul>
           <li>Space</li>
-          <li v-for="(item, index) in SpaceList" :key="index" class="flex-wrap flex-center-between "
-           :class="$route.name == item.url  ? 'active' : ''" v-if="stepIndex !== 'BasicsList' || item.step"
-            @click="route(item, 'SpaceList')">
-            {{item.title}} <i class="icon iconfont icon-CHECKMARK active" v-if="item.step"></i>
+
+          <li class="flex-wrap flex-center-between "
+              v-if="$store.state.becomehostPath == 'Amenities'"
+              :class="this.$route.name == 'space' ? 'active' : ''" @click="route()">
+            About your space<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'space'"></i>
           </li>
+
+          <li class="flex-wrap flex-center-between "
+              v-if="$store.state.becomehostPath == 'Amenities'"
+              :class="this.$route.name == 'Requirements' ? 'active' : ''" @click="route()">
+            Requirements<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'Requirements'"></i>
+          </li>
+
+          <!--<li v-for="(item, index) in SpaceList" :key="index" class="flex-wrap flex-center-between "-->
+           <!--:class="$route.name == item.url  ? 'active' : ''" v-if="stepIndex !== 'BasicsList' || item.step"-->
+            <!--@click="route(item, 'SpaceList')">-->
+            <!--{{item.title}} <i class="icon iconfont icon-CHECKMARK active" v-if="item.step"></i>-->
+          <!--</li>-->
         </ul>
         <ul>
           <li>Get ready</li>
-          <li v-for="(item, index) in readyList" :key="index" class="flex-wrap flex-center-between "
-           :class="$route.name == item.url  ? 'active' : ''" v-if="stepIndex === 'readyList' || item.step"
-           @click="route(item, 'readyList')">
-            {{item.title}} <i class="icon iconfont icon-CHECKMARK active" v-if="item.step"></i>
-          </li>
+          <!--<li v-for="(item, index) in readyList" :key="index" class="flex-wrap flex-center-between "-->
+           <!--:class="$route.name == item.url  ? 'active' : ''" v-if="stepIndex === 'readyList' || item.step"-->
+           <!--@click="route(item, 'readyList')">-->
+            <!--{{item.title}} <i class="icon iconfont icon-CHECKMARK active" v-if="item.step"></i>-->
+          <!--</li>-->
         </ul>
       </div>
       <div class="right">
         <router-view/>
-        <div class="r-button next" @click="next" v-if="$route.name !== 'success'">Next</div>
       </div>
     </div>
     <e-footer></e-footer>
@@ -40,6 +72,7 @@
 <script>
 import header from '../common/header'
 import footer from '../common/footer'
+
 export default {
   name: 'becomehost',
   components: {
@@ -105,33 +138,36 @@ export default {
           step: false
         },
         {
-          title: 'Long-term reservation',
+          title: 'Receive notification',
           url: 'reservation',
           step: false
         },
-        {
-          title: 'Wallet address',
-          url: 'address',
-          step: false
-        },
+        // {
+        //   title: 'Wallet address',
+        //   url: 'address',
+        //   step: false
+        // },
         {
           title: 'Review & Submit',
           url: 'Submit',
           step: false
         }
       ],
-      checkoutShow: false
+      checkoutShow: false,
+      contentHasSave: false,
+      CurrentPath:''
     }
   },
   created () {
-
+    this.userwallet();
+    console.log(this.$route.name)
+    this.CurrentPath = this.$route.name
   },
   methods: {
     next () {
       let type = this.stepIndex
       let item = this[type].filter((item) => item.url === this.$route.name)
       let index = this[type].findIndex((item) => item.url === this.$route.name)
-      // item[0].step = true
 
       if (item[0].url === 'Amenities') {
 
@@ -152,35 +188,71 @@ export default {
         }
 
       } else if (item[0].url === 'Submit') {
-        this.$router.push('success')
+
+        this.$post(this.placeUrl + '/place', this.$store.state.host ).then((res) => {
+          console.log(res)
+        })
+
       } else {
+
         if(this.$route.query.id){
           this.$router.push({path:this[type][index + 1].url, query: {id: this.$route.query.id}})
         }else{
           this.$router.push(this[type][index + 1].url)
         }
+
       }
+    },
+    route (value) {
 
-      // if (item[0].url === 'Amenities') {
-      //   this.stepIndex = 'SpaceList'
-      //   this.$router.push(this['SpaceList'][0].url)
-      // } else if (item[0].url === 'Requirements') {
-      //   this.stepIndex = 'readyList'
-      //   this.$router.push(this['readyList'][0].url)
-      // } else if (item[0].url === 'Submit') {
-      //   this.$router.push('success')
-      // } else {
-      //   this.$router.push(this[type][index + 1].url)
-      // }
-
-      console.log(this.$store.state.host)
+      if(this.$route.query.id){
+        this.$router.push({path: '/becomeHost/'+value, query: {id: this.$route.query.id}})
+      }else{
+        this.$router.push(value)
+      }
 
     },
-    route (value, type) {
-      if (value.step) {
-        this.stepIndex = type
-        this.$router.push(value.url)
-      }
+    userwallet(){
+      let user = this.$store.state.userInfo
+
+      this.$post(this.userUrl + '/user', {
+        action: 'getUserWallet',
+        data: {
+          user_id: user.user_id,
+        }
+      }).then((res) => {
+        if(res.msg.code == 200){
+          if(res.data.wallet == null){
+            this.$confirm('You don\'t have a wallet yet, please create a wallet first.', 'Prompt', {
+              confirmButtonText: 'Confirm',
+              showCancelButton:false,
+              type: 'warning',
+              center: true
+            }).then(() => {
+              console.log(123)
+              this.$router.push({path: '/trips/create'})
+            })
+          }
+        }
+      })
+
+    },
+    submit(){
+
+      this.$post(this.partialplaceUrl + '/temp/place?userId=', {
+        action: 'updateUserWallet',
+        data: {
+          user_id: user.user_id,
+          user_wallet_id: this.walletList.user_wallet_id,
+          name: this.name,
+          primary: this.walletList.primary === 1 ? 'true' : 'false'
+        }
+      }).then((res) => {
+        if (res.msg.code === 200) {
+          this.$router.push({path: '/trips/walletHome'})
+        }
+      })
+
     }
   },
   filters: {
@@ -201,7 +273,7 @@ export default {
 $red-color: #F4436C;
 .middle {
   width: 1500px;
-  margin: 0 auto;
+  margin: 0 auto 300px;
   padding: 90px 0;
   .left {
     flex: 1;
@@ -243,15 +315,7 @@ $red-color: #F4436C;
     min-height: 521px;
     box-sizing: border-box;
     padding-left: 100px;
-    .next {
-      width: 126px;
-      height: 50px;
-      line-height: 52px;
-      font-family: Roboto-Medium;
-      font-size: 16px;
-      letter-spacing: 1px;
-      margin-top: 50px;
-    }
+
     .active {
       color: $red-color
     }
@@ -311,4 +375,20 @@ $red-color: #F4436C;
     }
   }
 }
+</style>
+
+<style lang="scss">
+  .next {
+    width: 126px;
+    height: 50px;
+    line-height: 52px;
+    font-family: Roboto-Medium;
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-top: 50px;
+    border: none;
+  &.disable{
+     opacity: 0.5;
+   }
+  }
 </style>

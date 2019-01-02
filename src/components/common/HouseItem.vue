@@ -92,13 +92,15 @@
     width: 95%;
     font-size: 18px;
     color: #000;
-    letter-spacing: .62px;
     font-family: Roboto-Medium;
     text-align: left;
     display: -webkit-box;
+    /* autoprefixer: off */
     -webkit-box-orient: vertical;
+    /* autoprefixer: on */
     -webkit-line-clamp: 2;
     overflow: hidden;
+    text-align: justify;
   }
   .number{
     font-family: Roboto-Light;

@@ -33,8 +33,8 @@
               <div class="title">
                 <p>Bedroom {{index+1}}</p>
                 <p>
-                  <span v-for="(items,indexs) in item.utilities" :key="indexs" v-if="items.name && items.count" ><span v-if="indexs != 0">, </span>{{items.count}} {{items.name}} </span>
-                  <span v-for="(items,indexs) in item.utilities" :key="indexs" v-if="items.utility && items.count"> <span v-if="indexs != 0">, </span>{{items.count}} {{items.utility}}</span>
+                  <span v-for="(items,indexs) in item.utilities" :key="indexs" v-if="items.name && items.count" >{{items.count}} {{items.name}} </span>
+                  <span v-for="(items,indexs) in item.utilities" :key="indexs" v-if="items.utility && items.count">{{items.count}} {{items.utility}}</span>
                 </p>
               </div>
 
@@ -230,6 +230,12 @@ export default {
           color: #000000;
           letter-spacing: 0.62px;
           line-height: 19px;
+          &:before{
+            content: ',';
+          }
+          &:first-child:before{
+            color: #FFF;
+          }
         }
       }
       .button {

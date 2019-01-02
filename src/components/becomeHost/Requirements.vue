@@ -22,10 +22,23 @@
           </el-checkbox-group>
         </ul>
       </div>
+
+      <div class="item Additionalrules" v-if="rulesArr.indexOf(5316) > -1">
+        <h3 class="h3">Additional rules</h3>
+        <ul>
+            <li v-for="(item, index) in Addrules" :key="item.ruleId">{{item}} <i class="el-icon-close" @click="RemoveRules(index)"></i></li>
+        </ul>
+
+        <el-input placeholder="Can't wear shoes indoors?" v-model="AddInput" class="input-with-select">
+          <el-button slot="append" @click="Additionalrules">Add</el-button>
+        </el-input>
+
+      </div>
+
       <div class="item">
         <h3 class="h3">Cancellations</h3>
          <ul>
-           <el-radio-group v-model="$store.state.host.cancellations">
+           <el-radio-group v-model="$store.state.host.cancellationPolicyId">
               <li v-for="(item, index) in cancellationsObj" :key="item.cancellationPolicyId">
                 <el-radio :label="item.cancellationPolicyId">{{item.name}}<p>{{item.title}}</p></el-radio>
               </li>
@@ -43,8 +56,12 @@
         checked: true,
         rules: {},
         rulesArr:[],
+        storerulesArr:[],
         cancellationsObj: {},
-        cancellations:1
+        cancellations:1,
+        Addrules:[],
+        AddInput:'',
+        storeAddrules:[],
       }
     },
     created () {
@@ -72,32 +89,65 @@
 
             if(res.data.rules){
               res.data.rules.forEach((val, key) => {
-                this.rulesArr.push(val.placeRuleId)
+                if(this.rulesArr.indexOf(val.placeRuleId) == -1){
+                  this.rulesArr.push(val.placeRuleId)
+                }
+                if(val.placeRuleId == 5316){
+                  this.Addrules.push(val.additionalTitle)
+                }
               })
             }
 
-            console.log( this.rulesArr)
-
-            // if(res.data.safeAmenities){
-            //   res.data.safeAmenities.forEach((val, key) => {
-            //     this.safeAmenitiesArr.push(val.psafeAmenityId)
-            //   })
-            // }
           }
         })
       },
       changeRule(){
-
         let RulesArr = [];
 
         this.rulesArr.forEach((val,key) =>{
-          let pamenityObj = {};
-          pamenityObj['placeRuleId'] = val
-          RulesArr.push(pamenityObj)
+          if(val != 5316){
+            let pamenityObj = {};
+            pamenityObj['placeRuleId'] = val
+            RulesArr.push(pamenityObj)
+          }
         })
 
-        this.$store.state.host.RulesArr = RulesArr;
+        this.storerulesArr = RulesArr;
+      },
+      Additionalrules(){
+        if(this.AddInput != ""){
+          this.Addrules.push(this.AddInput)
+
+          let AddpamenityObj = {};
+          AddpamenityObj['placeRuleId'] = 5316
+          AddpamenityObj['additionalTitle'] = this.AddInput
+
+          this.storeAddrules.push(AddpamenityObj)
+
+          this.AddInput = ""
+        }
+      },
+      RemoveRules(inx){
+        this.Addrules.splice(inx,1);
       }
+    },
+    beforeDestroy(){
+
+      this.storerulesArr.forEach((val,key) =>{
+        this.$store.state.host.RulesArr.push(val)
+      })
+
+      let storeAddrules = [];
+      this.Addrules.forEach((val,key) =>{
+        let AddpamenityObj = {};
+        AddpamenityObj['placeRuleId'] = 5316
+        AddpamenityObj['additionalTitle'] = val
+        storeAddrules.push(AddpamenityObj)
+      })
+
+      storeAddrules.forEach((val,key) =>{
+        this.$store.state.host.RulesArr.push(val)
+      })
 
     }
 
@@ -143,6 +193,31 @@
           margin-top: -5px;
         }
       }
+    }
+  }
+  .Additionalrules{
+    li{
+      font-size: 16px;
+      word-wrap:break-word;
+      white-space:normal;
+      max-width: 500px;
+      position: relative;
+      padding-right: 50px;
+      i{
+        font-size: 16px;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        opacity: 0.5;
+        cursor: pointer;
+        &:hover{
+          opacity: 1;
+        }
+      }
+    }
+
+    .input-with-select{
+      max-width: 500px;
     }
   }
 }

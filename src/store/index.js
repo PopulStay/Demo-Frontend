@@ -50,10 +50,14 @@ export default new vuex.Store({
         code: '+65'
       }
     ],
+    introduceState: false,
     host: {
+      hostId:JSON.parse(localStorage.getItem('user')).user_id,
+      category: '',
+      propertyTypeId:'',
       placeName:'',
       description:'',
-      picture:{},
+      picture:[],
       weeklyDiscount:"",
       monthlyDiscount:"",
       checkOutTime:"",
@@ -65,13 +69,18 @@ export default new vuex.Store({
       citycode:"",
       streetLineOne:"",
       streetLineTwo:"",
+      needNoticeDay:'',
+      needNoticeBeforeTime: '',
+      availableCheckinTimeFrom:'',
+      availableCheckinTimeTo:'',
+      guestMinStayNight:"",
+      guestMaxStayNight:"",
       AmenitiesArr:[],
       safeAmenitiesArr:[],
-      Propertytypes: {
-        property: ""
-      },
+      SpacesArr:[],
+      userwallet:"",
       RulesArr:[],
-      cancellations:'',
+      cancellationPolicyId:'',
       prices:[
         {
           currency:"PPS",
@@ -82,7 +91,11 @@ export default new vuex.Store({
         }
       ],
 
-    }
+    },
+    becomehostPath:''
+  },
+  getters: {
+    introduceState: state => state.currentMenus
   },
   mutations: {
     userUpdate (state, value) {
@@ -92,6 +105,9 @@ export default new vuex.Store({
     hint (state, value) {
       if (value.text && value.text !== '') state.hintText = value.text
       state.hintShow = value.show || false
+    },
+    changeIntroduceState (state, value) {
+      state.introduceState = value
     }
   }
 })

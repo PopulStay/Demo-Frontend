@@ -19,6 +19,16 @@
         </el-checkbox-group>
       </ul>
     </div>
+
+    <div class="spaces">
+      <h3>Spaces</h3>
+      <ul>
+        <el-checkbox-group v-model="SpacesArr"  @change="changeSpaces">
+          <li v-for="(item, index) in Spaces" :key="item.spaceId"><el-checkbox :label="item.spaceId">{{item.space}}</el-checkbox></li>
+        </el-checkbox-group>
+      </ul>
+    </div>
+
   </div>
 </template>
 <script>
@@ -29,7 +39,9 @@ export default {
       amenities: {},
       AmenitiesArr:[],
       SafeAmenities: {},
-      safeAmenitiesArr:[]
+      safeAmenitiesArr:[],
+      SpacesArr:[],
+      Spaces: {},
     }
   },
   created () {
@@ -40,6 +52,10 @@ export default {
 
     this.$get(this.placeUrl + '/place/amenities').then((res) => {
       this.amenities = res.data.dataList
+    })
+
+    this.$get(this.placeUrl + '/place/spaces').then((res) => {
+      this.Spaces = res.data.dataList
     })
 
     if(this.$route.query.id){
@@ -68,6 +84,16 @@ export default {
 
       this.$store.state.host.safeAmenitiesArr = changesafeAmentArr
     },
+    changeSpaces(){
+      let changeSpacesArr = [];
+      this.SpacesArr.forEach((val,key) =>{
+        let psafeAmenityObj = {};
+        psafeAmenityObj['pspaceId'] = val
+        changeSpacesArr.push(psafeAmenityObj)
+      })
+
+      this.$store.state.host.SpacesArr = changeSpacesArr
+    },
     getAmenities (id) {
 
       this.$get(this.partialplaceUrl + '/temp/place', {
@@ -82,6 +108,12 @@ export default {
           if(res.data.safeAmenities){
             res.data.safeAmenities.forEach((val, key) => {
               this.safeAmenitiesArr.push(val.psafeAmenityId)
+            })
+          }
+
+          if(res.data.spaces){
+            res.data.spaces.forEach((val, key) => {
+              this.SpacesArr.push(val.pspaceId)
             })
           }
         }
@@ -103,20 +135,19 @@ h3 {
   margin: 0;
   padding-bottom: 30px
 }
-.safeAmenities {
+.safeAmenities,
+.spaces{
   margin-top: 50px;
 }
 ul {
   min-width: 300px;
+  overflow: hidden;
   li {
     margin-bottom: 15px;
-    width: 50%;
+    width: 40%;
     display: inline-block;
-    span{
-      display:inline-block;
-      word-wrap:break-word;
-      white-space:normal;
-    }
+    vertical-align: top;
+    margin-right:10%;
   }
 }
 @media only screen and (max-width: 800px) {
@@ -124,4 +155,17 @@ ul {
     display: block;
   }
 }
+</style>
+
+<style lang="scss">
+  .el-checkbox {
+      .el-checkbox__label{
+        display:inline-block;
+        word-wrap:break-word;
+        white-space:normal;
+      }
+  }
+  .el-checkbox__input{
+    float: left;
+  }
 </style>

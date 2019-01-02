@@ -14,7 +14,7 @@
           <p>Learn more about other laws (like business licensing) that may apply.</p>
         </li>
         <li>
-          <el-checkbox>I agree to the Airbnb Experiences Additional Terms of Service and Guest Refund Policy.</el-checkbox>
+          <el-checkbox>I agree to the PopulStay Experiences Additional Terms of Service and Guest Refund Policy.</el-checkbox>
         </li>
         <li>
           <el-checkbox>I confirm that my descriptions and photos are my own, and accurately reflect my experience.</el-checkbox>

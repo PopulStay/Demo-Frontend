@@ -11,6 +11,24 @@
           <p class="label">PPS</p>
           <el-input v-model="$store.state.host.prices[0].cleanupServiceFee" type="number"></el-input>
         </li>
+        <h3>Long-term reservation</h3>
+        <li>
+          <p class="label">Weekly Discount</p>
+          <el-input type="number" v-model="$store.state.host.weeklyDiscount"></el-input>
+        </li>
+        <li>
+          <p class="label">Monthly Discount</p>
+          <el-input type="number" v-model="$store.state.host.monthlyDiscount"></el-input>
+        </li>
+        <h3>How long can tenants live?</h3>
+        <li>
+          <p class="label">Minimum number of days</p>
+          <el-input type="number" v-model="$store.state.host.guestMinStayNight"></el-input>
+        </li>
+        <li>
+          <p class="label">Maximum number of days</p>
+          <el-input type="number" v-model="$store.state.host.guestMaxStayNight"></el-input>
+        </li>
       </ul>
     </div>
   </div>
@@ -48,9 +66,19 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+  h3{
+    font-weight: 100;
+    font-family: Roboto-Medium;
+    font-size: 28px;
+    color: #4A4A4A;
+    letter-spacing: 1px;
+    margin: 0;
+    padding-bottom: 30px;
+  }
 .fixed {
   ul {
     li {
+      margin-bottom: 30px;
       .text {
         font-family: Roboto-Regular;
         font-size: 16px;

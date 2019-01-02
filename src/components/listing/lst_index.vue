@@ -563,7 +563,7 @@ export default {
         const content = `
         <el-popover placement="top" width="230" trigger="click" popper-class="map-popover">
           <div slot="reference" class="amap-overlay-text-container">
-            <div>￥${item.prices.length !== 0 ? item.prices[0].bestPrice : ''} </div>
+            <div>PPS ${item.prices.length !== 0 ? item.prices[0].bestPrice : ''} </div>
           </div>
           <div class="map">
             <img src="${item.picture.length !== 0 ? item.picture[0].bigPictureUrl : ''}" alt="">
@@ -871,6 +871,7 @@ $red-color: #F4436C;
         font-size: 28px;
         margin-top: 49px;
         margin-bottom: 10px;
+        vertical-align: top;
       }
       .function-p{
         width: 250px;
