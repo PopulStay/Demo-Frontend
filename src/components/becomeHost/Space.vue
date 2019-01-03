@@ -50,6 +50,9 @@
         </li>
       </ul>
     </div>
+
+     <button class="r-button next" :class="$store.state.host.placeName == '' || $store.state.host.description == '' || $store.state.host.picture.length == 0 ? 'disable' : null" :disabled="$store.state.host.placeName == '' || $store.state.host.description == '' || $store.state.host.picture.length == 0" @click="next" >Next</button>
+
    </div>
 </template>
 
@@ -91,6 +94,7 @@ export default {
 
     },
     handleAvatarSuccess (res, file) {
+      
       this.loading = false
       let pictureARR = {};
       pictureARR.title = "";
@@ -113,6 +117,10 @@ export default {
     },
     handleAvatarProgress (event, file, fileList) {
       this.loading = true
+    },
+    next () {
+      this.$router.push({path: '/becomeHost/Requirements', query: {id: this.$route.query.id}})
+      this.$store.state.becomehostTitle.space = 'space'
     }
   }
 }

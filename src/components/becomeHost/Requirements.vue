@@ -46,6 +46,12 @@
         </ul>
       </div>
     </div>
+
+    <button class="r-button next"
+            :class="$store.state.host.cancellationPolicyId == '' ? 'disable' : null"
+            :disabled="$store.state.host.cancellationPolicyId == ''"
+            @click="next">Next</button>
+
   </div>
 </template>
 
@@ -129,6 +135,10 @@
       },
       RemoveRules(inx){
         this.Addrules.splice(inx,1);
+      },
+      next () {
+        this.$router.push({path: '/becomeHost/Floating', query: {id: this.$route.query.id}})
+        this.$store.state.becomehostTitle.Requirements = 'Requirements'
       }
     },
     beforeDestroy(){

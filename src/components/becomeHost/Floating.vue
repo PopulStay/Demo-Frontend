@@ -33,6 +33,12 @@
         </li>
       </ul>
     </div>
+
+    <button class="r-button next"
+            :class="$store.state.host.prices[0].bestPrice == '' || $store.state.host.prices[0].minPrice == '' || $store.state.host.prices[0].maxPrice == '' ? 'disable' : null"
+            :disabled="$store.state.host.prices[0].bestPrice == '' || $store.state.host.prices[0].minPrice == '' || $store.state.host.prices[0].maxPrice == ''"
+            @click="next" >Next</button>
+
   </div>
 </template>
 
@@ -69,6 +75,10 @@ export default {
         }
       })
 
+    },
+    next () {
+      this.$router.push({path: '/becomeHost/ServiceFee', query: {id: this.$route.query.id}})
+      this.$store.state.becomehostTitle.Floating = 'Floating'
     }
   }
 }

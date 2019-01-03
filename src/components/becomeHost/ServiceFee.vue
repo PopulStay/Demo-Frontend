@@ -31,6 +31,12 @@
         </li>
       </ul>
     </div>
+
+    <button class="r-button next"
+            :class="$store.state.host.prices[0].cleanupServiceFee == '' || $store.state.host.weeklyDiscount == '' ? 'disable' : null"
+            :disabled="$store.state.host.prices[0].cleanupServiceFee == ''"
+            @click="next" >Next</button>
+
   </div>
 </template>
 

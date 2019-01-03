@@ -54,6 +54,25 @@
         </ul>
         <ul>
           <li>Get ready</li>
+
+          <li class="flex-wrap flex-center-between "
+              v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"
+              :class="this.$route.name == 'Floating' ? 'active' : ''" @click="route('Floating')">
+            Floating price<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Floating == 'Floating'"></i>
+          </li>
+
+          <li class="flex-wrap flex-center-between "
+              v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"
+              :class="this.$route.name == 'ServiceFee' ? 'active' : ''" @click="route('ServiceFee')">
+            Service Fee<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.ServiceFee == 'ServiceFee'"></i>
+          </li>
+
+          <li class="flex-wrap flex-center-between "
+              v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"
+              :class="this.$route.name == 'reservation' ? 'active' : ''" @click="route('reservation')">
+            Receive notification<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.reservation == 'reservation'"></i>
+          </li>
+
           <!--<li v-for="(item, index) in readyList" :key="index" class="flex-wrap flex-center-between "-->
            <!--:class="$route.name == item.url  ? 'active' : ''" v-if="stepIndex === 'readyList' || item.step"-->
            <!--@click="route(item, 'readyList')">-->
