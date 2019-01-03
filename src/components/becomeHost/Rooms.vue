@@ -9,7 +9,7 @@
       <ul class="rooms-list">
         <li>
           <span class="title">Guests</span>
-          <el-input-number v-model="$store.state.host.guestNumber" :min="0" :max="10"></el-input-number>
+          <el-input-number v-model="$store.state.host.guestNumber" :min="0" :max="10" @change="nextdisable"></el-input-number>
         </li>
         <li>
           <span class="title">Bedrooms</span>
@@ -67,6 +67,9 @@
         </ul>
       </div>
     </div>
+
+    <button class="r-button next" :class="arrangementsLen ? 'disable' : null" :disabled="arrangementsLen" @click="next">Next</button>
+
   </div>
 </template>
 
@@ -82,6 +85,7 @@ export default {
       num6: 1,
       arrangements:[],
       popover:999999,
+      arrangementsLen:true
     }
   },
   created () {
@@ -134,7 +138,7 @@ export default {
           utilitieslist.utilities = res.data.dataList;
 
           this.$store.state.host.arrangements.push(utilitieslist)
-
+          this.arrangementsLen = false
         }
       })
     },
@@ -144,7 +148,6 @@ export default {
         val.count = 0
       })
       this.popover = 99999;
-
     },
     Apply(index){
       var utility = [];
@@ -154,11 +157,17 @@ export default {
       })
       utility.utilities = utilityArr
       this.$store.state.host.arrangements[index] = utility
-      console.log(utility)
       this.popover = 99999
     },
     Delete(index){
       this.$store.state.host.arrangements.splice(index,1);
+    },
+    nextdisable(){
+      console.log(this.$store.state.host.guestNumber)
+    },
+    next () {
+        this.$router.push({path: '/becomeHost/Location', query: {id: this.$route.query.id}})
+      this.$store.state.becomehostTitle.Rooms = 'Rooms'
     }
   }
 }

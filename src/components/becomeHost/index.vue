@@ -8,22 +8,22 @@
           <li>Basics</li>
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'propertyTypes' ? 'active' : ''" @click="route('propertyTypes')">
-            Property types<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'propertyTypes'"></i>
+            Property types<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.propertyTypes == 'propertyTypes'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'Rooms' ? 'active' : ''" @click="route()">
-            Rooms<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'Rooms'"></i>
+              :class="this.$route.name == 'Rooms' ? 'active' : ''" @click="route('Rooms')">
+            Rooms<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Rooms == 'Rooms'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'Location' ? 'active' : ''" @click="route()">
-            Location<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'Location'"></i>
+              :class="this.$route.name == 'Location' ? 'active' : ''" @click="route('Location')">
+            Location<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Location == 'Location'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'Amenities' ? 'active' : ''" @click="route()">
-            Amenities<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'Amenities'"></i>
+              :class="this.$route.name == 'Amenities' ? 'active' : ''" @click="route('Amenities')">
+            Amenities<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Amenities == 'Amenities'"></i>
           </li>
 
           <!--<li v-for="(item, index) in BasicsList" :key="index" class="flex-wrap flex-center-between "-->
@@ -35,15 +35,15 @@
           <li>Space</li>
 
           <li class="flex-wrap flex-center-between "
-              v-if="$store.state.becomehostPath == 'Amenities'"
-              :class="this.$route.name == 'space' ? 'active' : ''" @click="route()">
-            About your space<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'space'"></i>
+              v-if="$store.state.becomehostTitle.Amenities == 'Amenities'"
+              :class="this.$route.name == 'space' ? 'active' : ''" @click="route('space')">
+            About your space<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.space == 'space'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              v-if="$store.state.becomehostPath == 'Amenities'"
-              :class="this.$route.name == 'Requirements' ? 'active' : ''" @click="route()">
-            Requirements<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostPath == 'Requirements'"></i>
+              v-if="$store.state.becomehostTitle.Amenities == 'Amenities'"
+              :class="this.$route.name == 'Requirements' ? 'active' : ''" @click="route('Requirements')">
+            Requirements<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"></i>
           </li>
 
           <!--<li v-for="(item, index) in SpaceList" :key="index" class="flex-wrap flex-center-between "-->

@@ -90,9 +90,23 @@ export default new vuex.Store({
           cleanupServiceFee:""
         }
       ],
-
     },
-    becomehostPath:''
+
+    becomehostTitle:{
+      propertyTypes:'',
+      Rooms:'',
+      Location:'',
+      Amenities:'',
+      space:'',
+      Requirements:'',
+      getReady:'',
+      Floating:'',
+      Fixed:'',
+      ServiceFee:'',
+      reservation:'',
+      address:'',
+      Submit:'',
+    }
   },
   getters: {
     introduceState: state => state.currentMenus

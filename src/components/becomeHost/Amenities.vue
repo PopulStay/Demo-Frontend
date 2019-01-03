@@ -4,6 +4,7 @@
       <div class="title">Basics</div>
       <h3>Amenities</h3>
     </div>
+
     <div class="amenities flex-wrap">
       <ul>
         <el-checkbox-group v-model="AmenitiesArr"  @change="changeAment">
@@ -11,6 +12,7 @@
         </el-checkbox-group>
       </ul>
     </div>
+
     <div class="safeAmenities">
       <h3>Safe Amenities</h3>
       <ul>
@@ -28,6 +30,8 @@
         </el-checkbox-group>
       </ul>
     </div>
+
+    <button class="r-button next" @click="next">Next</button>
 
   </div>
 </template>
@@ -119,6 +123,10 @@ export default {
         }
       })
 
+    },
+    next () {
+      this.$router.push({path: '/becomeHost/space', query: {id: this.$route.query.id}})
+      this.$store.state.becomehostTitle.Amenities = 'Amenities'
     }
   }
 

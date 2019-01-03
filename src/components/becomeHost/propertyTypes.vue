@@ -46,7 +46,7 @@
       </el-select>
     </div>
 
-    <button class="r-button next" :class="$store.state.host.propertyTypeId == '' ? 'disable' : null" :disabled="$store.state.host.propertyTypeId == ''" @click="next" v-if="$route.name !== 'success'">Next</button>
+    <button class="r-button next" :class="$store.state.host.propertyTypeId == '' ? 'disable' : null" :disabled="$store.state.host.propertyTypeId == ''" @click="next" >Next</button>
 
   </div>
 </template>
@@ -77,7 +77,7 @@ export default {
   },
   created () {
 
-    this.$get(this.placeUrl + '/place/properties').then((res) => {
+    this.$get(this.placeUrl + '/place/properties?pageNo=1&pageSize=99').then((res) => {
       this.propertyTypesList = res.data.propertyTypes.dataList
       this.placeTypesList = res.data.placeTypes.dataList
     })
@@ -102,10 +102,8 @@ export default {
       this.placeTypeid = e
     },
     next () {
-      if(this.$store.state.host.category != '' && this.placeType !='' && this.$store.state.host.propertyTypeId != ''){
-        this.$router.push({path: '/becomeHost/Rooms', query: {id: this.$route.query.id}})
-        this.$store.state.becomehostPath = 'propertyTypes'
-      }
+      this.$router.push({path: '/becomeHost/Rooms', query: {id: this.$route.query.id}})
+      this.$store.state.becomehostTitle.propertyTypes = 'propertyTypes'
     }
   }
 }

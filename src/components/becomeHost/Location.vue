@@ -65,6 +65,9 @@
         <!--</li>-->
       </ul>
     </div>
+
+     <button class="r-button next" :class="$store.state.host.citycode == '' || $store.state.host.streetLineOne == '' || $store.state.host.streetLineTwo == '' ? 'disable' : null" :disabled="$store.state.host.citycode == '' || $store.state.host.streetLineOne == '' || $store.state.host.streetLineTwo == ''" @click="next">Next</button>
+
    </div>
 </template>
 
@@ -148,6 +151,10 @@ export default {
           this.getCityList()
         }
       })
+    },
+    next () {
+      this.$router.push({path: '/becomeHost/Amenities', query: {id: this.$route.query.id}})
+      this.$store.state.becomehostTitle.Location = 'Location'
     }
   }
 }
