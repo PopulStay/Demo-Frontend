@@ -76,7 +76,7 @@ export default {
         AmenitiesArr.push(pamenityObj)
       })
 
-      this.$store.state.host.AmenitiesArr = AmenitiesArr;
+      this.$store.state.host.amenities = AmenitiesArr;
     },
     changesafeAment(){
       let changesafeAmentArr = [];
@@ -86,7 +86,7 @@ export default {
         changesafeAmentArr.push(psafeAmenityObj)
       })
 
-      this.$store.state.host.safeAmenitiesArr = changesafeAmentArr
+      this.$store.state.host.safeAmenities = changesafeAmentArr
     },
     changeSpaces(){
       let changeSpacesArr = [];
@@ -96,7 +96,7 @@ export default {
         changeSpacesArr.push(psafeAmenityObj)
       })
 
-      this.$store.state.host.SpacesArr = changeSpacesArr
+      this.$store.state.host.spaces = changeSpacesArr
     },
     getAmenities (id) {
 

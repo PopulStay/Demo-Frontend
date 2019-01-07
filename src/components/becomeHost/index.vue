@@ -5,7 +5,7 @@
       <div class="left">
         <h2>Become a host</h2>
         <ul>
-          <li>Basics</li>
+          <li class="cursordefault"><b>Basics</b></li>
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'propertyTypes' ? 'active' : ''" @click="route('propertyTypes')">
             Property types<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.propertyTypes == 'propertyTypes'"></i>
@@ -32,16 +32,14 @@
           <!--</li>-->
         </ul>
         <ul>
-          <li>Space</li>
+          <li class="cursordefault"><b>Space</b></li>
 
           <li class="flex-wrap flex-center-between "
-              v-if="$store.state.becomehostTitle.Amenities == 'Amenities'"
               :class="this.$route.name == 'space' ? 'active' : ''" @click="route('space')">
             About your space<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.space == 'space'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              v-if="$store.state.becomehostTitle.Amenities == 'Amenities'"
               :class="this.$route.name == 'Requirements' ? 'active' : ''" @click="route('Requirements')">
             Requirements<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"></i>
           </li>
@@ -53,24 +51,26 @@
           <!--</li>-->
         </ul>
         <ul>
-          <li>Get ready</li>
+          <li class="cursordefault"><b>Get ready</b></li>
 
           <li class="flex-wrap flex-center-between "
-              v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"
               :class="this.$route.name == 'Floating' ? 'active' : ''" @click="route('Floating')">
             Floating price<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Floating == 'Floating'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"
               :class="this.$route.name == 'ServiceFee' ? 'active' : ''" @click="route('ServiceFee')">
             Service Fee<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.ServiceFee == 'ServiceFee'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"
               :class="this.$route.name == 'reservation' ? 'active' : ''" @click="route('reservation')">
             Receive notification<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.reservation == 'reservation'"></i>
+          </li>
+
+          <li class="flex-wrap flex-center-between "
+              :class="this.$route.name == 'Submit' ? 'active' : ''" @click="route('Submit')">
+            Review & Submit<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Submit == 'Submit'"></i>
           </li>
 
           <!--<li v-for="(item, index) in readyList" :key="index" class="flex-wrap flex-center-between "-->
@@ -179,8 +179,15 @@ export default {
   },
   created () {
     this.userwallet();
-    console.log(this.$route.name)
+
     this.CurrentPath = this.$route.name
+
+    if(this.$route.query.id){
+      this.getPlace(this.$route.query.id)
+    }
+
+    this.$store.state.host.hostId = JSON.parse(localStorage.getItem('user')).user_id
+
   },
   methods: {
     next () {
@@ -321,6 +328,9 @@ $red-color: #F4436C;
           width: 100%;
           height: 100%;
           display: inline-block;
+        }
+        &.cursordefault{
+          cursor: default;
         }
       }
       .icon-CHECKMARK {

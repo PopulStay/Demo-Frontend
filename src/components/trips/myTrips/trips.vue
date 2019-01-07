@@ -25,13 +25,32 @@
           <div class="list-operation flex-wrap" :class="item.status == 'Pending' || item.status == 'Completed' ? 'flex-column-center flex-wrap' : ''">
             <div>
               <p class="details"><router-link :to="{path:'/trips/trips_details',query: {tripsitem:item,tripstitle:item.status}}">View details</router-link></p>
-              <p class="cancel" v-if="item.status != 'Completed'">Cancel</p>
+
+              <!--取消预定-->
+              <p class="cancel XY-cursorp" v-if="item.status == 'Pending'" @click="CancelBookingShow = true; bookingID = item.booking_id">Cancel</p>
+
+              <p class="cancel XY-cursorp" v-if="item.status == 'Upcoming' || item.status == 'Checked-in'" @click="CancelBookingShow = true; bookingID = item.booking_id">Refund</p>
             </div>
-            <div class="checkout" v-if="item.status == 'Pending'" @click="checkoutShow = true; PaymentHostID = item.booking_id">Payment</div>
-            <div class="checkout" v-if="item.status == 'Completed' && !item.have_place_review" @click="ReviewShow = true; PaymentHostID = item.booking_id">Review</div>
-            <div class="checkout disabledbtn" v-if="item.status == 'Completed' && item.have_place_review">Reviewed</div>
-            <!--<div class="checkout" v-else-if="item.status == 'Completed'">Confirm</div>-->
-            <!--<div class="checkout Edit" v-else-if="item.status == 'Cancelled'">-->
+
+            <!--支付-->
+            <div class="OrderButton" v-if="item.status == 'Pending' && item.currency != 'CNY'" @click="PaymentShow = true; bookingID = item.booking_id">Payment</div>
+            <div class="OrderButton" v-if="item.status == 'Pending' && item.currency == 'CNY'" @click="bookingID = item.booking_id;CNYPayment()">Payment</div>
+
+            <!--入住-->
+            <div class="OrderButton" v-if="item.status == 'Upcoming' && new Date(item.end_time).getTime() > new Date().getTime()" @click=" bookingID = item.booking_id;CheckInOut('1')">Check in</div>
+            <div class="OrderButton disabledbtn" v-if="item.status == 'Upcoming' && new Date(item.end_time).getTime() < new Date().getTime()" >Time out</div>
+
+            <!--退房-->
+            <div class="OrderButton" v-if="item.status == 'Checked-in' && new Date(item.end_time).getTime() > new Date().getTime()" @click="bookingID = item.booking_id;CheckInOut('0')">Check out</div>
+            <div class="OrderButton disabledbtn" v-if="item.status == 'Checked-in' && new Date(item.end_time).getTime() < new Date().getTime()" >Time out</div>
+
+            <!--评价-->
+            <div class="OrderButton" v-if="item.status == 'Completed' && !item.have_place_review" @click="ReviewShow = true; bookingID = item.booking_id">Review</div>
+            <div class="OrderButton disabledbtn" v-if="item.status == 'Completed' && item.have_place_review">Reviewed</div>
+
+
+            <!--<div class="OrderButton" v-else-if="item.status == 'Completed'">Confirm</div>-->
+            <!--<div class="OrderButton Edit" v-else-if="item.status == 'Cancelled'">-->
               <!--<p>Edit</p>-->
               <!--<p>Check-out time </p>-->
             <!--</div>-->
@@ -42,8 +61,18 @@
     <div class="no-data" v-else-if="islist == false">
       no data
     </div>
+
+    <!-- 取消预定  -->
+    <el-dialog  :visible.sync="CancelBookingShow"class="checkoutWrap">
+      <div class="input-wrap">
+        <input type="password" placeholder="Payment password" v-model="userPassword">
+      </div>
+      <div class="button" @click="CancelBooking">Cancel</div>
+    </el-dialog>
+
+
     <!-- 待定结账弹窗  -->
-    <el-dialog  :visible.sync="checkoutShow" class="checkoutWrap">
+    <el-dialog  :visible.sync="PaymentShow" class="checkoutWrap">
       <el-popover placement="bottom-start" width="300" trigger="manual" v-model="walletshow" popper-class="state-popover">
         <div slot="reference" class="walletList flex-wrap flex-center-between" @click="walletshow = !walletshow">
           <p>{{wallet}}</p>
@@ -65,16 +94,14 @@
     </el-dialog>
 
     <!-- 扫码付款弹窗  -->
-    <el-dialog  :visible.sync="cancelShow" width="22%" class="cancelWrap">
+    <el-dialog  :visible.sync="qr_codeshow" class="cancelWrap">
       <div class="text-wrap">
-        <p>Your balance is not enough.</p>
-        <p>Please use the Token wallet to scan the</p>
-        <p>QR code to make a payment.</p>
+        <p>Please open Alipay, sweep the payment</p>
       </div>
       <div class="asset">
-        <img src="../../../assets/images/trips/Asset.svg" alt="">
+        <img :src="qr_codeURL" alt="">
       </div>
-      <div class="button" @click="cancelShow = false">Cancel</div>
+      <div class="button" @click="qr_codeshow = false">Cancel</div>
     </el-dialog>
 
     <!-- 评价  -->
@@ -83,7 +110,7 @@
         <div class="c-left">
           <img src="../../../assets/images/trips/checked-in.png" alt="">
           <p></p>
-          <span>Booking ID: {{PaymentHostID}}</span>
+          <span>Booking ID: {{bookingID}}</span>
         </div>
         <div class="c-right">
           <ul>
@@ -138,7 +165,7 @@
 </template>
 
 <script>
-
+  import QRCode from 'qrcode'
 var moment = require('moment')
 const sha256 = require('js-sha256').sha256
 export default {
@@ -146,20 +173,22 @@ export default {
     return {
       tripsTabTitle: 'All',
       webxiang: 'nb',
-      tripsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
+      tripsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Collect', 'Completed', 'Cancelled', 'Refund'],
       tripsList: [],
       islist: true,
       list: [],
-      checkoutShow: false,
+      PaymentShow: false,
       ReviewShow: false,
-      cancelShow: false,
+      qr_codeshow:false,
+      qr_codeURL:'',
+      CancelBookingShow: false,
       user: '',
       wallet:'Please choose a wallet',
       walletID:0,
       walletList:[],
       walletshow:false,
       userPassword:'',
-      PaymentHostID:0,
+      bookingID:0,
       Review:{
         Accuracy:0,
         Location:0,
@@ -203,8 +232,14 @@ export default {
         case 'Completed':
           status = 'completed'
           break
+        case 'Collect':
+          status = 'pending_for_collect'
+          break
         case 'Cancelled':
           status = 'cancelled'
+          break
+        case 'Refund':
+          status = 'pending_for_refund'
           break
         default:
           status = ''
@@ -235,8 +270,14 @@ export default {
               case 'completed':
                 res.data.booking_list[i].status = 'Completed'
                 break
+              case 'pending_for_collect':
+                res.data.booking_list[i].status = 'Collect'
+                break
               case 'cancelled':
                 res.data.booking_list[i].status = 'Cancelled'
+                break
+              case 'pending_for_refund':
+                res.data.booking_list[i].status = 'Refund'
                 break
               default:
                 res.data.booking_list[i].status = 'Pending'
@@ -276,12 +317,37 @@ export default {
       this.currentPage = 1;
       this.getTripsList()
 
+    },
+    //取消预定
+    CancelBooking(){
+      console.log(this.userPassword)
+
+      this.$post(this.bookUrl + '/booking', {
+        action: 'cancelBooking',
+        data: {
+          user_id: this.user.user_id,
+          booking_id: this.bookingID,
+          encrypted_password:sha256(this.userPassword)
+        }
+      }).then((res) => {
+        if (res.msg.code == 200) {
+          this.$message({
+            customClass: 'centermessage',
+            showClose: true,
+            message: 'Check out successfully',
+            type: 'success',
+          })
+          this.CancelBookingShow = false
+          this.getTripsList()
+        }
+      })
 
     },
+    //支付
     paynext () {
 
       this.$post(this.paymentUrl + '/api/v1/payments/deposit', {
-        bookingId: this.PaymentHostID,
+        bookingId: this.bookingID,
         userWalletId: this.walletID,
         userWalletEncryptedPassword:sha256(this.userPassword)
       }).then((res) => {
@@ -290,8 +356,8 @@ export default {
         console.log(err)
       })
 
-      this.checkoutShow = false;
-
+      this.PaymentShow = false;
+      this.userPassword = "";
       this.$alert('Please wait, your order is being paid', 'Paying', {
         confirmButtonText: 'OK',
         callback: action => {
@@ -300,11 +366,34 @@ export default {
       });
 
     },
+    //支付宝支付
+    CNYPayment(){
+      this.$post(this.bookUrl + '/booking ', {
+        action:'getBookingQrCode',
+        data:{
+          booking_id:this.bookingID
+        }
+      }).then((res) => {
+        if(res.msg.code == 200){
+
+          QRCode.toDataURL(res.data.qr_code)
+            .then(url => {
+
+              this.qr_codeshow=true;
+              this.qr_codeURL=url
+            })
+            .catch(err => {
+              console.error(err)
+            })
+        }
+      })
+    },
+    //评论
     SubmitReview(){
 
       this.$post(this.placeUrl + '/place/place_review', {
         userId: this.user.user_id,
-        bookId: this.PaymentHostID,
+        bookId: this.bookingID,
         message: this.Review.Description,
         accuracy_score:  this.Review.Accuracy,
         checkin_score: this.Review.Checkin,
@@ -338,6 +427,53 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getTripsList()
+    },
+    //入住
+    CheckInOut(type){
+      if(type == 1){
+
+        this.$post(this.bookUrl + '/booking', {
+          action:"bookingCheckin",
+          data:{
+            guest_id: this.user.user_id,
+            booking_id: this.bookingID
+          }
+        }).then((res) => {
+          console.log(res)
+          if(res.msg.code == 200){
+            this.$message({
+              customClass:"centermessage",
+              showClose: true,
+              message: 'Successful stay',
+              type: 'success',
+            });
+            this.getTripsList()
+          }
+        })
+
+      }else{
+
+        this.$post(this.bookUrl + '/booking', {
+          action:"bookingCheckout",
+          data:{
+            user_id: this.user.user_id,
+            booking_id: this.bookingID
+          }
+        }).then((res) => {
+          console.log(res)
+          if(res.msg.code == 200){
+            this.$message({
+              customClass:"centermessage",
+              showClose: true,
+              message: 'Check out successfully',
+              type: 'success',
+            });
+            this.getTripsList()
+          }
+        })
+
+      }
+
     }
   }
 }
@@ -453,7 +589,7 @@ $red-color: #F4436C;
       letter-spacing: 0.88px;
       line-height: 30px;
     }
-    .checkout {
+    .OrderButton {
       display: inline-block;
       border-radius: 3px;
       width: 130px;
@@ -697,6 +833,7 @@ $red-color: #F4436C;
 .checkoutWrap .el-dialog__body {
   padding: 30px 40px;
 }
+.cancelWrap .el-dialog,
 .checkoutWrap .el-dialog{
   max-width: 440px;
   min-width: 300px;

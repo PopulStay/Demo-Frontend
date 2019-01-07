@@ -52,12 +52,12 @@ export default new vuex.Store({
     ],
     introduceState: false,
     host: {
-      hostId:JSON.parse(localStorage.getItem('user')).user_id,
+      hostId:'',
       category: '',
       propertyTypeId:'',
       placeName:'',
       description:'',
-      picture:[],
+      pictures:[],
       weeklyDiscount:'',
       monthlyDiscount:'',
       checkOutTime:'',
@@ -75,11 +75,10 @@ export default new vuex.Store({
       availableCheckinTimeTo:'',
       guestMinStayNight:'',
       guestMaxStayNight:'',
-      AmenitiesArr:[],
-      safeAmenitiesArr:[],
-      SpacesArr:[],
-      userwallet:'',
-      RulesArr:[],
+      amenities:[],
+      safeAmenities:[],
+      spaces:[],
+      rules:[],
       cancellationPolicyId:'',
       prices:[
         {
@@ -91,7 +90,6 @@ export default new vuex.Store({
         }
       ],
     },
-
     becomehostTitle:{
       propertyTypes:'',
       Rooms:'',
@@ -106,7 +104,8 @@ export default new vuex.Store({
       reservation:'',
       address:'',
       Submit:'',
-    }
+    },
+    becomehostPlaceID:''
   },
   getters: {
     introduceState: state => state.currentMenus

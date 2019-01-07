@@ -10,19 +10,51 @@
       <ul>
         <h5>By submitting, I confirm the following is true:</h5>
         <li>
-          <el-checkbox> My experience complies with local laws.</el-checkbox>
+          <el-checkbox v-model="confirm1"> My experience complies with local laws.</el-checkbox>
           <p>Learn more about other laws (like business licensing) that may apply.</p>
         </li>
         <li>
-          <el-checkbox>I agree to the PopulStay Experiences Additional Terms of Service and Guest Refund Policy.</el-checkbox>
+          <el-checkbox v-model="confirm2">I agree to the PopulStay Experiences Additional Terms of Service and Guest Refund Policy.</el-checkbox>
         </li>
         <li>
-          <el-checkbox>I confirm that my descriptions and photos are my own, and accurately reflect my experience.</el-checkbox>
+          <el-checkbox v-model="confirm3">I confirm that my descriptions and photos are my own, and accurately reflect my experience.</el-checkbox>
         </li>
       </ul>
     </div>
+
+    <button class="r-button next"
+            :class="confirm1 == '' || confirm2 == '' || confirm3 == ''  ? 'disable' : null"
+            :disabled="confirm1 == '' || confirm2 == '' || confirm3 == ''"
+            @click="next" >Next</button>
   </div>
 </template>
+<script>
+  export default {
+    data () {
+      return {
+        confirm1:'',
+        confirm2:'',
+        confirm3:'',
+      }
+    },
+    created () {
+
+    },
+    methods: {
+      next () {
+
+        this.$post(this.placeUrl + '/place', this.$store.state.host).then((res) => {
+          if (res.code === 200) {
+              this.$router.push({path: '/becomeHost/success', query: {id: this.$route.query.id}})
+            this.$store.state.becomehostTitle.Submit = 'Submit'
+            this.$store.state.becomehostPlaceID = res.data
+          }
+        })
+
+      }
+    }
+  }
+</script>
 
 <style lang="scss" scoped>
 .submit {

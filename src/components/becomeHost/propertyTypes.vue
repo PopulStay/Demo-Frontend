@@ -82,9 +82,6 @@ export default {
       this.placeTypesList = res.data.placeTypes.dataList
     })
 
-    if(this.$route.query.id){
-      this.getPlace(this.$route.query.id)
-    }
   },
   methods: {
     getPlace(id){

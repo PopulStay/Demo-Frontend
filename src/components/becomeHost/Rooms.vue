@@ -152,11 +152,15 @@ export default {
     Apply(index){
       var utility = [];
       var utilityArr = [];
+
       this.$store.state.host.arrangements[index].utilities.forEach((val, key) => {
         utilityArr.push(val)
       })
+
       utility.utilities = utilityArr
+
       this.$store.state.host.arrangements[index] = utility
+
       this.popover = 99999
     },
     Delete(index){
@@ -166,7 +170,7 @@ export default {
       console.log(this.$store.state.host.guestNumber)
     },
     next () {
-        this.$router.push({path: '/becomeHost/Location', query: {id: this.$route.query.id}})
+      this.$router.push({path: '/becomeHost/Location', query: {id: this.$route.query.id}})
       this.$store.state.becomehostTitle.Rooms = 'Rooms'
     }
   }

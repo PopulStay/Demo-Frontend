@@ -30,7 +30,7 @@
         </li>
         <li>
           <p class="label">Need Notice Before Time</p>
-          <el-select v-model="$store.state.host.needNoticeBeforeTime" @change="needNoticeDayFUN">
+          <el-select v-model="$store.state.host.needNoticeBeforeTime">
             <el-option
               v-for="item in 24"
               v-if="item > 5 "
@@ -64,6 +64,21 @@
         </li>
       </ul>
     </div>
+
+    <button class="r-button next"
+            :class="$store.state.host.checkOutTime == '' ||
+                    $store.state.host.needNoticeDay == '' ||
+                    $store.state.host.needNoticeBeforeTime == '' ||
+                    $store.state.host.availableCheckinTimeFrom == '' ||
+                    $store.state.host.availableCheckinTimeTo == '' ? 'disable' : null"
+            :disabled="$store.state.host.checkOutTime == '' ||
+                    $store.state.host.needNoticeDay == '' ||
+                    $store.state.host.needNoticeBeforeTime == '' ||
+                    $store.state.host.availableCheckinTimeFrom == '' ||
+                    $store.state.host.availableCheckinTimeTo == ''"
+            @click="next" >Next</button>
+
+
   </div>
 </template>
 
@@ -126,6 +141,10 @@ export default {
     },
     needNoticeDayFUN(e){
       this.$store.state.host.needNoticeDay = e
+    },
+    next () {
+      this.$router.push({path: '/becomeHost/Submit', query: {id: this.$route.query.id}})
+      this.$store.state.becomehostTitle.reservation = 'reservation'
     }
   }
 }

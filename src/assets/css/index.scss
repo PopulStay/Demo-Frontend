@@ -320,6 +320,10 @@ input[type="number"]{-moz-appearance:textfield;}
     letter-spacing: 0.35px;
 }
 
+.el-message.is-closable .el-message__content{
+  text-align: center;
+}
+
 .el-message-box .el-button--primary{
     background-color: #F4436C;
     border-color: #F4436C;

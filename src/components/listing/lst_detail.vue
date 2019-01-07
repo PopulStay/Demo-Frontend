@@ -8,10 +8,10 @@
       <div class="lst-home-right">
         <div class="top flex-wrap flex-center-between">
           <div class="top-wrap flex-wrap flex-center">
-            <p class="pps-p">{{data.prices[0].currency}}</p>
-            <i class="iconfont icon-54"></i>
+            <p class="pps-p">{{this.book_detail.currency}}</p>
+            <!--<i class="iconfont icon-54"></i>-->
           </div>
-           <p class="top-wrap-p"><em>{{data.prices[0].currency}} {{book_detail.total_price}}</em>per night</p>
+           <p class="top-wrap-p"><em>{{this.book_detail.currency}} {{book_detail.total_price}}</em>per night</p>
         </div>
         <div class="detail-content">
           <div class="content-wrap">
@@ -40,16 +40,16 @@
 
         <div class="gus-wrap flex-wrap flex-center-between">
           <div class="gus-div">
-            <div class="left">{{data.prices[0].currency}} {{(new Date(book_detail.end_time).getTime() - new Date(book_detail.strat_time).getTime())/ 1000 / 60 / 60 / 24}} nights</div>
+            <div class="left">{{this.book_detail.currency}} {{(new Date(book_detail.end_time).getTime() - new Date(book_detail.strat_time).getTime())/ 1000 / 60 / 60 / 24}} nights</div>
             <div class="left">Cleaning Service fee</div>
             <!-- <div class="left">Service fee</div> -->
             <div class="left">Total</div>
           </div>
           <div class="gus-div ">
-            <div class="left">{{data.prices[0].currency}} {{data.prices[0].bestPrice}}</div>
+            <div class="left">{{this.book_detail.currency}} {{data.prices[0].bestPrice}}</div>
             <div class="left">{{book_detail.cleanup_service_fee}}</div>
             <!-- <div class="left">7.5</div> -->
-            <div class="left">{{data.prices[0].currency}} {{book_detail.total_price}}</div>
+            <div class="left">{{this.book_detail.currency}} {{book_detail.total_price}}</div>
           </div>
         </div>
         <div class="foot-wrap flex-wrap flex-center-between">
@@ -214,7 +214,8 @@
         <!--<textarea name="" id="" class="textarea-say"></textarea>-->
         <!--<p class="spilt-p"></p>-->
         <!--<p class="detail-terms-p">I agree to the <em>House Rules</em>,<em> Terms and Conditions</em>,<em> Privacy Policy</em>,<em> Cancellation Policy</em>, and the <em>Guest Refund Policy</em>. I also agree to pay the total amount shown, which includes Service Fees.</p>-->
-        <button class="confirm-btn" style="margin-top:47px;" @click="pswInput = true">Confirm and pay</button>
+        <button class="confirm-btn" style="margin-top:47px;" @click="CNYpaynext" v-if="this.book_detail.currency == 'CNY'">Confirm and pay</button>
+        <button class="confirm-btn" style="margin-top:47px;" @click="pswInput = true" v-else>Confirm and pay</button>
         <!-- <p class="h1-p">Nearby landmarks</p>
         <el-amap></el-amap> -->
       </div>
@@ -252,6 +253,19 @@
       </el-dialog>
 
     </div>
+
+    <!-- 二维码 -->
+
+    <el-dialog  :visible.sync="qr_codeshow" width="22%" class="cancelWrap">
+      <div class="text-wrap">
+        <p>Please open Alipay, sweep the payment</p>
+      </div>
+      <div class="asset">
+        <img :src="qr_codeURL" alt="">
+      </div>
+      <div class="button" @click="qr_codeshow = false">Cancel</div>
+    </el-dialog>
+
   </div>
 </template>
 <script>
@@ -260,12 +274,12 @@ import banner2 from '../../assets/images/index/banner-2.png'
 import banner3 from '../../assets/images/index/banner-3.png'
 import banner4 from '../../assets/images/index/banner-4.png'
 
+import QRCode from 'qrcode'
+
 const sha256 = require('js-sha256').sha256
 
 export default {
   name: 'listing-detail',
-  components: {
-  },
   data () {
     return {
       isLogin: false,
@@ -310,7 +324,9 @@ export default {
       data:{},
       listName: '',
       placeName:'',
-      guest_number:0
+      guest_number:0,
+      qr_codeshow:false,
+      qr_codeURL:''
     }
   },
   methods: {
@@ -338,23 +354,45 @@ export default {
     },
     paynext () {
 
-      this.$post(this.paymentUrl + '/api/v1/payments/deposit', {
-        bookingId: this.book_detail.booking_id,
-        userWalletId: this.walletID,
-        userWalletEncryptedPassword:sha256(this.userPassword)
-      }).then((res) => {
-        console.log(res)
-      }).catch(err => {
-        console.log(err)
-      })
+        this.$post(this.paymentUrl + '/api/v1/payments/deposit', {
+          bookingId: this.book_detail.booking_id,
+          userWalletId: this.walletID,
+          userWalletEncryptedPassword:sha256(this.userPassword)
+        }).then((res) => {
+          console.log(res)
+        }).catch(err => {
+          console.log(err)
+        })
 
-      this.$alert('The transaction is going on, please check the order status in time.', 'Paying', {
-        confirmButtonText: 'OK',
-        callback: action => {
-          location.reload();
+        this.$alert('The transaction is going on, please check the order status in time.', 'Paying', {
+          confirmButtonText: 'OK',
+          callback: action => {
+            location.reload();
+          }
+        });
+
+    },
+    CNYpaynext(){
+      this.$post(this.bookUrl + '/booking ', {
+        action:'getBookingQrCode',
+        data:{
+          booking_id:this.book_detail.booking_id
         }
-      });
+      }).then((res) => {
+        if(res.msg.code == 200){
 
+          QRCode.toDataURL(res.data.qr_code)
+          .then(url => {
+
+            this.qr_codeshow=true;
+            this.qr_codeURL=url
+          })
+          .catch(err => {
+            console.error(err)
+          })
+
+        }
+      })
     },
     getPlace (id) {
       var that = this
@@ -412,9 +450,10 @@ export default {
       this.$router.go(-1)
     }else{
       this.book_detail = JSON.parse(this.$route.query.book_detail)
+      this.book_detail.currency = this.book_detail.currency.replace("'","")
+      this.book_detail.currency = this.book_detail.currency.replace("'","")
       this.guest_number = this.$route.query.guest_number
     }
-    // document.getElementsByClassName('footer')[0].style.cssText = 'border-top: none;'
   }
 }
 </script>
@@ -842,6 +881,41 @@ $red-color: #F4436C;
   }
 }
 
+.cancelWrap {
+
+  .text-wrap {
+    padding: 10px 0;
+    p {
+      font-family: Roboto-Regular;
+      font-size: 16px;
+      color: #4A4A4A;
+      letter-spacing: 0;
+      text-align: center;
+      line-height: 22px;
+      cursor: pointer;
+    }
+  }
+  .asset {
+    text-align: center;
+    padding: 25px 0;
+  }
+  .button {
+    width: 90%;
+    height: 50px;
+    margin: 0 auto;
+    background: $red-color;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    color: #FFFFFF;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 4px;
+    font-family: Roboto-Medium;
+  }
+}
+
 .walletList{
   height: 60px;
 
@@ -904,6 +978,13 @@ $red-color: #F4436C;
 }
 </style>
 <style lang="scss">
+
+.cancelWrap {
+
+  .el-dialog {
+    min-width: 440px;
+  }
+}
 .lst-detail .el-input__inner{
   // max-width: 112px;
   // width: 60px;

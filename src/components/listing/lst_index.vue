@@ -151,10 +151,16 @@
         <div>
           <div class="top flex-wrap flex-center-between">
             <div class="top-wrap flex-wrap flex-center">
-              <p class="pps-p">PPS</p>
-              <!--<i class="iconfont icon-54"></i>-->
+              <el-dropdown  trigger="click" @command="CurrentCurrencyfun">
+                <span class="el-dropdown-link pps-p XY-cursorp">
+                  {{CurrentCurrency}}<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item class="pps-p" :command="item" v-for="(item,index) in currencyType" :key="index" >{{item}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </div>
-            <p class="top-wrap-p"><em>PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p>
+            <p class="top-wrap-p"><em>{{CurrentCurrency}} {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p>
           </div>
           <div class="select-time flex-wrap">
             <div class="select-time-start flex-1">
@@ -219,17 +225,17 @@
           <div class="gus-wrap flex-wrap flex-center-between " v-if="timeStart != ''">
             <div class="gus-div ">
               <!-- <div class="left">PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}} x {{time | days}} nights</div> -->
-              <div class="left">PPS {{days('days')}} nights</div>
+              <div class="left">{{CurrentCurrency}} {{days('days')}} nights</div>
               <!-- days('days') -->
               <div class="left">Cleaning Service fee</div>
               <!-- <div class="left">Service fee</div> -->
               <div class="left">Total</div>
             </div>
             <div class="gus-div ">
-              <div class="left">PPS {{days('place_price')}}</div>
+              <div class="left">{{CurrentCurrency}} {{days('place_price')}}</div>
               <div class="left">{{days('clean')}}</div>
               <!-- <div class="left">{{days('service')}}</div> -->
-              <div class="left">PPS {{days('total_price')}}</div>
+              <div class="left">{{CurrentCurrency}} {{days('total_price')}}</div>
             </div>
           </div>
           <button @click="Verify">Book</button>
@@ -247,10 +253,10 @@
        <div class="lst-home-right lst-home-right-xl" :class="isShow?'lst-home-right-xl-fix':'lst-home-right-xl-sta'">
         <div class="top flex-wrap flex-center-between">
           <div class="top-wrap flex-wrap flex-center">
-            <p class="pps-p">PPS</p>
+            <p class="pps-p">{{CurrentCurrency}}</p>
             <i class="iconfont icon-54"></i>
           </div>
-          <p class="top-wrap-p"><em>PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p>
+          <p class="top-wrap-p"><em>{{CurrentCurrency}} {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p>
         </div>
         <div class="select-time flex-wrap">
           <div class="select-time-start flex-1">
@@ -425,7 +431,9 @@ export default {
         }
       },
       isShow: false,
-      unavailableDate:[]
+      unavailableDate:[],
+      currencyType:['PPS','CNY'],
+      CurrentCurrency:'PPS'
     }
   },
   created () {
@@ -438,7 +446,7 @@ export default {
     this.endTextTime = String(this.timeEnd).split(' ')
     this.startTimestamp = Date.parse(this.timeStart)
     this.endTimestamp = Date.parse(this.timeEnd)
-    this.getBookInfo()
+    // this.getBookInfo()
 
   },
   methods: {
@@ -468,23 +476,41 @@ export default {
 
         if(user.user_identity_confirmation.document_verified === 'true' && user.user_identity_confirmation.email_verified === 'true' && user.user_identity_confirmation.phone_verified === 'true' ){
 
-          this.$post(this.bookUrl + '/booking ', {
-            action: 'makeBooking',
-            data: {
-              user_id: user.user_id,
-              place_id: this.place_id,
-              check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
-              check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
-              guest_number: this.num1 + this.num2,
-              currency: 'PPS'
-            }
-          }).then((res) => {
-            if (res.msg.code === 200) {
-              this.$router.push({path: 'lstDetail', query: {book_detail: JSON.stringify(res.data),guest_number:this.num1 + this.num2}})
-            }else if(res.msg.code === 952){
+          if(this.CurrentCurrency == "CNY"){
+            this.$post(this.bookUrl + '/booking ', {
+              action: 'makeBooking',
+              data: {
+                user_id: user.user_id,
+                place_id: this.place_id,
+                check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
+                check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
+                guest_number: this.num1 + this.num2,
+                currency: this.CurrentCurrency,
+                channel:"alipay"
+              }
+            }).then((res) => {
+              if (res.msg.code === 200) {
+                this.$router.push({path: 'lstDetail', query: {book_detail: JSON.stringify(res.data),guest_number:this.num1 + this.num2}})
+              }
+            })
+          }else{
+            this.$post(this.bookUrl + '/booking ', {
+              action: 'makeBooking',
+              data: {
+                user_id: user.user_id,
+                place_id: this.place_id,
+                check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
+                check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
+                guest_number: this.num1 + this.num2,
+                currency: this.CurrentCurrency,
+              }
+            }).then((res) => {
+              if (res.msg.code === 200) {
+                this.$router.push({path: 'lstDetail', query: {book_detail: JSON.stringify(res.data),guest_number:this.num1 + this.num2}})
+              }
+            })
+          }
 
-            }
-          })
 
         }else {
           this.isVerify = !this.isVerify
@@ -528,6 +554,7 @@ export default {
         code: val
       }).then((res) => {
         if (res.code === 200) {
+          console.log(res)
           this.listName = res.data.fullAddress
         }
       })
@@ -635,6 +662,9 @@ export default {
     handleBook () {
       var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       console.log(scrollTop)
+    },
+    CurrentCurrencyfun(command){
+      this.CurrentCurrency = command
     }
 
   },
@@ -1286,4 +1316,15 @@ $red-color: #F4436C;
     font-size: 14px;
   }
 }
+
+ .el-dropdown-menu{
+   box-shadow: 2px 10px 20px 0 rgba(0,0,0,0.15);
+   li.pps-p{
+     font-size: 18px;
+     color: #4a4a4a;
+     &:hover{
+       color: #F4436C;
+     }
+   }
+ }
 </style>

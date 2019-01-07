@@ -9,7 +9,7 @@
         <li>
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">PPS</p>
-          <el-input v-model="$store.state.host.prices[0].cleanupServiceFee" type="number"></el-input>
+          <el-input type="number" v-model="$store.state.host.prices[0].cleanupServiceFee"></el-input>
         </li>
         <h3>Long-term reservation</h3>
         <li>
@@ -33,8 +33,16 @@
     </div>
 
     <button class="r-button next"
-            :class="$store.state.host.prices[0].cleanupServiceFee == '' || $store.state.host.weeklyDiscount == '' ? 'disable' : null"
-            :disabled="$store.state.host.prices[0].cleanupServiceFee == ''"
+            :class="$store.state.host.prices[0].cleanupServiceFee == '' ||
+                    $store.state.host.weeklyDiscount == '' ||
+                    $store.state.host.monthlyDiscount == '' ||
+                    $store.state.host.guestMinStayNight == '' ||
+                    $store.state.host.guestMaxStayNight == '' ? 'disable' : null"
+            :disabled="$store.state.host.prices[0].cleanupServiceFee == '' ||
+                    $store.state.host.weeklyDiscount == '' ||
+                    $store.state.host.monthlyDiscount == '' ||
+                    $store.state.host.guestMinStayNight == '' ||
+                    $store.state.host.guestMaxStayNight == ''"
             @click="next" >Next</button>
 
   </div>
@@ -66,6 +74,10 @@ export default {
         }
       })
 
+    },
+    next () {
+      this.$router.push({path: '/becomeHost/reservation', query: {id: this.$route.query.id}})
+      this.$store.state.becomehostTitle.ServiceFee = 'ServiceFee'
     }
   }
 }

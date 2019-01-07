@@ -113,7 +113,8 @@
         this.rulesArr.forEach((val,key) =>{
           if(val != 5316){
             let pamenityObj = {};
-            pamenityObj['placeRuleId'] = val
+            pamenityObj['pruleId'] = val
+            pamenityObj['yes'] = 1
             RulesArr.push(pamenityObj)
           }
         })
@@ -125,8 +126,9 @@
           this.Addrules.push(this.AddInput)
 
           let AddpamenityObj = {};
-          AddpamenityObj['placeRuleId'] = 5316
+          AddpamenityObj['pruleId'] = 5316
           AddpamenityObj['additionalTitle'] = this.AddInput
+          AddpamenityObj['yes'] = 1
 
           this.storeAddrules.push(AddpamenityObj)
 
@@ -144,19 +146,20 @@
     beforeDestroy(){
 
       this.storerulesArr.forEach((val,key) =>{
-        this.$store.state.host.RulesArr.push(val)
+        this.$store.state.host.rules.push(val)
       })
 
       let storeAddrules = [];
       this.Addrules.forEach((val,key) =>{
         let AddpamenityObj = {};
-        AddpamenityObj['placeRuleId'] = 5316
+        AddpamenityObj['pruleId'] = 5316
         AddpamenityObj['additionalTitle'] = val
+        AddpamenityObj['yes'] = 1
         storeAddrules.push(AddpamenityObj)
       })
 
       storeAddrules.forEach((val,key) =>{
-        this.$store.state.host.RulesArr.push(val)
+        this.$store.state.host.rules.push(val)
       })
 
     }

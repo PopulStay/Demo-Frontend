@@ -23,8 +23,8 @@
           <div class="photos-wrap">
 
            <el-upload
-             v-if="$store.state.host.picture.length"
-              v-for="(item,index) in $store.state.host.picture"
+             v-if="$store.state.host.pictures.length"
+              v-for="(item,index) in $store.state.host.pictures"
               :key="index"
               class="avatar-uploader"
               action=""
@@ -51,7 +51,7 @@
       </ul>
     </div>
 
-     <button class="r-button next" :class="$store.state.host.placeName == '' || $store.state.host.description == '' || $store.state.host.picture.length == 0 ? 'disable' : null" :disabled="$store.state.host.placeName == '' || $store.state.host.description == '' || $store.state.host.picture.length == 0" @click="next" >Next</button>
+     <button class="r-button next" :class="$store.state.host.placeName == '' || $store.state.host.description == '' || $store.state.host.pictures.length == 0 ? 'disable' : null" :disabled="$store.state.host.placeName == '' || $store.state.host.description == '' || $store.state.host.pictures.length == 0" @click="next" >Next</button>
 
    </div>
 </template>
@@ -87,23 +87,23 @@ export default {
           }
 
           if(res.data.picture){
-            this.$store.state.host.picture = res.data.picture;
+            this.$store.state.host.pictures = res.data.picture;
           }
         }
       })
 
     },
     handleAvatarSuccess (res, file) {
-      
+
       this.loading = false
       let pictureARR = {};
       pictureARR.title = "";
       pictureARR.placePart = "";
-      pictureARR.bigUrl = res.data.bigUrl;
+      pictureARR.bigPictureUrl = res.data.bigUrl;
       pictureARR.mediumPictureUrl = res.data.mediumUrl;
       pictureARR.originalUrl = res.data.originalUrl;
       pictureARR.smallPictureUrl = res.data.smallUrl;
-      this.$store.state.host.picture.push(pictureARR);
+      this.$store.state.host.pictures.push(pictureARR);
 
     },
     handleAvatarError (errs, file, fileList) {

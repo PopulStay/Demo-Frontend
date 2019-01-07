@@ -3,13 +3,27 @@
       <i class="icon iconfont icon-success"></i>
       <h3>Thank you! You’ve successfully submitted your property.</h3>
       <div class="flex-wrap button-wrap">
-        <div class="r-button button">View my property</div>
-        <div class="r-button button">
-          <router-link to="/trips/editProfile">Edit submission</router-link>
-        </div>
+        <div class="r-button button" @click="success">View my property</div>
+
+        <!--<div class="r-button button">-->
+          <!--<router-link to="/trips/editProfile">Edit submission</router-link>-->
+        <!--</div>-->
       </div>
   </div>
 </template>
+
+<script>
+  export default {
+    data(){
+
+    },
+    methods:{
+      success(){
+        this.$router.push({path: '/listing/lstHome', query: {id: this.$store.state.becomehostPlaceID}})
+      }
+    }
+  }
+</script>
 
 <style lang="scss" scoped>
 .content {
