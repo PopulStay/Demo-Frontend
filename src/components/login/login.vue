@@ -96,7 +96,7 @@ export default {
     },
     toReset () {
       this.$store.state.show_login = false
-      this.$store.state.show_reset = true
+      this.$store.state.show_verify = true
     },
     toSignUp () {
       this.$store.state.show_login = false

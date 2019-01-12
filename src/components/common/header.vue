@@ -4,7 +4,7 @@
       <div class="flex-wrap flex-align-center flex-1">
         <router-link to="/"><img src="../../assets/images/populstay-logo-full-colour.svg" alt="" v-show="!searchBarFixed"></router-link>
         <router-link to="/"><img src="../../assets/images/populstay-logomark.svg" alt="" v-show="searchBarFixed"></router-link>
-        <el-popover placement="bottom" width="520" trigger="manual"  v-model="searchListShow" popper-class="inpput_keyList">
+        <el-popover placement="bottom" width="520" trigger="manual"  v-model="searchListShow" popper-class="inpput_keyList" v-if="searchBarFixed">
           <ul>
             <li class="flex-wrap flex-align-center"  v-for="(item, index) in searchList" :key="index" @click="selectSeach(item)">
               <i class="icon iconfont icon-location3dingwei3"></i>
@@ -144,9 +144,10 @@ export default {
       var offsetTop = document.querySelector('#header').offsetTop
       if (scrollTop > offsetTop) {
         this.searchBarFixed = true
-        this.searchList = false
       } else {
         this.searchBarFixed = false
+        this.searchValue = ""
+        this.searchListShow = false
       }
       // var Before_scollH = 0
       // var differH = scrollTop - Before_scollH;
@@ -185,7 +186,8 @@ export default {
         this.$store.commit('userUpdate', null)
         this.userData = null
         this.$router.push('/')
-      })
+      }).catch(() => {
+      });
     }
   },
   destroyed () {

@@ -25,7 +25,7 @@
                 <p class="check">Check-out</p>
               </div>
               <div class="text flex-2">
-                <p class="check">{{this.$route.query.tripsitem.strat_time}}</p>
+                <p class="check">{{this.$route.query.tripsitem.start_time}}</p>
                 <p class="check">{{this.$route.query.tripsitem.end_time}}</p>
                 <p class="check">{{parseInt(this.$route.query.tripsitem.cha_time)}} night</p>
               </div>
@@ -85,8 +85,9 @@
             <div class="button r-button" v-else-if="this.$route.query.title === 'Completed'">Delete</div>
             <div class="button r-button" v-else-if="this.$route.query.title === 'Cancelled'">Delete</div>
 
-            <div class="button r-button" @click="cancel" v-if="this.$route.query.title !== 'Completed' && this.$route.query.title !== 'Cancelled'">Cancel</div>
-            <div class="button r-button" @click="cancel" v-else>Share</div>
+            <!--<div class="button r-button" @click="cancel" v-if="this.$route.query.title !== 'Completed' && this.$route.query.title !== 'Cancelled'">Cancel</div>-->
+            <!--<div class="button r-button" @click="cancel" v-else>Share</div>-->
+            <div class="button r-button" @click="Back">Back</div>
           </div>
         </div>
       </div>
@@ -152,14 +153,15 @@ export default {
       this.$router.push('/trips/tripsList')
     },
     tripsTabClick (item) {
-
       this.$router.push({
         path: '/trips/tripsList',
         query: {
           tripsitem: item
         }
       })
-
+    },
+    Back(){
+      this.$router.go(-1)
     }
   }
 }

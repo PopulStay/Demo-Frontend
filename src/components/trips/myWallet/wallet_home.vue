@@ -77,7 +77,6 @@ export default {
     },
     setDefault (event) {
       let user = JSON.parse(localStorage.getItem('user'))
-      console.log(event.target.id)
       this.$post(this.userUrl + '/user', {
         action: 'updateUserWallet',
         data: {

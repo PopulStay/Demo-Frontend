@@ -33,6 +33,7 @@
     </div>
 
     <div class="propertyTypes">
+
       <el-select v-model="$store.state.host.propertyTypeId" placeholder="Please choose your  property type">
         <el-option
           v-for="item in propertyTypesList"
@@ -44,6 +45,7 @@
           <span class="icon-CHECKMARK-text">{{item.propertyName}}</span>
         </el-option>
       </el-select>
+
     </div>
 
     <button class="r-button next" :class="$store.state.host.propertyTypeId == '' ? 'disable' : null" :disabled="$store.state.host.propertyTypeId == ''" @click="next" >Next</button>
@@ -82,6 +84,11 @@ export default {
       this.placeTypesList = res.data.placeTypes.dataList
     })
 
+    if(this.$route.query.id){
+      this.getPlace(this.$route.query.id)
+    }
+
+
   },
   methods: {
     getPlace(id){
@@ -89,9 +96,13 @@ export default {
       this.$get(this.partialplaceUrl + '/temp/place', {
         tempPlaceId: id
       }).then((res) => {
-        if(res.data.Propertytypes){
+        if(res.data.category){
           this.$store.state.host.category = res.data.category;
         }
+
+        // if(res.data.propertyTypeId){
+        //   this.$store.state.host.propertyTypeId = res.data.propertyTypeId
+        // }
       })
 
     },

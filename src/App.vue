@@ -13,7 +13,7 @@ export default {
 
 <style>
 @import './assets/css/index.scss';
-@import './assets/icon/iconfont.css';
+@import 'http://at.alicdn.com/t/font_876039_h5xbel6q707.css';
 @import 'http://at.alicdn.com/t/font_896136_amodn458mfa.css';
 
 #app {

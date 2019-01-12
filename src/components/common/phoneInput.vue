@@ -27,8 +27,8 @@
           :placeholder="type === 'email' ? 'Email address' : 'Phone Number'">
       </div>
     </div>
-    <p class="warning" v-show="warning === 'email'">Please enter the correct email</p>
-    <p class="warning" v-show="warning === 'phone'">Please enter the correct phone number</p>
+    <p class="warning" v-show="$store.state.warning === 'email'">Please enter the correct email</p>
+    <p class="warning" v-show="$store.state.warning === 'phone'">Please enter the correct phone number</p>
   </div>
 </template>
 
@@ -55,9 +55,9 @@ export default {
     blur () {
       this.$emit('blur')
       if (this.type === 'email') {
-        utils.checkEmail(this.number) ? this.warning = 'email' : this.warning = ''
+        utils.checkEmail(this.number) ? this.$store.state.warning = 'email' : this.$store.state.warning = ''
       } else {
-        utils.checkTel(this.number) ? this.warning = 'phone' : this.warning = ''
+        utils.checkTel(this.number) ? this.$store.state.warning = 'phone' : this.$store.state.warning = ''
       }
     }
   }

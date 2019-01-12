@@ -40,7 +40,7 @@
                 v-for="(item,index) in Cityoptions"
                 :key="index"
                 :label="item.name"
-                :value="item.name">
+                :value="item.code">
               </el-option>
             </el-select>
           </div>
@@ -114,6 +114,7 @@ export default {
     },
     getCountryList(){
       this.$get(this.cityUrl + '/countries').then((res) => {
+        console.log(res)
         if(res.code == 200){
           this.Countryoptions = res.data
           this.getStateList()

@@ -10,7 +10,7 @@
           <!-- <p class="time">Booked on 25 October, 2018</p> -->
         </div>
         <div class="list-content flex-wrap">
-          <div class="list-img"></div>
+          <!--<div class="list-img"></div>-->
           <div class="list-text">
             <div>
               <!-- <p class="title flex-item">{{item.title1}}</p> -->
@@ -18,7 +18,7 @@
               <p class="id flex-item">Booking ID: {{item.booking_id}}</p>
             </div>
             <div class="bottom flex-wrap flex-content-between flex-item">
-              <span class="time">{{item.strat_time}} - {{item.end_time}} {{item.cha_time}}</span>
+              <span class="time">{{item.start_time}} - {{item.end_time}} {{item.cha_time}}</span>
               <span class="num">{{item.price}} {{item.currency}}</span>
             </div>
           </div>
@@ -27,9 +27,9 @@
               <p class="details"><router-link :to="{path:'/trips/trips_details',query: {tripsitem:item,tripstitle:item.status}}">View details</router-link></p>
 
               <!--取消预定-->
-              <p class="cancel XY-cursorp" v-if="item.status == 'Pending'" @click="CancelBookingShow = true; bookingID = item.booking_id">Cancel</p>
+              <p class="cancel XY-cursorp" v-if="item.status == 'Pending'" @click="bookingID = item.booking_id; getRefundFee()">Cancel</p>
 
-              <p class="cancel XY-cursorp" v-if="item.status == 'Upcoming' || item.status == 'Checked-in'" @click="CancelBookingShow = true; bookingID = item.booking_id">Refund</p>
+              <p class="cancel XY-cursorp" v-if="item.status == 'Upcoming' || item.status == 'Checked-in'" @click="bookingID = item.booking_id; currentstatus = true; getRefundFee()">Refund</p>
             </div>
 
             <!--支付-->
@@ -64,10 +64,20 @@
 
     <!-- 取消预定  -->
     <el-dialog  :visible.sync="CancelBookingShow"class="checkoutWrap">
-      <div class="input-wrap">
-        <input type="password" placeholder="Payment password" v-model="userPassword">
+
+      <div>
+        <p class="RefundAmount" v-if="currentstatus">Refund amount:<span>{{RefundFee}}</span> {{RefundFeeCurrency}}</p>
+        <div class="input-wrap">
+          <input type="password" placeholder="Payment password" v-model="userPassword">
+        </div>
+        <div class="button" @click="CancelBooking">Cancel</div>
       </div>
-      <div class="button" @click="CancelBooking">Cancel</div>
+
+      <!--<div v-else>-->
+        <!--<p class="Refusetorefund"><span>Refuse to refund</span></p>-->
+        <!--<div class="button" @click="CancelBookingShow = false">OK</div>-->
+      <!--</div>-->
+
     </el-dialog>
 
 
@@ -199,7 +209,10 @@ export default {
         Description:""
       },
       currentPage:1,
-      totalPage:0
+      totalPage:0,
+      RefundFee:"",
+      RefundFeeCurrency:"",
+      currentstatus:false
     }
   },
   created () {
@@ -283,7 +296,7 @@ export default {
                 res.data.booking_list[i].status = 'Pending'
                 break
             }
-            res.data.booking_list[i].strat_time = moment(res.data.booking_list[i].strat_time).format('DD MMM YYYY')
+            res.data.booking_list[i].start_time = moment(res.data.booking_list[i].start_time).format('DD MMM YYYY')
             res.data.booking_list[i].end_time = moment(res.data.booking_list[i].end_time).format('DD MMM YYYY')
             // console.log(moment.duration(res.data.booking_list[i].end_time - res.data.booking_list[i].strat_time), 'days')
             let m1 = moment(res.data.booking_list[i].strat_time)
@@ -318,10 +331,29 @@ export default {
       this.getTripsList()
 
     },
-    //取消预定
-    CancelBooking(){
-      console.log(this.userPassword)
+    getRefundFee(){
+      this.CancelBookingShow = true;
 
+      if(this.currentstatus){
+        this.$post(this.bookUrl + '/booking', {
+          action: 'getRefundFee',
+          data: {
+            booking_id: this.bookingID,
+          }
+        }).then((res) => {
+          console.log(res)
+          if (res.msg.code == 200) {
+            this.RefundFee = res.data.refund_fee
+            this.RefundFeeCurrency = res.data.currency
+          } else {
+            this.RefundFee = 0
+          }
+        })
+      }
+
+    },
+    //取消预定/退款
+    CancelBooking(){
       this.$post(this.bookUrl + '/booking', {
         action: 'cancelBooking',
         data: {
@@ -501,7 +533,7 @@ $red-color: #F4436C;
 .dataList {
   li {
     margin-bottom: 50px;
-    min-height: 300px;
+    /*min-height: 300px;*/
     .list-header {
       margin-bottom: 15px;
       .title {
@@ -536,6 +568,7 @@ $red-color: #F4436C;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-height: 160px;
     .flex-item{
       width: 100%;
     }
@@ -616,6 +649,22 @@ $red-color: #F4436C;
   }
 }
 .checkoutWrap {
+  p.RefundAmount{
+    font-size: 20px;
+    font-family: Roboto-Regular;
+    margin-bottom: 20px;
+    span{
+      font-size: 30px;
+      font-family:Roboto-Medium;
+      color: $red-color;
+    }
+  }
+  p.Refusetorefund{
+    text-align: center;
+    font-size: 30px;
+    font-family:Roboto-Medium;
+    color: $red-color;
+  }
   .input-wrap {
     border-bottom: 1px solid #E6E7E8;
     height: 60px;
@@ -630,6 +679,7 @@ $red-color: #F4436C;
       padding: 0 15px;
       color: #B1B3B6;
       box-sizing: border-box;
+      padding: 0;
     }
   }
   .button {

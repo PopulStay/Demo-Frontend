@@ -1,6 +1,6 @@
 var reg = {
   phone: /^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/,
-  email: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
+  email: /^(.[a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
   // name: /^\w{3,20}$/,
   name: /^[a-zA-Z]{3,20}$/,
   weakPassword: /(^\d{6,}$)|(^[a-zA-Z]{6,}$)|(^[^a-zA-Z0-9]{6,}$)/,
@@ -11,7 +11,7 @@ export default {
   // 验证手机号
   checkTel (value) {
     if (value === '') {
-      return ''
+      return true
     }
     if (!(reg.phone.test(value))) {
       return true
@@ -22,7 +22,7 @@ export default {
   // 验证email
   checkEmail (value) {
     if (value === '') {
-      return ''
+      return true
     }
     if (!(reg.email.test(value))) {
       return true
@@ -33,7 +33,7 @@ export default {
   // 验证名字
   checkName (value) {
     if (value === '') {
-      return ''
+      return true
     }
     if (!(reg.name.test(value))) {
       return true
@@ -44,7 +44,7 @@ export default {
   // 验证密码
   checkPassword (value) {
     if (value === '') {
-      return ''
+      return true
     }
     if (!(reg.password.test(value))) {
       return true

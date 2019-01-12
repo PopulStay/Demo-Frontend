@@ -255,12 +255,16 @@ export default {
     },
     // 输入框输入事件
     input (val) {
-      this.searchValue === '' ? this.searchListShow = false : this.searchListShow = true
-      this.$get(this.cityUrl + '/cities?filterKey=text&pageSize=5&filterValue=' + this.searchValue).then(res => {
-        if (res.code === 200) {
-          this.searchList = res.data.dataList
-        }
-      })
+      this.searchValue === '' ? this.searchListShow = false : this.searchListShow = true;
+
+      if(this.searchValue != ''){
+        this.$get(this.cityUrl + '/cities?filterKey=text&pageSize=5&filterValue=' + this.searchValue.replace("'", "")).then(res => {
+          if (res.code === 200) {
+            this.searchList = res.data.dataList
+          }
+        })
+      }
+
     },
     // 点击搜索出来的列表
     selectSeach (val) {

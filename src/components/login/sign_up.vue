@@ -25,9 +25,10 @@
             <i class="iconfont icon-hide XY-fz24" v-show="!checked"></i>
           </div>
         </div>
-        <p class="warning" v-show="streng === 'length'">The password length is between 3 and 20 bits</p>
+        <p class="warning"  v-show="verify.indexOf('password') !== -1 || streng === 'length'">Please enter your password in the format 6-20 letters, numbers, special symbols</p>
         <p class="warning" v-show="streng === 'weak'">cryptographic strength: weak</p>
         <p class="warning" v-show="streng === 'middle'">cryptographic strength: middle</p>
+
         <div class="input-text">
           <input :type="checkedC ? 'text' : 'password'" placeholder="Confirm password" v-model="data.confirm_password" @blur="confirm">
           <div class="XY-right lineb eye" @click="checkedC=!checkedC">
@@ -38,7 +39,7 @@
         <p class="warning" v-show="confirm_password">Please enter the correct password</p>
         <div class="birthday">
           <h6>Birth date</h6>
-          <p :class="verify.indexOf('birthday') !== -1 ? 'warningText' : ''">To sign up, you must be 18 or older. Other people won’tsee your birthday.</p>
+          <p  class="warning"  v-show="birthdate18old">To sign up, you must be 18 or older. Other people won’tsee your birthday.</p>
           <div class="editProfile-select">
             <el-select v-model="date.month" placeholder="Month">
               <el-option v-for="item in list.month" :key="item" :label="item" :value="item"></el-option>
@@ -110,7 +111,8 @@ export default {
       },
       loading: false,
       verify: [],
-      streng: ''
+      streng: '',
+      birthdate18old:false
     }
   },
   created () {
@@ -129,42 +131,93 @@ export default {
       let date = this.date
       let data = this.data
       let birthdate = date.year + '-' + date.month + '-' + date.day
-      if (this.verify.length !== 0) { return false }
-      if (this.streng === 'length') { return false }
-      if (data.email_address.indexOf('@') === -1) {
-        data.phone_number = data.email_address
-      } else { var email = data.email_address }
-      if (!utils.checkAdult(birthdate)) {
-        this.$alert('Registered at age 18 years old', 'Warning', {
-          confirmButtonText: 'Confirm'
-        })
-        return false
-        // console.log(this.verify)
-        // this.verify.splice(this.verify.indexOf('birthday'), 1)
+
+      this.verify = []
+
+      if(utils.checkPassword(data.encrypted_password)){
+        this.verify.push('password')
       }
-      this.$post(this.userUrl + '/user', {
-        action: 'userSignUp',
-        data: {
-          email_address: email,
-          phone_number: this.$refs.phoneInput.first + data.phone_number,
-          first_name: data.first_name,
-          last_name: data.last_name,
-          encrypted_password: sha256(data.encrypted_password),
-          birthdate: birthdate,
-          invited_by: data.invited_by
-        }
-      }).then((res) => {
-        if (res.msg.code === 200) {
-          this.$store.state.show_signup = false
-          this.$store.state.show_succ = true
-          this.$store.commit('userUpdate', res.data)
-          this.$emit('login')
+
+      if(utils.checkName(data.last_name)){
+        this.verify.push('lname')
+      }
+
+      if(utils.checkName(data.first_name)){
+        this.verify.push('fname')
+      }
+
+      if(data.email_address == ""){
+        this.$store.state.warning = 'email'
+      }else{
+        if (data.email_address.indexOf('@') === -1) {
+          data.phone_number = data.email_address
         } else {
-          this.$alert(res.msg.message, 'Warning', {
-            confirmButtonText: 'Confirm'
-          })
+          var email = data.email_address
         }
-      })
+      }
+
+      if (!utils.checkAdult(birthdate)) {
+        this.birthdate18old = true;
+      }else{
+        this.birthdate18old = false;
+      }
+
+
+      if(data.confirm_password != data.encrypted_password){
+        this.confirm_password = true
+      }else{
+        this.confirm_password = false
+      }
+
+      if(this.verify.length === 0 && this.birthdate18old == false && this.confirm_password == false && this.$store.state.warning == ""){
+
+        this.$post(this.userUrl + '/user', {
+          action: 'userSignUp',
+          data: {
+            email_address: email,
+            phone_number: this.$refs.phoneInput.first + data.phone_number,
+            first_name: data.first_name,
+            last_name: data.last_name,
+            encrypted_password: sha256(data.encrypted_password),
+            birthdate: birthdate,
+            invited_by: data.invited_by
+          }
+        }).then((res) => {
+          console.log(res)
+
+          if (res.msg.code === 200) {
+            this.$store.state.show_signup = false
+            this.$store.state.show_succ = true
+            this.$store.commit('userUpdate', res.data)
+            this.$emit('login')
+          }else if(res.msg.code === 953){
+
+            if (data.email_address.indexOf('@') === -1) {
+
+              this.$alert("The phone number has been registered", 'Warning', {
+                confirmButtonText: 'Confirm'
+              })
+
+            } else {
+
+              this.$alert("The email address is already registered", 'Warning', {
+                confirmButtonText: 'Confirm'
+              })
+
+            }
+
+
+
+          }else {
+            this.$alert(res.msg.message, 'Warning', {
+              confirmButtonText: 'Confirm'
+            })
+          }
+
+        })
+
+      }
+
     },
     toLogin () {
       this.$store.state.show_signup = false
@@ -184,18 +237,20 @@ export default {
     // 失焦验证
     bindingVerify (type, val) {
       let verify = this.verify
-      // console.log(verify)
-      // console.log('checkEmail',this.$refs.phoneInput.type)
-      console.log('bbbbb?')
+
       if (type === 'fname') {
         utils.checkName(val) ? verify.push(type) : verify.splice(verify.indexOf(type), 1)
-        // let streng = utils.checkPasswordStrength(val)
-        // streng ? this.streng = streng : this.streng = ''
-      } else if (type === 'lname') {
+      }
+
+      if (type === 'lname') {
         utils.checkName(val) ? verify.push(type) : verify.splice(verify.indexOf(type), 1)
       }
+
+      if(type === 'Password'){
+        utils.checkPassword(val) ? verify.push(type) : verify.splice(verify.indexOf(type), 1)
+      }
+
       this.verify = [...new Set(this.verify)]
-      console.log([...new Set(this.verify)])
     },
     // 关闭数据重置
     close () {
@@ -298,7 +353,7 @@ $red-color: #f4436c;
 .birthday {
   margin: 20px 0;
   h6 {
-    margin: 0;
+    margin: 0 0 10px;
     font-family: Roboto-Regular;
     font-size: 16px;
     color: #4A4A4A;

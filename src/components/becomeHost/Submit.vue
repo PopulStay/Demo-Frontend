@@ -10,46 +10,71 @@
       <ul>
         <h5>By submitting, I confirm the following is true:</h5>
         <li>
-          <el-checkbox v-model="confirm1"> My experience complies with local laws.</el-checkbox>
+          <el-checkbox v-model="confirm1" @change="submitOK"> My experience complies with local laws.</el-checkbox>
           <p>Learn more about other laws (like business licensing) that may apply.</p>
         </li>
         <li>
-          <el-checkbox v-model="confirm2">I agree to the PopulStay Experiences Additional Terms of Service and Guest Refund Policy.</el-checkbox>
+          <el-checkbox v-model="confirm2" @change="submitOK">I agree to the PopulStay Experiences Additional Terms of Service and Guest Refund Policy.</el-checkbox>
         </li>
         <li>
-          <el-checkbox v-model="confirm3">I confirm that my descriptions and photos are my own, and accurately reflect my experience.</el-checkbox>
+          <el-checkbox v-model="confirm3" @change="submitOK">I confirm that my descriptions and photos are my own, and accurately reflect my experience.</el-checkbox>
         </li>
       </ul>
     </div>
 
     <button class="r-button next"
-            :class="confirm1 == '' || confirm2 == '' || confirm3 == ''  ? 'disable' : null"
-            :disabled="confirm1 == '' || confirm2 == '' || confirm3 == ''"
-            @click="next" >Next</button>
+            :class="!confirmOK  ? 'disable' : null"
+            :disabled="!confirmOK" @click="next">Next</button>
   </div>
 </template>
 <script>
   export default {
     data () {
       return {
-        confirm1:'',
-        confirm2:'',
-        confirm3:'',
+        confirm1:false,
+        confirm2:false,
+        confirm3:false,
+        confirmOK:false
       }
     },
     created () {
 
     },
     methods: {
+      submitOK(){
+        if(this.confirm1 && this.confirm2 && this.confirm3){
+          this.confirmOK = true
+        }
+      },
       next () {
+        if(this.$store.state.becomehostTitle.propertyTypes != "" &&
+           this.$store.state.becomehostTitle.Rooms != "" &&
+           this.$store.state.becomehostTitle.Location != "" &&
+           this.$store.state.becomehostTitle.Amenities != "" &&
+           this.$store.state.becomehostTitle.space != "" &&
+           this.$store.state.becomehostTitle.Requirements != "" &&
+           this.$store.state.becomehostTitle.Floating != "" &&
+           this.$store.state.becomehostTitle.ServiceFee != "" &&
+           this.$store.state.becomehostTitle.reservation != ""){
 
-        this.$post(this.placeUrl + '/place', this.$store.state.host).then((res) => {
-          if (res.code === 200) {
-              this.$router.push({path: '/becomeHost/success', query: {id: this.$route.query.id}})
-            this.$store.state.becomehostTitle.Submit = 'Submit'
-            this.$store.state.becomehostPlaceID = res.data
-          }
-        })
+          this.confirmOK = false
+
+          // console.log(this.$store.state.host)
+
+          this.$post(this.placeUrl + '/place', this.$store.state.host).then((res) => {
+            if (res.code === 200) {
+                this.$router.push({path: '/becomeHost/success', query: {id: this.$route.query.id}})
+              this.$store.state.becomehostTitle.Submit = 'Submit'
+              this.$store.state.becomehostPlaceID = res.data
+            }
+          })
+
+        }else{
+          this.$message({
+            message: 'Please complete the information',
+            type: 'warning'
+          });
+        }
 
       }
     }

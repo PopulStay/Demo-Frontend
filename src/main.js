@@ -11,12 +11,12 @@ import axios from './axios'
 // import axios from 'axios'
 import AMap from 'vue-amap'
 import VueJsonp from 'vue-jsonp'
-
 import VueClipboard from 'vue-clipboard2'
 import md5 from 'js-md5';
+import VueDND from 'awe-dnd'
 
+Vue.use(VueDND)
 Vue.use(VueClipboard)
-
 Vue.use(AMap)
 Vue.use(VueJsonp);
 Vue.prototype.$md5 = md5;

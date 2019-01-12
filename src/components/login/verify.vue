@@ -90,24 +90,45 @@ export default {
     },
     toNewpsw () {
       if (this.newpsw === '' || this.code === '' || this.passwordStrength === 'length') return false
-      this.$post(this.userUrl + '/user', {
-        action: 'updateUserPasswordWithCode',
-        data: {
-          email_address: this.number.indexOf('@') === -1 ? '' : this.number,
-          phone_number: this.number.indexOf('@') === -1 ? this.$refs.phoneInput.first + this.number : '',
-          recover_password_code: this.code,
-          new_encrypted_password: sha256(this.newpsw)
-        }
-      }).then((res) => {
-        if (res.msg.code === 200) {
-          this.$store.state.show_verify = false
-          this.$store.state.show_resetcuss = true
-        } else {
-          this.$alert('Operation failed, please try later', 'Warning', {
-            confirmButtonText: 'Confirm'
-          })
-        }
-      })
+
+      if(this.number.indexOf('@') === -1){
+        this.$post(this.userUrl + '/user', {
+          action: 'updateUserPasswordWithCode',
+          data: {
+            phone_number: this.$refs.phoneInput.first + this.number,
+            recover_password_code: this.code,
+            new_encrypted_password: sha256(this.newpsw)
+          }
+        }).then((res) => {
+          if (res.msg.code === 200) {
+            this.$store.state.show_verify = false
+            this.$store.state.show_resetcuss = true
+          } else {
+            this.$alert('Operation failed, please try later', 'Warning', {
+              confirmButtonText: 'Confirm'
+            })
+          }
+        })
+      }else{
+        this.$post(this.userUrl + '/user', {
+          action: 'updateUserPasswordWithCode',
+          data: {
+            email_address: this.number,
+            recover_password_code: this.code,
+            new_encrypted_password: sha256(this.newpsw)
+          }
+        }).then((res) => {
+          if (res.msg.code === 200) {
+            this.$store.state.show_verify = false
+            this.$store.state.show_resetcuss = true
+          } else {
+            this.$alert('Operation failed, please try later', 'Warning', {
+              confirmButtonText: 'Confirm'
+            })
+          }
+        })
+      }
+
     },
     blurPassword () {
       let passwordStrength = utils.checkPasswordStrength(this.newpsw)

@@ -249,8 +249,24 @@
             <el-amap-marker v-for="(item, index) in HouseList" :key="index"
             :position="[item.lng, item.lat]"
             :clickable="true"
-            :template="marck(item)"
             animation="AMAP_ANIMATION_DROP">
+              <el-popover placement="top" width="230" trigger="click" popper-class="map-popover">
+                <div slot="reference" class="amap-overlay-text-container">
+                  <div>PPS {{item.prices.length !== 0 ? item.prices[0].bestPrice : ''}} </div>
+                </div>
+                <div class="map" @click="toListing(item.place_id)">
+
+                  <img :src="item.picture.length !== 0 ? item.picture[0].smallPictureUrl : ''" alt="">
+                  <div class="map-info">
+                    <p class="title">{{item.citycode}}</p>
+                    <p class="text">{{item.cancellationPolicy ? item.cancellationPolicy.title : ''}}</p>
+                    <p class="number">{{item.prices[0].bestPrice}} pps per night</p>
+                    <el-rate :value="item.review" disabled show-score
+                             :colors="['#99A9BF', '#f4436C', '#FF9900']" text-color="#4A4A4A" score-template="{value}">
+                    </el-rate>
+                  </div>
+                </div>
+              </el-popover>
             </el-amap-marker>
           </el-amap>
         </div>
@@ -409,6 +425,7 @@ export default {
     //   }
     // },
     ClearFilter () {
+
     },
     // 搜索请求
     search () {
@@ -486,6 +503,7 @@ export default {
           })
 
           this.HouseList = res.data.dataList;
+          this.center = [res.data.dataList[0].lng, res.data.dataList[0].lat]
           this.pageTotal = res.data.count
 
           if (res.data.dataList.length > 0) {
@@ -574,27 +592,6 @@ export default {
     toListing (id) {
       this.$router.push({path: 'listing/lstHome', query: {id: id}})
       console.log(123)
-    },
-    marck (item) {
-      const content = `
-      <el-popover placement="top" width="230" trigger="click" popper-class="map-popover">
-        <div slot="reference" class="amap-overlay-text-container">
-          <div>￥${item.prices.length !== 0 ? item.prices[0].bestPrice : ''} </div>
-        </div>
-        <div class="map">
-
-              <img src="${item.picture.length !== 0 ? item.picture[0].smallPictureUrl : ''}" alt="">
-          <div class="map-info">
-            <p class="title">${item.citycode}</p>
-            <p class="text">${item.cancellationPolicy ? item.cancellationPolicy.title : ''}</p>
-            <p class="number">${item.prices[0].bestPrice} pps per night</p>
-            <el-rate :value="${item.review}" disabled show-score
-            :colors="['#99A9BF', '#f4436C', '#FF9900']" text-color="#4A4A4A" score-template="{value}">
-            </el-rate>
-          </div>
-        </div>
-      </el-popover>`
-      return content
     },
     getAmenityids () {
       // let formdata = {
@@ -947,6 +944,7 @@ $red-color: #F4436C;
 }
 .map {
   font-size: 14px;
+  cursor: pointer;
   img {
     width: 100%;
   }

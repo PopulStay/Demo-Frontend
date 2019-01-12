@@ -51,7 +51,8 @@
             </div>
           </div>
 
-          <p class="intro-p" :class="descriptionShowMore ? '' : 'intro-p2'" v-html="description"></p>
+          <p class="intro-p" v-if="!descriptionShowMore" v-html="description.substring(0,200)"></p>
+          <p class="intro-p" v-if="descriptionShowMore" v-html="description"></p>
           <!-- <p class="intro-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 0 || descriptionShowMore">{{item.space}}</p> -->
         </div>
         <div class="read-more flex-wrap flex-align-center"  @click="descriptionShowMore = !descriptionShowMore" v-if="description.length>200">
@@ -66,7 +67,7 @@
             <i class="iconfont icon-chuang1"></i>
             <p class="arr-top" v-for="(items, index) in item.utilities" :key="index">{{items.count}} {{items.utility}}</p>
           </div>
-          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore" v-if="data.safeAmenities.length>4">
+          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore" v-if="data.arrangements.length>4">
             <p>{{arrangementsShowMore ? 'hide' : 'Show more sleeping arrangements'}}</p>
             <i class="iconfont icon-54" :class="arrangementsShowMore ? 'transform' : ''"></i>
           </div>
@@ -78,7 +79,7 @@
           <ul>
             <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 4 || amenitiesShowMore">{{item.amenity}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.safeAmenities.length>4">
+          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenities.length>4">
             <p>{{amenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
             <i class="iconfont icon-54" :class="amenitiesShowMore ? 'transform' : ''"></i>
           </div>
@@ -125,7 +126,7 @@
           <p class="h1-p">Cancellations</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.name : ''}}</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.title : ''}}</p>
-          <p class="arr-top" v-if="cancellationsShowMore">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
+          <p class="arr-down" v-if="cancellationsShowMore">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
           <div class="read-more flex-wrap flex-align-center" @click="cancellationsShowMore = !cancellationsShowMore">
             <p>{{cancellationsShowMore ? 'hide' : 'Read more about the policy'}}</p>
             <i class="iconfont icon-54" :class="cancellationsShowMore ? 'transform' : ''"></i>
@@ -139,8 +140,13 @@
               <el-amap-marker
               :position="[data.lng, data.lat]"
               :clickable="true"
-              :template="marck(data)"
               animation="AMAP_ANIMATION_DROP">
+
+                <el-popover placement="top" width="230" trigger="click" popper-class="map-popover">
+                  <div slot="reference" class="amap-overlay-text-container">
+                    <i class="iconfont icon-location"></i>
+                  </div>
+                </el-popover>
               </el-amap-marker>
           </el-amap>
         </div>
@@ -238,7 +244,13 @@
               <div class="left">{{CurrentCurrency}} {{days('total_price')}}</div>
             </div>
           </div>
-          <button @click="Verify">Book</button>
+
+          <div class="qrbox" v-if="CurrentCurrency == 'CNY'">
+            <div :class="channel == 'alipay_qr' ? 'active' : null" @click="channel = 'alipay_qr'"><i class="iconfont icon-zhifubao"></i>AliPay</div>
+            <div :class="channel == 'wx_pub_qr' ? 'active' : null" @click="channel = 'wx_pub_qr'"><i class="iconfont icon-weixinzhifu"></i>Wechat Pay</div>
+          </div>
+
+          <button @click="Verify" :disabled="disVerify" :class="disVerify ? 'disabled' : null">Book</button>
         </div>
       </el-col>
     </el-row>
@@ -373,6 +385,7 @@ export default {
       rulesShowMore: false,
       spaceShowMore:false,
       cancellationsShowMore: false,
+      channel:'alipay_qr',
       isBack: false,
       data: {},
       bookInfo: '',
@@ -388,40 +401,43 @@ export default {
           let startdateArr = [];
           let enddateArr = [];
 
-          if(this.unavailableDate.length){
+          if(this.unavailableDate){
+            if(this.unavailableDate.length){
 
-            for(var item in this.unavailableDate){
+              for(var item in this.unavailableDate){
 
-              var startDate = new Date(this.unavailableDate[item].startDate).getTime()-86400000;
-              var endDate = new Date(this.unavailableDate[item].endDate).getTime()-86400000;
+                var startDate = new Date(this.unavailableDate[item].startDate).getTime()-86400000;
+                var endDate = new Date(this.unavailableDate[item].endDate).getTime()-86400000;
 
-              if(!this.minDate){
-                if (time.getTime() > startDate && time.getTime() < endDate) {
-                  return time.getTime()
+                if(!this.minDate){
+                  if (time.getTime() > startDate && time.getTime() < endDate) {
+                    return time.getTime()
+                  }
+                }
+
+                if(this.minDate <= startDate) {
+                  startdateArr.push(startDate)
+                }
+
+
+                if(this.minDate >= endDate) {
+                  enddateArr.push(endDate)
+                }
+
+              }
+
+
+              if(this.minDate){
+                if(startdateArr.length && time.getTime() > Math.min.apply(Math,startdateArr)+86400000) {
+                  return time.getTime();
+                }
+
+                if(enddateArr.length && time.getTime() < Math.max.apply(Math,enddateArr)){
+                  return time.getTime();
                 }
               }
 
-              if(this.minDate <= startDate) {
-                startdateArr.push(startDate)
-              }
-
-              if(this.minDate >= endDate) {
-                enddateArr.push(endDate)
-              }
-
             }
-
-
-            if(this.minDate){
-              if(startdateArr.length && time.getTime() > Math.min.apply(Math,startdateArr)+86400000) {
-                return time.getTime();
-              }
-
-              if(enddateArr.length && time.getTime() < Math.min.apply(Math,enddateArr)){
-                return time.getTime();
-              }
-            }
-
           }
 
           if(dates){
@@ -433,10 +449,12 @@ export default {
       isShow: false,
       unavailableDate:[],
       currencyType:['PPS','CNY'],
-      CurrentCurrency:'PPS'
+      CurrentCurrency:'PPS',
+      disVerify:false
     }
   },
   created () {
+    console.log(this.$route.query.id)
     this.getPlace(this.$route.query.id)
     this.place_id = this.$route.query.id
     let date = new Date().getTime()
@@ -465,6 +483,7 @@ export default {
       this.getBookInfo()
     },
     Verify () {
+      this.disVerify = true
       let user = this.$store.state.userInfo
 
       if (!user) {
@@ -472,7 +491,6 @@ export default {
         this.$store.state.show_login = true
 
       } else {
-
 
         if(user.user_identity_confirmation.document_verified === 'true' && user.user_identity_confirmation.email_verified === 'true' && user.user_identity_confirmation.phone_verified === 'true' ){
 
@@ -486,11 +504,11 @@ export default {
                 check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
                 guest_number: this.num1 + this.num2,
                 currency: this.CurrentCurrency,
-                channel:"alipay"
+                channel:this.channel
               }
             }).then((res) => {
               if (res.msg.code === 200) {
-                this.$router.push({path: 'lstDetail', query: {book_detail: JSON.stringify(res.data),guest_number:this.num1 + this.num2}})
+                this.$router.push({path: 'lstDetail', query: {book_id: res.data.booking_id ,guest_number:this.num1 + this.num2}})
               }
             })
           }else{
@@ -505,8 +523,9 @@ export default {
                 currency: this.CurrentCurrency,
               }
             }).then((res) => {
+              console.log(res)
               if (res.msg.code === 200) {
-                this.$router.push({path: 'lstDetail', query: {book_detail: JSON.stringify(res.data),guest_number:this.num1 + this.num2}})
+                this.$router.push({path: 'lstDetail', query: {book_id: res.data.booking_id ,guest_number:this.num1 + this.num2}})
               }
             })
           }
@@ -540,11 +559,15 @@ export default {
           that.translation('placeName',placeName)
           that.translation('description',description)
 
-          if(res.data.arrangements[0].unavailableDate){
-            for(var item in res.data.arrangements[0].unavailableDate){
-              this.unavailableDate.push(res.data.arrangements[0].unavailableDate[item])
+
+          if(res.data.arrangements[0]){
+            if(res.data.arrangements[0].unavailableDate){
+              for(var item in res.data.arrangements[0].unavailableDate){
+                this.unavailableDate.push(res.data.arrangements[0].unavailableDate[item])
+              }
             }
           }
+
           this.data = res.data
         }
       })
@@ -554,9 +577,10 @@ export default {
         code: val
       }).then((res) => {
         if (res.code === 200) {
-          console.log(res)
           this.listName = res.data.fullAddress
         }
+      }).catch(err => {
+        console.log(err)
       })
     },
     // 计算价格
@@ -582,31 +606,8 @@ export default {
       else if (type === 'total_price') {
         data = this.bookInfo.total_price
       }
-      return data
-    },
-    // 地图
-    marck (item) {
-      if (Object.keys(item).length !== 0) {
-        const content = `
-        <el-popover placement="top" width="230" trigger="click" popper-class="map-popover">
-          <div slot="reference" class="amap-overlay-text-container">
-            <div>PPS ${item.prices.length !== 0 ? item.prices[0].bestPrice : ''} </div>
-          </div>
-          <div class="map">
-            <img src="${item.picture.length !== 0 ? item.picture[0].bigPictureUrl : ''}" alt="">
-            <div class="map-info">
-              <p class="title">${item.citycode}</p>
-              <p class="text">${item.cancellationPolicy ? item.cancellationPolicy.title : ''}</p>
-              <p class="number">${item.prices.length !== 0 ? item.prices[0].bestPrice : ''} pps per night</p>
 
-            </div>
-          </div>
-        </el-popover>`
-        return content
-      } else {
-        const content = `<div></div>`
-        return content
-      }
+      return data
     },
     getUserName (hostid) {
       this.$post(this.userUrl + '/user', {
@@ -627,10 +628,11 @@ export default {
           check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
           check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
           guest_number: this.num1 + this.num2,
-          currency: 'PPS'
+          currency: this.CurrentCurrency
         }
       }).then((res) => {
         if (res.msg.code === 200) {
+          this.disVerify = false
           this.bookInfo = res.data
         }
       })
@@ -661,7 +663,7 @@ export default {
     //book吸顶
     handleBook () {
       var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      console.log(scrollTop)
+      // console.log(scrollTop)
     },
     CurrentCurrencyfun(command){
       this.CurrentCurrency = command
@@ -932,8 +934,9 @@ $red-color: #F4436C;
       }
       .arr-down{
         font-family: Roboto-Regular;
-        color: #000000;
-        line-height: 19px;
+        color: #4a4a4a;
+        margin-top: 20px;
+        line-height: 1.5;
         font-size: 16px;
       }
       // .amap-page-container {
@@ -977,6 +980,41 @@ $red-color: #F4436C;
     padding: 34px 20px;
     border-radius: 3px;
   }
+
+  .qrbox{
+    display: flex;
+    justify-content: space-between;
+
+    div{
+      width: 46%;
+      margin: 20px 0;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      border:1px solid #E6E7E8;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+
+      &.active{
+        border: 1px solid #F4436C;
+      }
+
+      i {
+        font-size: 30px;
+        margin-right: 10px;
+        color: rgb(36, 175, 65);
+        vertical-align:middle;
+      }
+
+      &:first-child {
+        i{
+          color: rgb(54, 180, 242);
+        }
+      }
+    }
+  }
+
   .left{
     margin-top: 10px;
   }
@@ -1052,6 +1090,11 @@ $red-color: #F4436C;
     text-align: center;
     cursor: pointer;
   }
+}
+
+button.disabled{
+  opacity:0.5;
+  cursor: not-allowed;
 }
 .isBack {
   .lst-home-right {
@@ -1287,14 +1330,17 @@ $red-color: #F4436C;
   padding: 0 20px;
 }
 .amap-overlay-text-container {
-  border: 1px solid #eee;
-  border-radius: 3px;
+  border: none;
   padding: 3px 5px;
   font-family: Roboto-Regular;
   font-size: 16px;
-  color: #4A4A4A;
-  box-shadow: 0 2px 4px 0 var(--color-map-price-marker-shadow, rgba(0,0,0,0.15)) !important;
   position: relative;
+  background: transparent;
+
+  i{
+    font-size: 30px;
+    color:#F4436C;
+  }
 }
 .map-popover {
   padding: 0;

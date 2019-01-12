@@ -178,57 +178,12 @@ export default {
     }
   },
   created () {
-    this.userwallet();
-
     this.CurrentPath = this.$route.name
-
-    if(this.$route.query.id){
-      this.getPlace(this.$route.query.id)
-    }
 
     this.$store.state.host.hostId = JSON.parse(localStorage.getItem('user')).user_id
 
   },
   methods: {
-    next () {
-      let type = this.stepIndex
-      let item = this[type].filter((item) => item.url === this.$route.name)
-      let index = this[type].findIndex((item) => item.url === this.$route.name)
-
-      if (item[0].url === 'Amenities') {
-
-        this.stepIndex = 'SpaceList'
-        if(this.$route.query.id){
-          this.$router.push({path: '/becomeHost/'+this['SpaceList'][0].url, query: {id: this.$route.query.id}})
-        }else{
-          this.$router.push(this['SpaceList'][0].url)
-        }
-
-      } else if (item[0].url === 'Requirements') {
-        this.stepIndex = 'readyList'
-
-        if(this.$route.query.id){
-          this.$router.push({path: '/becomeHost/'+this['readyList'][0].url, query: {id: this.$route.query.id}})
-        }else{
-          this.$router.push(this['readyList'][0].url)
-        }
-
-      } else if (item[0].url === 'Submit') {
-
-        this.$post(this.placeUrl + '/place', this.$store.state.host ).then((res) => {
-          console.log(res)
-        })
-
-      } else {
-
-        if(this.$route.query.id){
-          this.$router.push({path:this[type][index + 1].url, query: {id: this.$route.query.id}})
-        }else{
-          this.$router.push(this[type][index + 1].url)
-        }
-
-      }
-    },
     route (value) {
 
       if(this.$route.query.id){
@@ -237,59 +192,6 @@ export default {
         this.$router.push(value)
       }
 
-    },
-    userwallet(){
-      let user = this.$store.state.userInfo
-
-      this.$post(this.userUrl + '/user', {
-        action: 'getUserWallet',
-        data: {
-          user_id: user.user_id,
-        }
-      }).then((res) => {
-        if(res.msg.code == 200){
-          if(res.data.wallet == null){
-            this.$confirm('You don\'t have a wallet yet, please create a wallet first.', 'Prompt', {
-              confirmButtonText: 'Confirm',
-              showCancelButton:false,
-              type: 'warning',
-              center: true
-            }).then(() => {
-              console.log(123)
-              this.$router.push({path: '/trips/create'})
-            })
-          }
-        }
-      })
-
-    },
-    submit(){
-
-      this.$post(this.partialplaceUrl + '/temp/place?userId=', {
-        action: 'updateUserWallet',
-        data: {
-          user_id: user.user_id,
-          user_wallet_id: this.walletList.user_wallet_id,
-          name: this.name,
-          primary: this.walletList.primary === 1 ? 'true' : 'false'
-        }
-      }).then((res) => {
-        if (res.msg.code === 200) {
-          this.$router.push({path: '/trips/walletHome'})
-        }
-      })
-
-    }
-  },
-  filters: {
-    state (val) {
-      if (val === 1) {
-        return 'Checkout'
-      } else if (val === 2) {
-        return 'Confirm'
-      } else if (val === 2) {
-        return 'Confirm'
-      }
     }
   }
 }

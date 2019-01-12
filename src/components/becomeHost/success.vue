@@ -15,11 +15,51 @@
 <script>
   export default {
     data(){
-
+      return {
+      }
     },
     methods:{
       success(){
         this.$router.push({path: '/listing/lstHome', query: {id: this.$store.state.becomehostPlaceID}})
+        this.$store.state.host={
+          hostId:'',
+            category: '',
+            propertyTypeId:'',
+            placeName:'',
+            description:'',
+            pictures:[],
+            weeklyDiscount:'',
+            monthlyDiscount:'',
+            checkOutTime:'',
+            guestNumber: 0,
+            bedroomNumber: 0,
+            bedNumber: 0,
+            bathNumber: 0,
+            arrangements:[],
+            citycode:'',
+            streetLineOne:'',
+            streetLineTwo:'',
+            needNoticeDay:'',
+            needNoticeBeforeTime: '',
+            availableCheckinTimeFrom:'',
+            availableCheckinTimeTo:'',
+            guestMinStayNight:'',
+            guestMaxStayNight:'',
+            amenities:[],
+            safeAmenities:[],
+            spaces:[],
+            rules:[],
+            cancellationPolicyId:'',
+            prices:[
+            {
+              currency:"PPS",
+              bestPrice:'',
+              minPrice:'',
+              maxPrice:'',
+              cleanupServiceFee:''
+            }
+          ]
+        }
       }
     }
   }

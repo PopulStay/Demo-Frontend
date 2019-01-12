@@ -16,7 +16,7 @@
         <div class="detail-content">
           <div class="content-wrap">
             <i class="iconfont icon-rili"></i>
-            <span>{{book_detail.strat_time}}</span>
+            <span>{{book_detail.start_time}}</span>
             <i class="iconfont icon-54 icon-class"></i>
             <span>{{book_detail.end_time}}</span>
             <!-- <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime">
@@ -275,7 +275,7 @@ import banner3 from '../../assets/images/index/banner-3.png'
 import banner4 from '../../assets/images/index/banner-4.png'
 
 import QRCode from 'qrcode'
-
+var moment = require('moment')
 const sha256 = require('js-sha256').sha256
 
 export default {
@@ -326,10 +326,26 @@ export default {
       placeName:'',
       guest_number:0,
       qr_codeshow:false,
-      qr_codeURL:''
+      qr_codeURL:'',
+      alreadyPay:false
     }
   },
   methods: {
+    readBooking(id){
+      this.$post(this.bookUrl + '/booking', {
+        action : "readBooking",
+        data : {
+          "booking_id" : id
+        }
+      }).then((res) => {
+        if (res.msg.code === 200) {
+          res.data.start_time = moment(res.data.start_time).format('DD MMM YYYY')
+          res.data.end_time = moment(res.data.end_time).format('DD MMM YYYY')
+          this.book_detail = res.data
+          this.getPlace(res.data.place_id)
+        }
+      })
+    },
     selectTime (e) {
       this.startTextTime = String(e[0]).split(' ')
       this.endTextTime = String(e[1]).split(' ')
@@ -345,6 +361,7 @@ export default {
           user_id: this.$store.state.userInfo.user_id
         }
       }).then((res) => {
+
         if(res.msg.code == 200){
           console.log(res.data.user_wallets)
           this.walletList = res.data.user_wallets
@@ -355,7 +372,7 @@ export default {
     paynext () {
 
         this.$post(this.paymentUrl + '/api/v1/payments/deposit', {
-          bookingId: this.book_detail.booking_id,
+          bookingId: this.$route.query.book_id,
           userWalletId: this.walletID,
           userWalletEncryptedPassword:sha256(this.userPassword)
         }).then((res) => {
@@ -376,7 +393,7 @@ export default {
       this.$post(this.bookUrl + '/booking ', {
         action:'getBookingQrCode',
         data:{
-          booking_id:this.book_detail.booking_id
+          booking_id:this.$route.query.book_id
         }
       }).then((res) => {
         if(res.msg.code == 200){
@@ -385,7 +402,26 @@ export default {
           .then(url => {
 
             this.qr_codeshow=true;
-            this.qr_codeURL=url
+            this.qr_codeURL=url;
+
+            this.PayTime = window.setInterval(() => {
+                this.$post(this.bookUrl + '/booking ', {
+                  action : "checkIfBookingIsPay",
+                  data : {
+                    booking_id : this.book_detail.booking_id
+                  }
+                }).then((res) => {
+                  if (res.msg.code === 200) {
+                    if(res.data.alreadyPay){
+                      this.alreadyPay = true
+                      this.$router.push("/trips/tripsList")
+                      window.clearInterval(this.PayTime)
+                    }
+                  }
+                })
+            }, 5000)
+
+
           })
           .catch(err => {
             console.error(err)
@@ -443,15 +479,12 @@ export default {
   },
   mounted () {
     this.getWalletList()
-    this.getPlace(this.book_detail.place_id)
   },
   created () {
-    if(this.$route.query.book_detail == undefined) {
+    if(this.$route.query.book_id == undefined) {
       this.$router.go(-1)
     }else{
-      this.book_detail = JSON.parse(this.$route.query.book_detail)
-      this.book_detail.currency = this.book_detail.currency.replace("'","")
-      this.book_detail.currency = this.book_detail.currency.replace("'","")
+      this.readBooking(this.$route.query.book_id)
       this.guest_number = this.$route.query.guest_number
     }
   }

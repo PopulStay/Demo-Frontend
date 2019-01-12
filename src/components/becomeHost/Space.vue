@@ -22,29 +22,43 @@
           <div class="title padding-top">Photos</div>
           <div class="photos-wrap">
 
-           <el-upload
-             v-if="$store.state.host.pictures.length"
-              v-for="(item,index) in $store.state.host.pictures"
-              :key="index"
-              class="avatar-uploader"
-              action=""
-              :on-remove="handleRemove"
-              :show-file-list="false">
-              <div v-if="item.smallPictureUrl" :style="{backgroundImage: 'url(' + item.smallPictureUrl +')'}" class="avatar"></div>
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-            <el-upload
-              class="avatar-uploader"
-              action="https://testapi.image.populstay.com/image?dir=populstay_placeimage"
-              name="img"
-              :on-success="handleAvatarSuccess"
-              :show-file-list="false"
-              :on-progress="handleAvatarProgress"
-              :on-error="handleAvatarError"
-              v-loading="loading">
-              <div v-if="loading" class="avatar"></div>
-              <i v-if="!loading" class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
+            <ul class="picturesList">
+              <li v-for="(item,index) in $store.state.host.pictures" v-dragging="{ item: item, list: $store.state.host.pictures, group: 'picture' }"
+                  v-if="item.smallPictureUrl" :style="{backgroundImage: 'url(' + item.smallPictureUrl +')'}" class="avatar"
+                  @mouseover="picturesOver(index)" @mouseout="picturesOut(index)" >
+                <div class="picturesMask" v-if="picturesMask == index">
+                  <div>
+                    <i class="el-icon-zoom-in" @click="picturesPreview(index)"></i>
+                    <i class="el-icon-delete" @click="picturesDelete(index)"></i>
+                  </div>
+                  <p></p>
+                </div>
+              </li>
+              <li>
+                <el-upload
+                  class="avatar-uploader"
+                  action="https://testapi.image.populstay.com/image?dir=populstay_placeimage"
+                  name="img"
+                  :on-success="handleAvatarSuccess"
+                  :show-file-list="false"
+                  :on-progress="handleAvatarProgress"
+                  :on-error="handleAvatarError"
+                  v-loading="loading">
+                  <div v-if="loading" class="avatar"></div>
+                  <i v-if="!loading" class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+              </li>
+            </ul>
+
+            <el-dialog
+              title=""
+              :visible.sync="picturesShow"
+              class="picturesShow"
+              center>
+                <img :src="bigPictureUrl" alt="">
+                <el-button @click="picturesShow = false">Close</el-button>
+              </span>
+            </el-dialog>
 
           </div>
         </li>
@@ -63,6 +77,8 @@ export default {
       input: '',
       imageUrl: '',
       loading:false,
+      picturesMask:false,
+      picturesShow:false
     }
   },
   created () {
@@ -121,7 +137,23 @@ export default {
     next () {
       this.$router.push({path: '/becomeHost/Requirements', query: {id: this.$route.query.id}})
       this.$store.state.becomehostTitle.space = 'space'
-    }
+    },
+    picturesOver(id){
+      this.picturesMask = id
+    },
+    picturesOut(id){
+      this.picturesMask = 999999999
+    },
+    picturesPreview(id){
+      this.bigPictureUrl = this.$store.state.host.pictures[id].bigPictureUrl;
+      this.picturesShow = true
+    },
+    picturesDelete(id){
+      this.$store.state.host.pictures.splice(id,1)
+    },
+  },
+  mounted(){
+
   }
 }
 </script>
@@ -130,6 +162,54 @@ export default {
   .Space {
     li {
       margin-bottom: 20px;
+
+      .picturesList{
+        li{
+          display: inline-block;
+          position: relative;
+          width: 249px;
+          height: 170px;
+          background-size: cover;
+
+          &:first-child{
+            width: 100%;
+            height: 240px;
+          }
+
+          &:nth-child(odd){
+            float: right;
+          }
+
+          div.picturesMask {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            p{
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              background: black;
+              opacity: 0.5;
+            }
+
+            div{
+              position: absolute;
+              z-index: 1;
+              i{
+                color: white;
+                font-size: 24px;
+                margin: 0 10px;
+                vertical-align: middle;
+                cursor: pointer;
+              }
+            }
+          }
+        }
+      }
     }
     .title {
       width: 230px;
@@ -158,10 +238,6 @@ export default {
     .avatar-uploader {
       display: inline-block;
       margin-bottom: 20px;
-
-      &:nth-child(2n){
-        float: right;
-      }
     }
     .nomargin {
       margin-right: 0;
@@ -173,9 +249,41 @@ export default {
       padding-top: 20px;
     }
   }
+
+  .picturesShow{
+    .el-dialog__body{
+      overflow: auto;
+      height: 500px;
+
+      img{
+        display: block;
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+      }
+
+      button{
+        display: block;
+        background: #F4436C;
+        color: white;
+        margin: 0 auto;
+      }
+    }
+
+  }
 </style>
 
-<style>
+<style lang="scss">
+  .Space{
+    .avatar-uploader{
+      width: 100%;
+      height: 100%;
+
+      .el-loading-spinner .path{
+        stroke:#F4436C;
+      }
+    }
+  }
   .Space .el-input__inner {
     width: 512px;
     height: 46px;
@@ -201,12 +309,6 @@ export default {
     font-size: 28px;
     color: #8c939d;
     text-align: center;
-  }
-  .avatar {
-    width: 249px;
-    height: 170px;
-    display: block;
-    background-size: cover;
   }
   @media only screen and (max-width: 800px) {
     .Space ul li {
