@@ -60,6 +60,19 @@
             }
           ]
         }
+        this.$store.state.becomehostTitle={
+          propertyTypes:"",
+            Rooms:"",
+            Location:"",
+            Amenities:"",
+            space:"",
+            Requirements:"",
+            Floating:"",
+            ServiceFee:"",
+            reservation:"",
+            Submit:'',
+        },
+          this.$store.state.becomehostPlaceID=''
       }
     }
   }

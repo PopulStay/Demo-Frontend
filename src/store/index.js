@@ -77,7 +77,7 @@ export default new vuex.Store({
       guestMinStayNight:'',
       guestMaxStayNight:'',
       amenities:[],
-      safeAmenities:[],
+      safeAmenities:{},
       spaces:[],
       rules:[],
       cancellationPolicyId:'',
@@ -90,6 +90,9 @@ export default new vuex.Store({
           cleanupServiceFee:''
         }
       ],
+    },
+    hostinfo:{
+      propertyName:''
     },
     becomehostTitle:{
       propertyTypes:"",

@@ -59,13 +59,12 @@
 
           this.confirmOK = false
 
-          // console.log(this.$store.state.host)
+          // console.log(this.$store.state.host.arrangements)
 
           this.$post(this.placeUrl + '/place', this.$store.state.host).then((res) => {
             if (res.code === 200) {
-                this.$router.push({path: '/becomeHost/success', query: {id: this.$route.query.id}})
-              this.$store.state.becomehostTitle.Submit = 'Submit'
-              this.$store.state.becomehostPlaceID = res.data
+                this.postarrangements(res.data)
+                this.$store.state.becomehostPlaceID = res.data
             }
           })
 
@@ -76,6 +75,21 @@
           });
         }
 
+      },
+      postarrangements(PlaceID){
+        console.log(this.$store.state.host)
+        this.$post(this.placeUrl + '/arrangement',{
+          placeId:PlaceID,
+          unavailableDate:[],
+          utilities:this.$store.state.host.arrangements
+        }).then((res) => {
+          if (res.code === 200) {
+            console.log(res)
+            this.$router.push({path: '/becomeHost/success', query: {id: this.$route.query.id}})
+            this.$store.state.becomehostTitle.Submit = 'Submit'
+            this.$store.state.becomehostPlaceID = res.data
+          }
+        })
       }
     }
   }

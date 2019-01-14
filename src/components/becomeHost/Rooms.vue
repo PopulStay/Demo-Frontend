@@ -135,7 +135,7 @@ export default {
             val.count = 0
           })
 
-          utilitieslist.utilities = res.data.dataList;
+          utilitieslist.utilities = res.data.dataList
 
           this.$store.state.host.arrangements.push(utilitieslist)
           this.arrangementsLen = false
@@ -170,6 +170,7 @@ export default {
       console.log(this.$store.state.host.guestNumber)
     },
     next () {
+      console.log(this.$store.state.host)
       this.$router.push({path: '/becomeHost/Location', query: {id: this.$route.query.id}})
       this.$store.state.becomehostTitle.Rooms = 'Rooms'
     }

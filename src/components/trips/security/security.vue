@@ -72,7 +72,7 @@
           <li class="flex-wrap flex-center-between">
             <div class="info flex-wrap flex-align-center">
               <span class="number flex-2">{{ user.phone_number.substr(0,6) + "****" + user.phone_number.substr(user.phone_number.length-4) }}</span>
-              <span class="red flex-1" @click="Remove = true; RemoveType = 1">Remove</span>
+              <!--<span class="red flex-1" @click="Remove = true; RemoveType = 1">Remove</span>-->
               <span class="red flex-1"><router-link :to="{path:'ChangePhone', query: {type: 'Change'}}">Change</router-link></span>
             </div>
             <div class="r-button button" :class="user.user_identity_confirmation.phone_verified === 'true' ? 'verfied' : ''">
@@ -93,7 +93,7 @@
         <div class="flex-wrap flex-center-between flex-wrap-wrap" v-else>
           <div class="email-wrap flex-wrap flex-align-center">
            <p class="text flex-2">{{user.email_address}}</p>
-            <span class="red flex-1" @click="Remove = true; RemoveType = 2">Remove</span>
+            <!--<span class="red flex-1" @click="Remove = true; RemoveType = 2">Remove</span>-->
             <!--<span class="red flex-1"><router-link :to="{path:'ChangePhone'}">Change</router-link></span>-->
              <span class="red flex-1"><router-link :to="{path:'VerifyEmail', query: {type: 'email'}}">Change</router-link></span>
           </div>

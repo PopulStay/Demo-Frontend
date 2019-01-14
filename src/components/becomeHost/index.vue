@@ -182,6 +182,8 @@ export default {
 
     this.$store.state.host.hostId = JSON.parse(localStorage.getItem('user')).user_id
 
+
+    this.Verify()
   },
   methods: {
     route (value) {
@@ -190,6 +192,21 @@ export default {
         this.$router.push({path: '/becomeHost/'+value, query: {id: this.$route.query.id}})
       }else{
         this.$router.push(value)
+      }
+
+    },
+    Verify(){
+      let user = this.$store.state.userInfo;
+
+      if(user.user_identity_confirmation.document_verified != 'true' && user.user_identity_confirmation.email_verified != 'true' && user.user_identity_confirmation.phone_verified != 'true' ){
+        this.$alert('Please complete the certification', 'Certification', {
+          confirmButtonText: 'OK',
+          showClose:false,
+          center: true,
+          callback: action => {
+            this.$router.push({path: '/trips/security'})
+          }
+        });
       }
 
     }

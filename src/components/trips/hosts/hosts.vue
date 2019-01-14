@@ -18,7 +18,7 @@
           </div>
         </div>
 
-        <p class="text">{{ placeName[index] }}</p>
+        <p class="text">{{ item.placeName}}</p>
         <p class="number">{{ item.prices[0].bestPrice }} {{ item.prices[0].currency }} per night</p>
       </li>
     </ul>
@@ -84,8 +84,7 @@ export default {
     },
     hostsPublished(){
       this.$get(this.placeUrl + '/places', {
-        // hostId: this.user.user_id
-        hostId: 2880
+        hostId: this.user.user_id
       }).then((res) => {
         if(res.code == 200){
           res.data.dataList.forEach((val, key) => {
@@ -105,7 +104,6 @@ export default {
       }).then((res) => {
         if(res.code == 200){
           this.DraftsList = res.data
-
         }
       })
     },
@@ -126,6 +124,7 @@ export default {
           sign:this.$md5(this.$store.state.appKey+obj+this.$store.state.salt+this.$store.state.secret_key)
         }
       ).then(json => {
+        return json.translation[0]
         placeName.push(json.translation[0])
         console.log(placeName)
         this.placeName = placeName

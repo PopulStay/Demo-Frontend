@@ -20,7 +20,7 @@
     </div>
 
     <div class="propertyTypes">
-      <el-select v-model="placeType" placeholder="Please choose your  property type" @change="placeTypeSelect">
+      <el-select v-model="$store.state.hostinfo.placeType" placeholder="Please choose your  property type" @change="placeTypeSelect">
         <el-option
           v-for="item in placeTypesList"
           :key="item.placeTypeId"
@@ -34,7 +34,7 @@
 
     <div class="propertyTypes">
 
-      <el-select v-model="$store.state.host.propertyTypeId" placeholder="Please choose your  property type">
+      <el-select v-model="$store.state.host.propertyTypeId" placeholder="Please choose your  property type" >
         <el-option
           v-for="item in propertyTypesList"
           v-if="placeTypeid == item.placeTypeId"
@@ -99,15 +99,15 @@ export default {
         if(res.data.category){
           this.$store.state.host.category = res.data.category;
         }
-
-        // if(res.data.propertyTypeId){
-        //   this.$store.state.host.propertyTypeId = res.data.propertyTypeId
-        // }
       })
 
     },
     placeTypeSelect(e){
       this.placeTypeid = e
+    },
+    propertyType(item){
+      this.$store.state.host.propertyTypeId = item.propertyTypeId
+      this.$store.state.hostinfo.propertyName = item.propertyName
     },
     next () {
       this.$router.push({path: '/becomeHost/Rooms', query: {id: this.$route.query.id}})
