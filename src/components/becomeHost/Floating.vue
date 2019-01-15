@@ -9,7 +9,7 @@
         <li>
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">PPS</p>
-          <el-input v-model="$store.state.host.prices[0].bestPrice" type="number"></el-input>
+          <el-input v-model="$store.state.host.prices[0].bestPrice" type="text"></el-input>
         </li>
       </ul>
     </div>
@@ -23,13 +23,13 @@
           <h5>Lowest price</h5>
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">PPS</p>
-          <el-input v-model="$store.state.host.prices[0].minPrice" type="number"></el-input>
+          <el-input v-model="$store.state.host.prices[0].minPrice" type="text"></el-input>
         </li>
         <li>
           <h5>Highest price</h5>
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">PPS</p>
-          <el-input v-model="$store.state.host.prices[0].maxPrice" type="number"></el-input>
+          <el-input v-model="$store.state.host.prices[0].maxPrice" type="text"></el-input>
         </li>
       </ul>
     </div>

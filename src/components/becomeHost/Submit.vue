@@ -59,11 +59,14 @@
 
           this.confirmOK = false
 
-          // console.log(this.$store.state.host.arrangements)
+          // console.log(this.$store.state.host)
 
           this.$post(this.placeUrl + '/place', this.$store.state.host).then((res) => {
+            // console.log(res)
             if (res.code === 200) {
-                this.postarrangements(res.data)
+                // this.postarrangements(res.data)
+                this.$router.push({path: '/becomeHost/success', query: {id: this.$route.query.id}})
+                this.$store.state.becomehostTitle.Submit = 'Submit'
                 this.$store.state.becomehostPlaceID = res.data
             }
           })
@@ -77,19 +80,33 @@
 
       },
       postarrangements(PlaceID){
-        console.log(this.$store.state.host)
-        this.$post(this.placeUrl + '/arrangement',{
-          placeId:PlaceID,
-          unavailableDate:[],
-          utilities:this.$store.state.host.arrangements
-        }).then((res) => {
+        var arrangementsList = [];
+
+        for (let key in this.$store.state.host.arrangements) {
+
+          for (let keyy in this.$store.state.host.arrangements[key].utilities){
+
+            let {name, ...arrangementsLists} = this.$store.state.host.arrangements[key].utilities[keyy]
+
+            this.$store.state.host.arrangements[key].utilities[keyy] = arrangementsLists
+          }
+
+          var arrangementsListindex = {
+            placeId:PlaceID,
+            unavailableDate:[],
+            utilities:this.$store.state.host.arrangements[key].utilities
+          }
+          arrangementsList.push(arrangementsListindex)
+
+        }
+
+
+        this.$post(this.placeUrl + '/arrangements',arrangementsList).then((res) => {
           if (res.code === 200) {
-            console.log(res)
-            this.$router.push({path: '/becomeHost/success', query: {id: this.$route.query.id}})
-            this.$store.state.becomehostTitle.Submit = 'Submit'
-            this.$store.state.becomehostPlaceID = res.data
+
           }
         })
+
       }
     }
   }

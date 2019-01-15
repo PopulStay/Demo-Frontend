@@ -114,7 +114,6 @@ export default {
     },
     getCountryList(){
       this.$get(this.cityUrl + '/countries').then((res) => {
-        console.log(res)
         if(res.code == 200){
           this.Countryoptions = res.data
           this.getStateList()

@@ -47,7 +47,7 @@
           </div>
           <div class="gus-div ">
             <div class="left">{{this.book_detail.currency}} {{data.prices[0].bestPrice}}</div>
-            <div class="left">{{book_detail.cleanup_service_fee}}</div>
+            <div class="left">{{this.book_detail.currency}} {{book_detail.cleanup_service_fee}}</div>
             <!-- <div class="left">7.5</div> -->
             <div class="left">{{this.book_detail.currency}} {{book_detail.total_price}}</div>
           </div>
@@ -134,9 +134,9 @@
           <p class="h1-p">Sleeping arrangements</p>
           <div class="arrangement h1-p" v-for="(item, index) in data.arrangements"  :key="index" v-show="index < 4 || arrangementsShowMore">
             <i class="iconfont icon-chuang1"></i>
-            <p class="arr-top" v-for="(items, index) in item.utilities" :key="index">{{items.count}} {{items.utility}}</p>
+            <p class="arr-top" v-for="(items, index) in item.utilities" :key="index"  v-show="items.count != 0">{{items.count}} {{items.utility}}</p>
           </div>
-          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore">
+          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore" v-if="data.arrangements.length>3">
             <p>{{arrangementsShowMore ? 'hide' : 'Show more sleeping arrangements'}}</p>
             <i class="iconfont icon-54" :class="arrangementsShowMore ? 'transform' : ''"></i>
           </div>
@@ -148,7 +148,7 @@
           <ul>
             <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 4 || amenitiesShowMore">{{item.amenity}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore">
+          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenities.length>3">
             <p>{{amenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
             <i class="iconfont icon-54" :class="amenitiesShowMore ? 'transform' : ''"></i>
           </div>
@@ -195,7 +195,7 @@
           <p class="h1-p">Cancellations</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.name : ''}}</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.title : ''}}</p>
-          <p class="arr-top" v-if="cancellationsShowMore">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
+          <p class="arr-down" v-if="cancellationsShowMore">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
           <div class="read-more flex-wrap flex-align-center" @click="cancellationsShowMore = !cancellationsShowMore">
             <p>{{cancellationsShowMore ? 'hide' : 'Read more about the policy'}}</p>
             <i class="iconfont icon-54" :class="cancellationsShowMore ? 'transform' : ''"></i>
@@ -603,6 +603,9 @@ $red-color: #F4436C;
         width: 250px;
         line-height: 36px;
         display: inline-block;
+        &:first-child{
+          width: 100%;
+        }
       }
       .arrangement{
         width: 150px;
@@ -628,15 +631,11 @@ $red-color: #F4436C;
       }
       .arr-down{
         font-family: Roboto-Regular;
-        color: #000000;
-        line-height: 19px;
+        color: #4a4a4a;
+        margin-top: 20px;
+        line-height: 1.5;
         font-size: 16px;
       }
-      // .amap-page-container {
-      //   height: 400px;
-      //   max-width: 600px;
-      //   min-width: 300px;
-      // }
       .el-vue-amap-container{
         height: 400px;
         max-width: 600px;

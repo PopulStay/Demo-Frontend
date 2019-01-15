@@ -20,7 +20,7 @@
     </div>
 
     <div class="propertyTypes">
-      <el-select v-model="$store.state.hostinfo.placeType" placeholder="Please choose your  property type" @change="placeTypeSelect">
+      <el-select v-model="placeTypeName" placeholder="Please choose your  property type" @change="placeTypeSelect">
         <el-option
           v-for="item in placeTypesList"
           :key="item.placeTypeId"
@@ -34,7 +34,7 @@
 
     <div class="propertyTypes">
 
-      <el-select v-model="$store.state.host.propertyTypeId" placeholder="Please choose your  property type" >
+      <el-select v-model="propertyName" placeholder="Please choose your  property type" @change="propertyTypeSelect">
         <el-option
           v-for="item in propertyTypesList"
           v-if="placeTypeid == item.placeTypeId"
@@ -72,9 +72,10 @@ export default {
       value: '',
       propertyTypesList:[],
       placeTypesList:[],
-      placeType:'',
+      placeTypeName:'',
       placeTypeid:'',
-      disable:true
+      disable:true,
+      propertyName:''
     }
   },
   created () {
@@ -88,11 +89,13 @@ export default {
       this.getPlace(this.$route.query.id)
     }
 
+    if(this.$store.state.host.propertyTypeId){
+      this.propertyType(this.$store.state.host.propertyTypeId)
+    }
 
   },
   methods: {
     getPlace(id){
-
       this.$get(this.partialplaceUrl + '/temp/place', {
         tempPlaceId: id
       }).then((res) => {
@@ -100,18 +103,35 @@ export default {
           this.$store.state.host.category = res.data.category;
         }
       })
-
     },
     placeTypeSelect(e){
       this.placeTypeid = e
     },
-    propertyType(item){
-      this.$store.state.host.propertyTypeId = item.propertyTypeId
-      this.$store.state.hostinfo.propertyName = item.propertyName
+    propertyTypeSelect(e){
+      this.$store.state.host.propertyTypeId = e
     },
     next () {
       this.$router.push({path: '/becomeHost/Rooms', query: {id: this.$route.query.id}})
       this.$store.state.becomehostTitle.propertyTypes = 'propertyTypes'
+    },
+    propertyType(id){
+      this.$get(this.placeUrl + '/place/property', {
+        propertyTypeId: id
+      }).then((res) => {
+        if(res.code == 200){
+          this.propertyName = res.data.propertyName;
+          this.placeType(res.data.placeTypeId)
+        }
+      })
+    },
+    placeType(id){
+      this.$get(this.placeUrl + '/place/property', {
+        placeTypeId: id
+      }).then((res) => {
+         if(res.code == 200){
+          this.placeTypeName = res.data.placeName;
+        }
+      })
     }
   }
 }

@@ -65,7 +65,7 @@
           <p class="h1-p">Sleeping arrangements</p>
           <div class="arrangement h1-p" v-for="(item, index) in data.arrangements"  :key="index" v-show="index < 4 || arrangementsShowMore">
             <i class="iconfont icon-chuang1"></i>
-            <p class="arr-top" v-for="(items, index) in item.utilities" :key="index">{{items.count}} {{items.utility}}</p>
+            <p class="arr-top" v-for="(items, index) in item.utilities" :key="index" v-show="items.count != 0">{{items.count}} {{items.utility}}</p>
           </div>
           <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore" v-if="data.arrangements.length>4">
             <p>{{arrangementsShowMore ? 'hide' : 'Show more sleeping arrangements'}}</p>
@@ -239,7 +239,7 @@
             </div>
             <div class="gus-div ">
               <div class="left">{{CurrentCurrency}} {{days('place_price')}}</div>
-              <div class="left">{{days('clean')}}</div>
+              <div class="left">{{CurrentCurrency}} {{data.prices[0].cleanupServiceFee}}</div>
               <!-- <div class="left">{{days('service')}}</div> -->
               <div class="left">{{CurrentCurrency}} {{days('total_price')}}</div>
             </div>
@@ -909,6 +909,9 @@ $red-color: #F4436C;
         width: 250px;
         line-height: 36px;
         display: inline-block;
+        &:first-child{
+          width: 100%;
+        }
       }
       .arrangement{
         width: 150px;

@@ -9,25 +9,25 @@
         <li>
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">PPS</p>
-          <el-input type="number" v-model="$store.state.host.prices[0].cleanupServiceFee"></el-input>
+          <el-input type="text" v-model="$store.state.host.prices[0].cleanupServiceFee"></el-input>
         </li>
         <h3>Long-term reservation</h3>
         <li>
           <p class="label">Weekly Discount</p>
-          <el-input type="number" v-model="$store.state.host.weeklyDiscount"></el-input>
+          <el-input type="text" v-model="$store.state.host.weeklyDiscount"></el-input>
         </li>
         <li>
           <p class="label">Monthly Discount</p>
-          <el-input type="number" v-model="$store.state.host.monthlyDiscount"></el-input>
+          <el-input type="text" v-model="$store.state.host.monthlyDiscount"></el-input>
         </li>
         <h3>How long can tenants live?</h3>
         <li>
           <p class="label">Minimum number of days</p>
-          <el-input type="number" v-model="$store.state.host.guestMinStayNight"></el-input>
+          <el-input type="text" v-model="$store.state.host.guestMinStayNight"></el-input>
         </li>
         <li>
           <p class="label">Maximum number of days</p>
-          <el-input type="number" v-model="$store.state.host.guestMaxStayNight"></el-input>
+          <el-input type="text" v-model="$store.state.host.guestMaxStayNight"></el-input>
         </li>
       </ul>
     </div>
