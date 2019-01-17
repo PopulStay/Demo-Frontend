@@ -192,9 +192,21 @@ export default {
             this.user.image_url = res.data.image_url
             this.$store.commit('userUpdate', this.user)
             this.uploadShow = false
-            this.$store.commit('hint', {show: true, text: 'Your profile picture has been saved successfully.'})
+
+            this.$notify({
+              title: 'success',
+              message: 'Your profile picture has been saved successfully.',
+              type: 'success'
+            });
+
           } else {
-            this.$store.commit('hint', {show: true, text: 'Operation failed, please try later.'})
+
+            this.$notify({
+              title: 'warning',
+              message: 'Operation failed, please try later.',
+              type: 'warning'
+            });
+
           }
         })
       } else {
@@ -223,9 +235,8 @@ export default {
           this.user.city = data.city
           this.user.occupation = data.occupation
           this.$store.commit('userUpdate', this.user)
-          // this.$store.commit('hint', {show: true, text: 'Operation is successful'})
-          this.$message({
-            showClose: true,
+          this.$notify({
+            title: 'success',
             message: 'Operation is successful',
             type: 'success'
           });
@@ -239,7 +250,6 @@ export default {
       let verify = this.verify
       // console.log(verify)
       // console.log('checkEmail',this.$refs.phoneInput.type)
-      console.log('bbbbb?')
       if (type === 'fname') {
         utils.checkName(val) ? verify.push(type) : verify.splice(verify.indexOf(type), 1)
       } else if (type === 'lname') {

@@ -80,27 +80,31 @@ export default {
   },
   created () {
 
+    if(this.$store.state.becomehosttempPlaceId != ""){
+      this.gettempPlace(this.$store.state.becomehosttempPlaceId)
+    }
+
     this.$get(this.placeUrl + '/place/properties?pageNo=1&pageSize=99').then((res) => {
       this.propertyTypesList = res.data.propertyTypes.dataList
       this.placeTypesList = res.data.placeTypes.dataList
     })
 
-    if(this.$route.query.id){
-      this.getPlace(this.$route.query.id)
-    }
-
     if(this.$store.state.host.propertyTypeId){
       this.propertyType(this.$store.state.host.propertyTypeId)
     }
-
-  },
+},
   methods: {
-    getPlace(id){
-      this.$get(this.partialplaceUrl + '/temp/place', {
-        tempPlaceId: id
-      }).then((res) => {
-        if(res.data.category){
-          this.$store.state.host.category = res.data.category;
+    gettempPlace(id){
+      this.$get(this.partialplaceUrl + '/temp/place?tempPlaceId='+id).then((res) => {
+        if (res.code === 200) {
+          this.$store.state.host = res.data.host
+          this.$store.state.hostinfo = res.data.hostinfo
+          this.$store.state.becomehostTitle = res.data.becomehostTitle
+
+          if(this.$store.state.host.propertyTypeId){
+            this.propertyType(this.$store.state.host.propertyTypeId)
+          }
+
         }
       })
     },

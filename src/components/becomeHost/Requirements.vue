@@ -17,16 +17,16 @@
       <div class="item">
         <h3 class="h3">House Rules</h3>
         <ul>
-          <el-checkbox-group v-model="rulesArr"  @change="changeRule">
+          <el-checkbox-group v-model="$store.state.hostinfo.rulesArr"  @change="changeRule">
             <li v-for="(item, index) in rules" :key="item.ruleId"><el-checkbox :label="item.ruleId">{{item.rule}}</el-checkbox></li>
           </el-checkbox-group>
         </ul>
       </div>
 
-      <div class="item Additionalrules" v-if="rulesArr.indexOf(5316) > -1">
+      <div class="item Additionalrules" v-if="$store.state.hostinfo.rulesArr.indexOf(5316) > -1">
         <h3 class="h3">Additional rules</h3>
         <ul>
-            <li v-for="(item, index) in Addrules" :key="item.ruleId">{{item}} <i class="el-icon-close" @click="RemoveRules(index)"></i></li>
+            <li v-for="(item, index) in $store.state.hostinfo.Addrules" :key="item.ruleId">{{item}} <i class="el-icon-close" @click="RemoveRules(index)"></i></li>
         </ul>
 
         <el-input placeholder="Can't wear shoes indoors?" v-model="AddInput" class="input-with-select">
@@ -84,6 +84,10 @@
         this.getRequirements(this.$route.query.id)
       }
 
+      if(this.$store.state.becomehostTitle.space != 'space'){
+        this.$router.push('/becomeHost/space')
+      }
+
     },
     methods: {
 
@@ -95,11 +99,11 @@
 
             if(res.data.rules){
               res.data.rules.forEach((val, key) => {
-                if(this.rulesArr.indexOf(val.placeRuleId) == -1){
-                  this.rulesArr.push(val.placeRuleId)
+                if(this.$store.state.hostinfo.rulesArr.indexOf(val.placeRuleId) == -1){
+                  this.$store.state.hostinfo.rulesArr.push(val.placeRuleId)
                 }
                 if(val.placeRuleId == 5316){
-                  this.Addrules.push(val.additionalTitle)
+                  this.$store.state.hostinfo.Addrules.push(val.additionalTitle)
                 }
               })
             }
@@ -110,7 +114,7 @@
       changeRule(){
         let RulesArr = [];
 
-        this.rulesArr.forEach((val,key) =>{
+        this.$store.state.hostinfo.rulesArr.forEach((val,key) =>{
           if(val != 5316){
             let pamenityObj = {};
             pamenityObj['pruleId'] = val
@@ -123,20 +127,32 @@
       },
       Additionalrules(){
         if(this.AddInput != ""){
-          this.Addrules.push(this.AddInput)
+          if(this.AddInput.length > 300){
 
-          let AddpamenityObj = {};
-          AddpamenityObj['pruleId'] = 5316
-          AddpamenityObj['additionalTitle'] = this.AddInput
-          AddpamenityObj['yes'] = 1
+            this.$notify({
+              title: 'warning',
+              message: 'Cannot exceed 300 characters',
+              type: 'warning'
+            });
 
-          this.storeAddrules.push(AddpamenityObj)
+          }else{
+            this.$store.state.hostinfo.Addrules.push(this.AddInput)
 
-          this.AddInput = ""
+            let AddpamenityObj = {};
+            AddpamenityObj['pruleId'] = 5316
+            AddpamenityObj['additionalTitle'] = this.AddInput
+            AddpamenityObj['yes'] = 1
+
+            this.storeAddrules.push(AddpamenityObj)
+            this.AddInput = ""
+          }
         }
+
       },
-      RemoveRules(inx){
-        this.Addrules.splice(inx,1);
+      RemoveRules (idx) {
+        console.log(idx)
+        this.$store.state.hostinfo.Addrules.splice(idx, 1)
+        console.log(this.$store.state.hostinfo.Addrules)
       },
       next () {
         this.$router.push({path: '/becomeHost/Floating', query: {id: this.$route.query.id}})
@@ -144,13 +160,14 @@
       }
     },
     beforeDestroy(){
+      this.$store.state.host.rules = []
 
       this.storerulesArr.forEach((val,key) =>{
         this.$store.state.host.rules.push(val)
       })
 
       let storeAddrules = [];
-      this.Addrules.forEach((val,key) =>{
+      this.$store.state.hostinfo.Addrules.forEach((val,key) =>{
         let AddpamenityObj = {};
         AddpamenityObj['pruleId'] = 5316
         AddpamenityObj['additionalTitle'] = val

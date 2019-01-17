@@ -9,7 +9,7 @@
         <li class="flex-wrap flex-align-center">
           <div class="title">Country / Region</div>
           <div>
-            <el-select v-model="Countryvalue" @change="getStateList();Statevalue=''">
+            <el-select v-model="$store.state.hostinfo.Countryvalue" @change="getStateList();Statevalue=''">
               <el-option
                 v-for="(item,index) in Countryoptions"
                 :key="index"
@@ -22,7 +22,7 @@
         <li class="flex-wrap flex-align-center">
           <div class="title">State / Province / Region</div>
           <div>
-            <el-select v-model="Statevalue" @change="getCityList();Cityvalue=''">
+            <el-select v-model="$store.state.hostinfo.Statevalue" @change="getCityList();Cityvalue=''">
               <el-option
                 v-for="(item,index) in Stateoptions"
                 :key="index"
@@ -32,10 +32,10 @@
             </el-select>
           </div>
         </li>
-        <li class="flex-wrap flex-align-center" v-if="Statevalue">
+        <li class="flex-wrap flex-align-center" v-if="$store.state.hostinfo.Statevalue">
           <div class="title">City</div>
           <div>
-            <el-select v-model="Cityvalue" @change="$store.state.host.citycode = Cityvalue">
+            <el-select v-model="$store.state.hostinfo.Cityvalue" @change="$store.state.host.citycode = $store.state.hostinfo.Cityvalue">
               <el-option
                 v-for="(item,index) in Cityoptions"
                 :key="index"
@@ -66,7 +66,7 @@
       </ul>
     </div>
 
-     <button class="r-button next" :class="$store.state.host.citycode == '' || $store.state.host.streetLineOne == '' || $store.state.host.streetLineTwo == '' ? 'disable' : null" :disabled="$store.state.host.citycode == '' || $store.state.host.streetLineOne == '' || $store.state.host.streetLineTwo == ''" @click="next">Next</button>
+     <button class="r-button next" :class="$store.state.host.citycode == '' || $store.state.host.streetLineOne == '' ? 'disable' : null" :disabled="$store.state.host.citycode == '' || $store.state.host.streetLineOne == ''" @click="next">Next</button>
 
    </div>
 </template>
@@ -89,6 +89,11 @@ export default {
       this.getLocation(this.$route.query.id)
     }
     this.getCountryList()
+
+    if(this.$store.state.becomehostTitle.Rooms != 'Rooms'){
+      this.$router.push('/becomeHost/Rooms')
+    }
+
   },
   methods: {
     getLocation(id){
@@ -122,7 +127,7 @@ export default {
     },
     getStateList(){
       this.$get(this.cityUrl + '/states',{
-        country:this.Countryvalue
+        country:this.$store.state.hostinfo.Countryvalue
       }).then((res) => {
         if(res.code == 200){
           this.Stateoptions = res.data
@@ -132,7 +137,7 @@ export default {
     },
     getCityList(){
       this.$get(this.cityUrl + '/city/by/state',{
-        state:this.Statevalue
+        state:this.$store.state.hostinfo.Statevalue
       }).then((res) => {
         if(res.code == 200){
           this.Cityoptions = res.data

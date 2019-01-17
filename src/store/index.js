@@ -77,7 +77,7 @@ export default new vuex.Store({
       guestMinStayNight:'',
       guestMaxStayNight:'',
       amenities:[],
-      safeAmenities:{},
+      safeAmenities:[],
       spaces:[],
       rules:[],
       cancellationPolicyId:'',
@@ -92,7 +92,17 @@ export default new vuex.Store({
       ],
     },
     hostinfo:{
-      propertyName:''
+      propertyName:'',
+      placeTypeName:'',
+      Countryvalue:'',
+      Statevalue:'',
+      Cityvalue:'',
+      AmenitiesArr:[],
+      safeAmenitiesArr:[],
+      SpacesArr:[],
+      rulesArr:[],
+      Addrules:[],
+      needNoticeDay:''
     },
     becomehostTitle:{
       propertyTypes:"",
@@ -106,7 +116,8 @@ export default new vuex.Store({
       reservation:"",
       Submit:'',
     },
-    becomehostPlaceID:''
+    becomehostPlaceID:'',
+    becomehosttempPlaceId:'',
   },
   getters: {
     introduceState: state => state.currentMenus

@@ -59,7 +59,7 @@
       </li>
     </ul>
     <div class="no-data" v-else-if="islist == false">
-      no data
+      No data
     </div>
 
     <!-- 取消预定  -->
@@ -845,15 +845,6 @@ $red-color: #F4436C;
     width: 100%;
   }
 }
-.no-data{
-  height: 500px;
-  line-height: 500px;
-  text-align: center;
-  color: $red-color;
-  font-size: 20px;
-  border: 1px solid #f8f8f8;
-}
-
 .walletList{
   height: 60px;
 

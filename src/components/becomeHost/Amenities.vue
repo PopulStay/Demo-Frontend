@@ -7,7 +7,7 @@
 
     <div class="amenities flex-wrap">
       <ul>
-        <el-checkbox-group v-model="AmenitiesArr"  @change="changeAment">
+        <el-checkbox-group v-model="$store.state.hostinfo.AmenitiesArr"  @change="changeAment">
           <li v-for="(item, index) in amenities" :key="item.amenityId"><el-checkbox :label="item.amenityId">{{item.amenity}}</el-checkbox></li>
         </el-checkbox-group>
       </ul>
@@ -16,7 +16,7 @@
     <div class="safeAmenities">
       <h3>Safe Amenities</h3>
       <ul>
-        <el-checkbox-group v-model="safeAmenitiesArr"  @change="changesafeAment">
+        <el-checkbox-group v-model="$store.state.hostinfo.safeAmenitiesArr"  @change="changesafeAment">
           <li v-for="(item, index) in SafeAmenities" :key="item.safeAmenityId"><el-checkbox :label="item.safeAmenityId">{{item.safeAmenity}}</el-checkbox></li>
         </el-checkbox-group>
       </ul>
@@ -25,7 +25,7 @@
     <div class="spaces">
       <h3>Spaces</h3>
       <ul>
-        <el-checkbox-group v-model="SpacesArr"  @change="changeSpaces">
+        <el-checkbox-group v-model="$store.state.hostinfo.SpacesArr"  @change="changeSpaces">
           <li v-for="(item, index) in Spaces" :key="item.spaceId"><el-checkbox :label="item.spaceId">{{item.space}}</el-checkbox></li>
         </el-checkbox-group>
       </ul>
@@ -66,11 +66,15 @@ export default {
       this.getAmenities(this.$route.query.id)
     }
 
+    if(this.$store.state.becomehostTitle.Location != 'Location'){
+      this.$router.push('/becomeHost/Location')
+    }
+
   },
   methods: {
     changeAment () {
       let AmenitiesArr = [];
-      this.AmenitiesArr.forEach((val,key) =>{
+      this.$store.state.hostinfo.AmenitiesArr.forEach((val,key) =>{
         let pamenityObj = {};
         pamenityObj['pamenityId'] = val
         AmenitiesArr.push(pamenityObj)
@@ -80,7 +84,7 @@ export default {
     },
     changesafeAment(){
       let changesafeAmentArr = [];
-      this.safeAmenitiesArr.forEach((val,key) =>{
+      this.$store.state.hostinfo.safeAmenitiesArr.forEach((val,key) =>{
         let psafeAmenityObj = {};
         psafeAmenityObj['psafeAmenityId'] = val
         changesafeAmentArr.push(psafeAmenityObj)
@@ -90,7 +94,7 @@ export default {
     },
     changeSpaces(){
       let changeSpacesArr = [];
-      this.SpacesArr.forEach((val,key) =>{
+      this.$store.state.hostinfo.SpacesArr.forEach((val,key) =>{
         let psafeAmenityObj = {};
         psafeAmenityObj['pspaceId'] = val
         changeSpacesArr.push(psafeAmenityObj)
@@ -106,18 +110,18 @@ export default {
         if(res.code == 200){
           if(res.data.amenities){
             res.data.amenities.forEach((val, key) => {
-              this.AmenitiesArr.push(val.pamenityId)
+              this.$store.state.hostinfo.AmenitiesArr.push(val.pamenityId)
             })
           }
           if(res.data.safeAmenities){
             res.data.safeAmenities.forEach((val, key) => {
-              this.safeAmenitiesArr.push(val.psafeAmenityId)
+              this.$store.state.hostinfo.safeAmenitiesArr.push(val.psafeAmenityId)
             })
           }
 
           if(res.data.spaces){
             res.data.spaces.forEach((val, key) => {
-              this.SpacesArr.push(val.pspaceId)
+              this.$store.state.hostinfo.SpacesArr.push(val.pspaceId)
             })
           }
         }

@@ -52,6 +52,7 @@ export default {
           this.step = this.step + 1
           let user = this.$store.state.userInfo
           user.email_address = this.data.email_address
+          user.user_identity_confirmation.email_verified = true
           this.$store.commit('userUpdate', user)
         } else {
           this.$alert('Please try again', 'Warning', {

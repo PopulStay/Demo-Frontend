@@ -122,6 +122,8 @@ import header from '../common/header'
 import footer from '../common/footer'
 import formatdata from '../../utils/formatdata.js'
 import HouseItem from '@/components/common/HouseItem';
+import Cookies from 'js-cookie';
+
 export default {
   name: 'home',
   components: {
@@ -171,11 +173,6 @@ export default {
 
     this.startTextTime = String(this.timeStart).split(' ')
     this.endTextTime = String(this.timeEnd).split(' ')
-    // this.search()
-    // console.log(typeof Date(this.startTextTime.join(' ')))
-    // this.formatStart = formatdata.formatDate(this.startTime)
-    // this.formatEnd = formatdata.formatDate(this.endTime)
-    // console.log(Date.parse(this.timeStart))
     this.startTimestamp = Date.parse(this.timeStart)
     this.endTimestamp = Date.parse(this.timeEnd)
     this.getHomeSearch()
@@ -183,25 +180,33 @@ export default {
   },
   methods: {
     selectTime (e) {
-      console.log(e)
       this.timeStart = e[0]
       this.timeEnd = e[1]
       this.startTextTime = String(this.timeStart).split(' ')
       this.endTextTime = String(this.timeEnd).split(' ')
       this.startTimestamp = Date.parse(this.timeStart)
       this.endTimestamp = Date.parse(this.timeEnd)
-      console.log(this.startTimestamp, this.endTimestamp)
     },
     toSearch () {
-      this.$router.push({path: 'search',
-        query: {
-          time: JSON.stringify([this.startTextTime, this.endTextTime]),
-          guests: JSON.stringify(this.guests),
-          startTime: formatdata.timestampToTime(this.startTimestamp),
-          endTime: formatdata.timestampToTime(this.endTimestamp),
-          cityCode: this.searchIDcode
-        }
-      })
+      let search = {
+        "time": JSON.stringify([this.startTextTime, this.endTextTime]),
+        "guests": JSON.stringify(this.guests),
+        "startTime": formatdata.timestampToTime(this.startTimestamp),
+        "endTime": formatdata.timestampToTime(this.endTimestamp),
+        "cityCode": this.searchIDcode
+      }
+      Cookies.set('search', JSON.stringify(search));
+
+      this.$router.push('/search')
+      // this.$router.push({path: 'search',
+      //   query: {
+      //     time: JSON.stringify([this.startTextTime, this.endTextTime]),
+      //     guests: JSON.stringify(this.guests),
+      //     startTime: formatdata.timestampToTime(this.startTimestamp),
+      //     endTime: formatdata.timestampToTime(this.endTimestamp),
+      //     cityCode: this.searchIDcode
+      //   }
+      // })
     },
     toSearchAll () {
       this.$router.push({path: 'searchAll'})

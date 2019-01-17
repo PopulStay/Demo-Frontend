@@ -254,7 +254,7 @@
                 <div slot="reference" class="amap-overlay-text-container">
                   <div>PPS {{item.prices.length !== 0 ? item.prices[0].bestPrice : ''}} </div>
                 </div>
-                <div class="map" @click="toListing(item.place_id)">
+                <div class="map" @click="toListing(item.placeId)">
 
                   <img :src="item.picture.length !== 0 ? item.picture[0].smallPictureUrl : ''" alt="">
                   <div class="map-info">
@@ -286,6 +286,8 @@ import header from '../common/header'
 import footer from '../common/footer'
 import formatdata from '../../utils/formatdata.js'
 import HouseItem from '@/components/common/HouseItem';
+import Cookies from 'js-cookie';
+
 export default {
   components: {
     'e-header': header,
@@ -349,7 +351,7 @@ export default {
     }
   },
   created () {
-    let data = this.$route.query
+    let data = JSON.parse(Cookies.get('search'))
     if(JSON.parse(data.time)[0] != ''){
 
       this.startTextTime = JSON.parse(data.time)[0]
@@ -429,7 +431,6 @@ export default {
     },
     // 搜索请求
     search () {
-      var that = this
 
       var url = "?pageNo="+this.pageNo+"&pageSize="+this.pageSize;
 
@@ -591,7 +592,7 @@ export default {
     },
     toListing (id) {
       this.$router.push({path: 'listing/lstHome', query: {id: id}})
-      console.log(123)
+      console.log(id)
     },
     getAmenityids () {
       // let formdata = {
@@ -700,8 +701,8 @@ $red-color: #F4436C;
         }
         span {
           font-family: Roboto-Regular;
-          font-size: 14px;
-          color: #B1B3B6;
+          font-size: 16px;
+          color: #4A4A4A;
         }
       }
       .text1{
@@ -930,13 +931,13 @@ $red-color: #F4436C;
   }
 }
 .amap-overlay-text-container {
-  border: 1px solid #eee;
-  border-radius: 3px;
-  padding: 3px 5px;
+  border-radius: 8px;
+  padding: 5px 8px;
   font-family: Roboto-Regular;
+  background: #F4436C !important;
   font-size: 16px;
-  color: #4A4A4A;
-  box-shadow: 0 2px 4px 0 var(--color-map-price-marker-shadow, rgba(0,0,0,0.15)) !important;
+  color: white;
+  box-shadow: 0 2px 4px 0 var(--color-map-price-marker-shadow, rgba(0,0,0,0.05)) !important;
   position: relative;
 }
 .map-popover {

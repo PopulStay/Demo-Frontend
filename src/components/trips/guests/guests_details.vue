@@ -25,9 +25,9 @@
                 <p class="check">Check-out</p>
               </div>
               <div class="text flex-2">
-                <p class="check">{{strat_time}}</p>
-                <p class="check">{{end_time}}</p>
-                <!--<p class="check">{{parseInt(this.$route.query.guestsitem.cha_time)}} night</p>-->
+                <p class="check">{{this.$route.query.guestsitem.start_time}} {{this.$route.query.guestsitem.available_checkin_time_from}}:00 - {{this.$route.query.guestsitem.available_checkin_time_to}}:00</p>
+                <p class="check">{{this.$route.query.guestsitem.end_time}} {{this.$route.query.guestsitem.check_out_time}}:00</p>
+                <p class="check">{{(new Date(this.$route.query.guestsitem.end_time) - new Date(this.$route.query.guestsitem.start_time)) / 1000 / 60 / 60 / 24}} night</p>
               </div>
             </li>
             <li class="flex-wrap flex-align-center">
@@ -76,17 +76,7 @@
             </li>
           </ul>
           <div class="button-wrap flex-wrap">
-            <div class="button r-button Pending" v-if="this.$route.query.title === 'Pending'">Confirm and pay</div>
-            <div class="button r-button" v-else-if="this.$route.query.title === 'Upcoming'">Confirm</div>
-            <div class="button r-button check-out" v-else-if="this.$route.query.title === 'Checked-in'">
-              <p>Edit</p>
-              <p>Check-out time</p>
-            </div>
-            <div class="button r-button" v-else-if="this.$route.query.title === 'Completed'">Delete</div>
-            <div class="button r-button" v-else-if="this.$route.query.title === 'Cancelled'">Delete</div>
-
-            <div class="button r-button" @click="cancel" v-if="this.$route.query.title !== 'Completed' && this.$route.query.title !== 'Cancelled'">Cancel</div>
-            <div class="button r-button" @click="cancel" v-else>Share</div>
+            <div class="button r-button" @click="$router.go(-1)">Back</div>
           </div>
         </div>
       </div>
@@ -137,14 +127,10 @@ export default {
         label: 'I’ve find a better place on another website'
       }],
       user: '',
-      strat_time:'',
-      end_time:''
     }
   },
   created () {
     this.user = this.$store.state.userInfo;
-    this.strat_time = moment(this.$route.query.guestsitem.strat_time).format('DD MMM YYYY');
-    this.end_time = moment(this.$route.query.guestsitem.end_time).format('DD MMM YYYY');
   },
   methods: {
     cancel () {

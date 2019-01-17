@@ -53,6 +53,11 @@ export default {
     if(this.$route.query.id){
       this.getprice(this.$route.query.id)
     }
+
+    if(this.$store.state.becomehostTitle.Requirements != 'Requirements'){
+      this.$router.push('/becomeHost/Requirements')
+    }
+
   },
   methods: {
     getprice (id) {

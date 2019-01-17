@@ -40,14 +40,15 @@
 
         <div class="gus-wrap flex-wrap flex-center-between">
           <div class="gus-div">
-            <div class="left">{{this.book_detail.currency}} {{(new Date(book_detail.end_time).getTime() - new Date(book_detail.strat_time).getTime())/ 1000 / 60 / 60 / 24}} nights</div>
-            <div class="left">Cleaning Service fee</div>
-            <!-- <div class="left">Service fee</div> -->
+            <div class="left">{{this.book_detail.currency}} {{day('currencyPrice')}} nights</div>
+            <div class="left">Cleaning fee</div>
+            <div class="left">Service fee</div>
             <div class="left">Total</div>
           </div>
           <div class="gus-div ">
             <div class="left">{{this.book_detail.currency}} {{data.prices[0].bestPrice}}</div>
             <div class="left">{{this.book_detail.currency}} {{book_detail.cleanup_service_fee}}</div>
+            <div class="left">{{this.book_detail.currency}} 3.5%</div>
             <!-- <div class="left">7.5</div> -->
             <div class="left">{{this.book_detail.currency}} {{book_detail.total_price}}</div>
           </div>
@@ -146,9 +147,9 @@
         <div class="d_item" v-show="data.amenities.length">
           <p class="h1-p">Amenities</p>
           <ul>
-            <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 4 || amenitiesShowMore">{{item.amenity}}</li>
+            <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 5 || amenitiesShowMore">{{item.amenity}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenities.length>3">
+          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenities.length>5">
             <p>{{amenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
             <i class="iconfont icon-54" :class="amenitiesShowMore ? 'transform' : ''"></i>
           </div>
@@ -371,10 +372,14 @@ export default {
     },
     paynext () {
 
-        this.$post(this.paymentUrl + '/api/v1/payments/deposit', {
-          bookingId: this.$route.query.book_id,
-          userWalletId: this.walletID,
-          userWalletEncryptedPassword:sha256(this.userPassword)
+        this.$post(this.userUrl + '/user', {
+          action: "depositPPS",
+          data: {
+            user_id:this.$store.state.userInfo.user_id,
+            booking_id: this.$route.query.book_id,
+            user_wallet_id: this.walletID,
+            encrypted_password:sha256(this.userPassword)
+          }
         }).then((res) => {
           console.log(res)
         }).catch(err => {
@@ -396,6 +401,7 @@ export default {
           booking_id:this.$route.query.book_id
         }
       }).then((res) => {
+        console.log(res)
         if(res.msg.code == 200){
 
           QRCode.toDataURL(res.data.qr_code)
@@ -475,6 +481,11 @@ export default {
     handleClose(done) {
       this.walletshow = false
       this.pswInput = false
+    },
+    day(type){
+      if(type == "currencyPrice"){
+        return (new Date(book_detail.end_time).getTime() - new Date(book_detail.start_time).getTime())/ 1000 / 60 / 60 / 24
+      }
     }
   },
   mounted () {

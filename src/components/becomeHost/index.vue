@@ -7,77 +7,62 @@
         <ul>
           <li class="cursordefault"><b>Basics</b></li>
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'propertyTypes' ? 'active' : ''" @click="route('propertyTypes')">
+              :class="this.$route.name == 'propertyTypes' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.propertyTypes == 'propertyTypes' ? route('propertyTypes') : null">
             Property types<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.propertyTypes == 'propertyTypes'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'Rooms' ? 'active' : ''" @click="route('Rooms')">
+              :class="this.$route.name == 'Rooms' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.Rooms == 'Rooms' ? route('Rooms') : null">
             Rooms<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Rooms == 'Rooms'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'Location' ? 'active' : ''" @click="route('Location')">
+              :class="this.$route.name == 'Location' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.Location == 'Location' ? route('Location') : null">
             Location<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Location == 'Location'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'Amenities' ? 'active' : ''" @click="route('Amenities')">
+              :class="this.$route.name == 'Amenities' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.Amenities == 'Amenities' ? route('Amenities') : null">
             Amenities<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Amenities == 'Amenities'"></i>
           </li>
-
-          <!--<li v-for="(item, index) in BasicsList" :key="index" class="flex-wrap flex-center-between "-->
-           <!--:class="$route.name == item.url  ? 'active' : ''" @click="route(item, 'BasicsList')">-->
-            <!--{{item.title}} <i class="icon iconfont icon-CHECKMARK active" v-if="item.step"></i>-->
-          <!--</li>-->
         </ul>
         <ul>
           <li class="cursordefault"><b>Space</b></li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'space' ? 'active' : ''" @click="route('space')">
+              :class="this.$route.name == 'space' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.space == 'space' ? route('space') : null">
             About your space<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.space == 'space'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'Requirements' ? 'active' : ''" @click="route('Requirements')">
+              :class="this.$route.name == 'Requirements' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.Requirements == 'Requirements' ? route('Requirements') : null">
             Requirements<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"></i>
           </li>
 
-          <!--<li v-for="(item, index) in SpaceList" :key="index" class="flex-wrap flex-center-between "-->
-           <!--:class="$route.name == item.url  ? 'active' : ''" v-if="stepIndex !== 'BasicsList' || item.step"-->
-            <!--@click="route(item, 'SpaceList')">-->
-            <!--{{item.title}} <i class="icon iconfont icon-CHECKMARK active" v-if="item.step"></i>-->
-          <!--</li>-->
         </ul>
         <ul>
           <li class="cursordefault"><b>Get ready</b></li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'Floating' ? 'active' : ''" @click="route('Floating')">
+              :class="this.$route.name == 'Floating' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.Floating == 'Floating' ? route('Floating') : null">
             Floating price<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Floating == 'Floating'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'ServiceFee' ? 'active' : ''" @click="route('ServiceFee')">
+              :class="this.$route.name == 'ServiceFee' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.ServiceFee == 'ServiceFee' ? route('ServiceFee') : null">
             Service Fee<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.ServiceFee == 'ServiceFee'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'reservation' ? 'active' : ''" @click="route('reservation')">
+              :class="this.$route.name == 'reservation' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.reservation == 'reservation' ? route('reservation') : null">
             Receive notification<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.reservation == 'reservation'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
-              :class="this.$route.name == 'Submit' ? 'active' : ''" @click="route('Submit')">
+              :class="this.$route.name == 'Submit' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' ? route('Submit') : null">
             Review & Submit<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Submit == 'Submit'"></i>
           </li>
 
-          <!--<li v-for="(item, index) in readyList" :key="index" class="flex-wrap flex-center-between "-->
-           <!--:class="$route.name == item.url  ? 'active' : ''" v-if="stepIndex === 'readyList' || item.step"-->
-           <!--@click="route(item, 'readyList')">-->
-            <!--{{item.title}} <i class="icon iconfont icon-CHECKMARK active" v-if="item.step"></i>-->
-          <!--</li>-->
         </ul>
       </div>
       <div class="right">
@@ -136,21 +121,11 @@ export default {
         }
       ],
       readyList: [
-        // {
-        //   title: 'Set a price',
-        //   url: 'getReady',
-        //   step: false
-        // },
         {
           title: 'Floating price',
           url: 'Floating',
           step: false
         },
-        // {
-        //   title: 'Fixed price',
-        //   url: 'Fixed',
-        //   step: false
-        // },
         {
           title: 'Service Fee',
           url: 'ServiceFee',
@@ -161,11 +136,6 @@ export default {
           url: 'reservation',
           step: false
         },
-        // {
-        //   title: 'Wallet address',
-        //   url: 'address',
-        //   step: false
-        // },
         {
           title: 'Review & Submit',
           url: 'Submit',
@@ -174,14 +144,10 @@ export default {
       ],
       checkoutShow: false,
       contentHasSave: false,
-      CurrentPath:''
     }
   },
   created () {
-    this.CurrentPath = this.$route.name
-
     this.$store.state.host.hostId = JSON.parse(localStorage.getItem('user')).user_id
-
 
     this.Verify()
   },
@@ -209,7 +175,189 @@ export default {
         });
       }
 
+    },
+    submit(){
+
+      if(this.$store.state.becomehostTitle.Submit != "Submit"){
+
+        if(this.$store.state.becomehosttempPlaceId != ""){
+          this.$put(this.partialplaceUrl + '/temp/place?tempPlaceId='+this.$store.state.becomehosttempPlaceId, {
+            host:this.$store.state.host,
+            hostinfo:this.$store.state.hostinfo,
+            becomehostTitle:this.$store.state.becomehostTitle
+          }).then((res) => {
+            console.log(res)
+            if (res.code === 200) {
+              this.$store.state.host={
+                hostId:'',
+                category: '',
+                propertyTypeId:'',
+                placeName:'',
+                description:'',
+                pictures:[],
+                weeklyDiscount:'',
+                monthlyDiscount:'',
+                checkOutTime:'',
+                guestNumber: 0,
+                bedroomNumber: 0,
+                bedNumber: 0,
+                bathNumber: 0,
+                arrangements:[],
+                citycode:'',
+                streetLineOne:'',
+                streetLineTwo:'',
+                needNoticeDay:'',
+                needNoticeBeforeTime: '',
+                availableCheckinTimeFrom:'',
+                availableCheckinTimeTo:'',
+                guestMinStayNight:'',
+                guestMaxStayNight:'',
+                amenities:[],
+                safeAmenities:[],
+                spaces:[],
+                rules:[],
+                cancellationPolicyId:'',
+                prices:[
+                  {
+                    currency:"PPS",
+                    bestPrice:'',
+                    minPrice:'',
+                    maxPrice:'',
+                    cleanupServiceFee:''
+                  }
+                ],
+              }
+              this.$store.state.hostinfo={
+                propertyName:'',
+                Countryvalue:'',
+                Statevalue:'',
+                Cityvalue:'',
+                AmenitiesArr:[],
+                safeAmenitiesArr:[],
+                SpacesArr:[],
+                rulesArr:[],
+                Addrules:[],
+                needNoticeDay:''
+              }
+              this.$store.state.becomehostTitle={
+                propertyTypes:"",
+                Rooms:"",
+                Location:"",
+                Amenities:"",
+                space:"",
+                Requirements:"",
+                Floating:"",
+                ServiceFee:"",
+                reservation:"",
+                Submit:'',
+              }
+              this.$store.state.becomehosttempPlaceId = ""
+            }
+          })
+        }else{
+          this.$post(this.partialplaceUrl + '/temp/place?userId='+this.$store.state.userInfo.user_id, {
+            host:this.$store.state.host,
+            hostinfo:this.$store.state.hostinfo,
+            becomehostTitle:this.$store.state.becomehostTitle
+          }).then((res) => {
+            if (res.code === 200) {
+              this.$store.state.host={
+                hostId:'',
+                category: '',
+                propertyTypeId:'',
+                placeName:'',
+                description:'',
+                pictures:[],
+                weeklyDiscount:'',
+                monthlyDiscount:'',
+                checkOutTime:'',
+                guestNumber: 0,
+                bedroomNumber: 0,
+                bedNumber: 0,
+                bathNumber: 0,
+                arrangements:[],
+                citycode:'',
+                streetLineOne:'',
+                streetLineTwo:'',
+                needNoticeDay:'',
+                needNoticeBeforeTime: '',
+                availableCheckinTimeFrom:'',
+                availableCheckinTimeTo:'',
+                guestMinStayNight:'',
+                guestMaxStayNight:'',
+                amenities:[],
+                safeAmenities:[],
+                spaces:[],
+                rules:[],
+                cancellationPolicyId:'',
+                prices:[
+                  {
+                    currency:"PPS",
+                    bestPrice:'',
+                    minPrice:'',
+                    maxPrice:'',
+                    cleanupServiceFee:''
+                  }
+                ],
+              }
+              this.$store.state.hostinfo={
+                propertyName:'',
+                Countryvalue:'',
+                Statevalue:'',
+                Cityvalue:'',
+                AmenitiesArr:[],
+                safeAmenitiesArr:[],
+                SpacesArr:[],
+                rulesArr:[],
+                Addrules:[],
+                needNoticeDay:''
+              }
+              this.$store.state.becomehostTitle={
+                propertyTypes:"",
+                Rooms:"",
+                Location:"",
+                Amenities:"",
+                space:"",
+                Requirements:"",
+                Floating:"",
+                ServiceFee:"",
+                reservation:"",
+                Submit:'',
+              }
+
+            }
+          })
+        }
+
+      }
+
     }
+  },//退出前提醒
+  beforeRouteLeave: function(to, from , next){
+    if(this.$store.state.becomehostTitle.propertyTypes != "" ||
+      this.$store.state.becomehostTitle.Rooms != "" ||
+      this.$store.state.becomehostTitle.Location != "" ||
+      this.$store.state.becomehostTitle.Amenities != "" ||
+      this.$store.state.becomehostTitle.space != "" ||
+      this.$store.state.becomehostTitle.Requirements != "" ||
+      this.$store.state.becomehostTitle.Floating != "" ||
+      this.$store.state.becomehostTitle.ServiceFee != "" ||
+      this.$store.state.becomehostTitle.reservation != ""){
+
+      this.submit()
+    }
+    next()
+
+    // this.$confirm('Your information has not been completed, the system will help you save this data, confirm the exit?', 'Prompt', {
+    //   confirmButtonText: 'Confirm',
+    //   cancelButtonText: 'Cancel',
+    //   type: 'warning'
+    // }).then(() => {
+    //   console.log("退出")
+    //   next()
+    // }).catch(() => {
+    //   console.log("不退出")
+    // });
   }
 }
 </script>

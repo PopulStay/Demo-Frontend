@@ -10,7 +10,7 @@
           <!-- <p class="time">Booked on 25 October, 2018</p> -->
         </div>
         <div class="list-content flex-wrap flex-wrap-wrap">
-          <div class="list-img"></div>
+          <!--<div class="list-img"></div>-->
           <div class="list-text">
             <div>
               <!-- <p class="title">{{item.title1}}</p>
@@ -18,26 +18,20 @@
               <p class="id">Booking ID: {{item.booking_id}}</p>
             </div>
             <div class="bottom flex-wrap flex-content-between">
-              <span class="time">{{item.strat_time}} - {{item.end_time}} {{item.cha_time}}</span>
+              <span class="time">{{item.start_time}} - {{item.end_time}} {{item.cha_time}}</span>
               <span class="num">{{item.price}} {{item.currency}}</span>
             </div>
           </div>
           <div class="list-operation flex-wrap" :class="item.status == 'Pending' ? 'flex-column-center flex-wrap' : ''">
             <div>
-              <p class="details"><router-link :to="{path:'/trips/guests_details',query: {guestsitem:item,gueststitle:item.status}}">View details</router-link></p>
-              <p class="cancel" >Cancel</p>
-              <!-- v-if="item.title === 'Pending'" -->
             </div>
-            <!--item.title === Completed 评价房客 -->
-            <div class="checkout" v-if="item.status == 'Completed' && !item.have_user_review" @click="ReviewShow = true; PaymentHostID = item.booking_id">Review</div>
-            <div class="checkout">Confirm</div>
-             <!-- v-if="item.title === 'Upcoming'" -->
+            <div class="OrderButton"><router-link :to="{path:'/trips/guests_details',query: {guestsitem:item,gueststitle:item.status}}">View details</router-link></div>
           </div>
         </div>
       </li>
     </ul>
-    <div class="no-data" v-else-if="islist == false">
-       no data
+    <div class="no-data" v-if="guestsList.length">
+      No data
     </div>
     <!-- 待定结账弹窗  -->
     <el-dialog  :visible.sync="checkoutShow" width="25%" class="checkoutWrap">
@@ -107,7 +101,7 @@
     data () {
       return {
         guestsTabTitle: 'All',
-        guestsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
+        guestsTabList: ['All', 'Completed'],
         guestsList: [],
         islist: true,
         list: [],
@@ -163,8 +157,7 @@
         this.$post(this.bookUrl + '/booking', {
           action: 'listHostBookings',
           data: {
-            // host_id: user.user_id,
-            host_id: 2790,
+            host_id: user.user_id,
             page: this.currentPage-1,
             status:status
           }
@@ -189,16 +182,19 @@
               case 'cancelled ':
                 res.data.booking_list[i].status = 'Cancelled'
                 break
+              case 'cancelled':
+                res.data.booking_list[i].status = 'Cancelled'
+                break
               default:
                 res.data.booking_list[i].status = ''
                 break
 
-              res.data.booking_list[i].strat_time = moment(res.data.booking_list[i].strat_time).format('DD MMM YYYY')
-              res.data.booking_list[i].end_time = moment(res.data.booking_list[i].end_time).format('DD MMM YYYY')
-              let m1 = moment(res.data.booking_list[i].strat_time)
-              let m2 = moment(res.data.booking_list[i].end_time)
-              res.data.booking_list[i].cha_time = m2.diff(m1, 'day') + 'night'
             }
+            res.data.booking_list[i].start_time = moment(res.data.booking_list[i].start_time).format('DD MMM YYYY')
+            res.data.booking_list[i].end_time = moment(res.data.booking_list[i].end_time).format('DD MMM YYYY')
+            let m1 = moment(res.data.booking_list[i].start_time)
+            let m2 = moment(res.data.booking_list[i].end_time)
+            res.data.booking_list[i].cha_time = m2.diff(m1, 'day') + 'night'
 
             this.list = res.data.booking_list
             this.guestsList = res.data.booking_list
@@ -228,8 +224,7 @@
           action : "addUserReview",
           data : {
             book_id : "911",
-            // host_id : this.user.user_id,
-            host_id : '2732',
+            host_id : this.user.user_id,
             message : this.Review.Description,
             score : this.Review.score
           }
@@ -282,7 +277,6 @@ $red-color: #F4436C;
 .dataList {
   li {
     margin-bottom: 50px;
-    min-height: 300px;
     .list-header {
       margin-bottom: 15px;
       .title {
@@ -317,6 +311,7 @@ $red-color: #F4436C;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-height: 160px;
     .title {
       font-family: Roboto-Medium;
       font-size: 16px;
@@ -368,6 +363,20 @@ $red-color: #F4436C;
       line-height: 30px;
     }
     .checkout {
+      display: inline-block;
+      border-radius: 3px;
+      width: 130px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      font-family: Roboto-Medium;
+      font-size: 14px;
+      color: #FFFFFF;
+      letter-spacing: 0.88px;
+      background: $red-color;
+      cursor: pointer;
+    }
+    .OrderButton {
       display: inline-block;
       border-radius: 3px;
       width: 130px;
@@ -564,14 +573,6 @@ $red-color: #F4436C;
   .dataList .list-text{
     width: 100%;
   }
-}
-.no-data{
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-  color: #999;
-  font-size: 17px;
-  border: 1px solid;
 }
 </style>
 <style lang="scss">

@@ -60,6 +60,11 @@ export default {
     if(this.$route.query.id){
       this.getprice(this.$route.query.id)
     }
+
+    if(this.$store.state.becomehostTitle.Floating != 'Floating'){
+      this.$router.push('/becomeHost/Floating')
+    }
+
   },
   methods: {
     getprice (id) {

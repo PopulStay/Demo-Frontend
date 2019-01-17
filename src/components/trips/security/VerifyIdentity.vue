@@ -186,7 +186,12 @@ export default {
         }
       }).then((res) => {
         if (res.msg.code === 200) {
-          this.$store.commit('hint', {show: true, text: 'Operation is successful'})
+          this.$notify({
+            title: 'success',
+            message: 'Operation is successful',
+            type: 'success'
+          });
+          this.$router.go(-1)
         } else {
           this.$store.commit('hint', {show: false})
         }

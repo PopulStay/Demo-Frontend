@@ -39,6 +39,7 @@
                   class="avatar-uploader"
                   action="https://testapi.image.populstay.com/image?dir=populstay_placeimage"
                   name="img"
+                  multiple="true"
                   :on-success="handleAvatarSuccess"
                   :show-file-list="false"
                   :on-progress="handleAvatarProgress"
@@ -85,6 +86,10 @@ export default {
 
     if(this.$route.query.id){
       this.getspace(this.$route.query.id)
+    }
+
+    if(this.$store.state.becomehostTitle.Amenities != 'Amenities'){
+      this.$router.push('/becomeHost/Amenities')
     }
   },
   methods: {

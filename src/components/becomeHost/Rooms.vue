@@ -67,8 +67,7 @@
         </ul>
       </div>
     </div>
-
-    <button class="r-button next" :class="arrangementsLen ? 'disable' : null" :disabled="arrangementsLen ? 'true' : null"  @click="next">Next</button>
+    <button class="r-button next" :class="$store.state.host.arrangements.length ?  null : 'disable'" :disabled="$store.state.host.arrangements.length ? null : 'true' "  @click="next">Next</button>
 
   </div>
 </template>
@@ -85,12 +84,15 @@ export default {
       num6: 1,
       arrangements:[],
       popover:999999,
-      arrangementsLen:true
     }
   },
   created () {
     if(this.$route.query.id){
       this.getPlace(this.$route.query.id)
+    }
+
+    if(this.$store.state.becomehostTitle.propertyTypes != 'propertyTypes'){
+      this.$router.push('/becomeHost/propertyTypes')
     }
   },
   methods: {
@@ -136,7 +138,6 @@ export default {
 
           utilitieslist.utilities = res.data.dataList
           this.$store.state.host.arrangements.push(utilitieslist)
-          this.arrangementsLen = false
 
         }
       })
@@ -159,7 +160,6 @@ export default {
       console.log(this.$store.state.host.guestNumber)
     },
     next () {
-      console.log(this.$store.state.host.arrangements)
       this.$router.push({path: '/becomeHost/Location', query: {id: this.$route.query.id}})
       this.$store.state.becomehostTitle.Rooms = 'Rooms'
     }

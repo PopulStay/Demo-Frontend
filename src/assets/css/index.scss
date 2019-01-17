@@ -179,6 +179,16 @@ h6.loading{
   color: #F4436C;
 }
 
+.no-data{
+  width: 100%;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  color: #F4436C;
+  font-size: 18px;
+  background: rgb(244,67,108,0.15);
+}
+
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button{
   -webkit-appearance: none !important;
@@ -200,6 +210,7 @@ input[type="number"]{-moz-appearance:textfield;}
 .el-select .el-input__inner:focus, .el-select .el-input.is-focus .el-input__inner {
     border-color: #dcdfe6
 }
+.el-pager li.active,
 .el-select-dropdown__item.selected{
     color: #F4436C;
 }
@@ -397,6 +408,28 @@ input[type="number"]{-moz-appearance:textfield;}
 
 .wechatconfirm img{
     width: 100%;
+}
+
+.el-notification{
+  background: #f4436c;
+  padding: 14px 40px 14px 13px;
+}
+.el-notification i,
+.el-notification__content p,
+.el-notification__closeBtn,
+.el-notification__title{
+  color: white !important;
+}
+.el-notification__group{
+  width: 100%;
+}
+.el-notification__content p,
+.el-notification__title{
+  text-align: center;
+}
+
+.el-notification__closeBtn{
+  top: 10px;
 }
 
 @media only screen and (max-width: 700px) {

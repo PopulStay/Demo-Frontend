@@ -19,7 +19,7 @@
         </li>
         <li>
           <p class="label">Need Notice Day</p>
-          <el-select v-model="needNoticeDay" @change="needNoticeDayFUN">
+          <el-select v-model="$store.state.hostinfo.needNoticeDay" @change="needNoticeDayFUN">
             <el-option
               v-for="item in needNoticeDayoptions"
               :key="item.value"
@@ -115,6 +115,10 @@ export default {
 
     if(this.$route.query.id){
       this.getprice(this.$route.query.id)
+    }
+
+    if(this.$store.state.becomehostTitle.ServiceFee != 'ServiceFee'){
+      this.$router.push('/becomeHost/ServiceFee')
     }
   },
   methods: {

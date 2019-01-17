@@ -18,39 +18,44 @@
       return {
       }
     },
+    created () {
+      if(this.$store.state.becomehostTitle.propertyTypes != 'propertyTypes'){
+        this.$router.push('/becomeHost/propertyTypes')
+      }
+    },
     methods:{
       success(){
         this.$router.push({path: '/listing/lstHome', query: {id: this.$store.state.becomehostPlaceID}})
         this.$store.state.host={
           hostId:'',
-            category: '',
-            propertyTypeId:'',
-            placeName:'',
-            description:'',
-            pictures:[],
-            weeklyDiscount:'',
-            monthlyDiscount:'',
-            checkOutTime:'',
-            guestNumber: 0,
-            bedroomNumber: 0,
-            bedNumber: 0,
-            bathNumber: 0,
-            arrangements:[],
-            citycode:'',
-            streetLineOne:'',
-            streetLineTwo:'',
-            needNoticeDay:'',
-            needNoticeBeforeTime: '',
-            availableCheckinTimeFrom:'',
-            availableCheckinTimeTo:'',
-            guestMinStayNight:'',
-            guestMaxStayNight:'',
-            amenities:[],
-            safeAmenities:[],
-            spaces:[],
-            rules:[],
-            cancellationPolicyId:'',
-            prices:[
+          category: '',
+          propertyTypeId:'',
+          placeName:'',
+          description:'',
+          pictures:[],
+          weeklyDiscount:'',
+          monthlyDiscount:'',
+          checkOutTime:'',
+          guestNumber: 0,
+          bedroomNumber: 0,
+          bedNumber: 0,
+          bathNumber: 0,
+          arrangements:[],
+          citycode:'',
+          streetLineOne:'',
+          streetLineTwo:'',
+          needNoticeDay:'',
+          needNoticeBeforeTime: '',
+          availableCheckinTimeFrom:'',
+          availableCheckinTimeTo:'',
+          guestMinStayNight:'',
+          guestMaxStayNight:'',
+          amenities:[],
+          safeAmenities:[],
+          spaces:[],
+          rules:[],
+          cancellationPolicyId:'',
+          prices:[
             {
               currency:"PPS",
               bestPrice:'',
@@ -58,10 +63,22 @@
               maxPrice:'',
               cleanupServiceFee:''
             }
-          ]
+          ],
+        }
+        this.$store.state.hostinfo={
+            propertyName:'',
+            Countryvalue:'',
+            Statevalue:'',
+            Cityvalue:'',
+            AmenitiesArr:[],
+            safeAmenitiesArr:[],
+            SpacesArr:[],
+            rulesArr:[],
+            Addrules:[],
+            needNoticeDay:''
         }
         this.$store.state.becomehostTitle={
-          propertyTypes:"",
+            propertyTypes:"",
             Rooms:"",
             Location:"",
             Amenities:"",
@@ -71,8 +88,8 @@
             ServiceFee:"",
             reservation:"",
             Submit:'',
-        },
-          this.$store.state.becomehostPlaceID=''
+        }
+        this.$store.state.becomehostPlaceID=''
       }
     }
   }

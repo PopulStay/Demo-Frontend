@@ -73,6 +73,20 @@ export function post (url, data = {}) {
   })
 }
 
+export function put (url, data = {}) {
+  return new Promise((resolve, reject) => {
+    axios({
+      url: url,
+      method: 'put',
+      data: data
+    }).then(response => {
+      resolve(response.data)
+    }, err => {
+      reject(err)
+    })
+  })
+}
+
 export function urldelete (url, params = {}) {
   return new Promise((resolve, reject) => {
     axios.delete(url, {
@@ -87,6 +101,7 @@ export function urldelete (url, params = {}) {
 
 Vue.prototype.$post = post
 Vue.prototype.$get = get
+Vue.prototype.$put = put
 Vue.prototype.$delete = urldelete
 export default {}
 

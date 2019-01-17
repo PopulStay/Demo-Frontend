@@ -74,12 +74,18 @@
           <p class="spilt-p"></p>
         </div>
 
+        <div class="d_item">
+          <p class="h1-p">Check in/out</p>
+          <p>Check in time {{data.availableCheckinTimeFrom}}:00 － {{data.availableCheckinTimeTo}}:00 · Check-out time before {{data.checkOutTime}}:00</p>
+          <p class="spilt-p"></p>
+        </div>
+
         <div class="d_item" v-show="data.amenities.length">
           <p class="h1-p">Amenities</p>
           <ul>
-            <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 4 || amenitiesShowMore">{{item.amenity}}</li>
+            <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 5 || amenitiesShowMore">{{item.amenity}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenities.length>4">
+          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenities.length>5">
             <p>{{amenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
             <i class="iconfont icon-54" :class="amenitiesShowMore ? 'transform' : ''"></i>
           </div>
@@ -143,7 +149,7 @@
               animation="AMAP_ANIMATION_DROP">
 
                 <el-popover placement="top" width="230" trigger="click" popper-class="map-popover">
-                  <div slot="reference" class="amap-overlay-text-container">
+                  <div slot="reference" class="amap-overlay-text-container1">
                     <i class="iconfont icon-location"></i>
                   </div>
                 </el-popover>
@@ -233,13 +239,14 @@
               <!-- <div class="left">PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}} x {{time | days}} nights</div> -->
               <div class="left">{{CurrentCurrency}} {{days('days')}} nights</div>
               <!-- days('days') -->
-              <div class="left">Cleaning Service fee</div>
-              <!-- <div class="left">Service fee</div> -->
+              <div class="left">Cleaning fee</div>
+               <div class="left">Service fee</div>
               <div class="left">Total</div>
             </div>
             <div class="gus-div ">
               <div class="left">{{CurrentCurrency}} {{days('place_price')}}</div>
               <div class="left">{{CurrentCurrency}} {{data.prices[0].cleanupServiceFee}}</div>
+              <div class="left">{{CurrentCurrency}} {{days('service')}}</div>
               <!-- <div class="left">{{days('service')}}</div> -->
               <div class="left">{{CurrentCurrency}} {{days('total_price')}}</div>
             </div>
@@ -568,6 +575,7 @@ export default {
             }
           }
 
+          console.log(res.data)
           this.data = res.data
         }
       })
@@ -590,19 +598,23 @@ export default {
       let data = ''
       dayTime = this.endTimestamp - this.startTimestamp
       day = dayTime / (1000 * 60 * 60 * 24)
+
       if (type === 'days') {
-        console.log()
         data = this.data.prices[0].bestPrice + ' x ' + day
       }
+
       else if (type === 'place_price') {
         data = this.bookInfo.place_price
       }
-       else if (type === 'clean') {
+
+      else if (type === 'clean') {
         data = this.bookInfo.cleanup_service_fee
       }
-      // else if (type === 'service') {
-      //   data = this.bookInfo.service
-      // }
+
+      else if (type === 'service') {
+        data = this.bookInfo.service_fee
+      }
+
       else if (type === 'total_price') {
         data = this.bookInfo.total_price
       }
@@ -1332,13 +1344,13 @@ button.disabled{
 .banner-content .el-input__inner {
   padding: 0 20px;
 }
-.amap-overlay-text-container {
+.amap-overlay-text-container1 {
   border: none;
   padding: 3px 5px;
   font-family: Roboto-Regular;
   font-size: 16px;
   position: relative;
-  background: transparent;
+  background: transparent !important;
 
   i{
     font-size: 30px;

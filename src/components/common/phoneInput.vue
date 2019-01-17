@@ -8,7 +8,7 @@
         </div>
         <div class="popover">
           <ul>
-            <li v-for="(item, index) in nation" :key="index" @click="first = item.code; show = false">
+            <li v-for="(item, index) in nation" :key="index" @click="first = item.code; show = false; $store.state.warning = ''">
               {{item.name}}
               <i>{{'(' + item.code + ')'}}</i>
             </li>
@@ -57,7 +57,13 @@ export default {
       if (this.type === 'email') {
         utils.checkEmail(this.number) ? this.$store.state.warning = 'email' : this.$store.state.warning = ''
       } else {
-        utils.checkTel(this.number) ? this.$store.state.warning = 'phone' : this.$store.state.warning = ''
+        if (this.first == '+86') {
+          console.log("中国")
+          utils.checkTel(this.number) ? this.$store.state.warning = 'phone' : this.$store.state.warning = ''
+        } else {
+          console.log("外国")
+          this.$store.state.warning = ''
+        }
       }
     }
   }

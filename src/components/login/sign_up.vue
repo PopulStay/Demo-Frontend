@@ -38,7 +38,7 @@
         </div>
         <p class="warning" v-show="confirm_password">Please enter the correct password</p>
         <div class="birthday">
-          <h6>Birth date</h6>
+          <h6>Birth date(Can't be modified)</h6>
           <p  class="warning"  v-show="birthdate18old">To sign up, you must be 18 or older. Other people won’tsee your birthday.</p>
           <div class="editProfile-select">
             <el-select v-model="date.month" placeholder="Month">
@@ -246,7 +246,7 @@ export default {
         utils.checkName(val) ? verify.push(type) : verify.splice(verify.indexOf(type), 1)
       }
 
-      if(type === 'Password'){
+      if(type === 'password'){
         utils.checkPassword(val) ? verify.push(type) : verify.splice(verify.indexOf(type), 1)
       }
 

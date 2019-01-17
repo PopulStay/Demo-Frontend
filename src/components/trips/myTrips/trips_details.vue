@@ -25,9 +25,9 @@
                 <p class="check">Check-out</p>
               </div>
               <div class="text flex-2">
-                <p class="check">{{this.$route.query.tripsitem.start_time}}</p>
-                <p class="check">{{this.$route.query.tripsitem.end_time}}</p>
-                <p class="check">{{parseInt(this.$route.query.tripsitem.cha_time)}} night</p>
+                <p class="check">{{this.$route.query.tripsitem.start_time}} {{this.$route.query.tripsitem.available_checkin_time_from}}:00 - {{this.$route.query.tripsitem.available_checkin_time_to}}:00</p>
+                <p class="check">{{this.$route.query.tripsitem.end_time}} {{this.$route.query.tripsitem.check_out_time}}:00</p>
+                <p class="check">{{(new Date(this.$route.query.tripsitem.end_time) - new Date(this.$route.query.tripsitem.start_time)) / 1000 / 60 / 60 / 24}} night</p>
               </div>
             </li>
             <li class="flex-wrap flex-align-center">
@@ -76,18 +76,7 @@
             </li>
           </ul>
           <div class="button-wrap flex-wrap">
-            <div class="button r-button Pending" v-if="this.$route.query.title === 'Pending'">Confirm and pay</div>
-            <div class="button r-button" v-else-if="this.$route.query.title === 'Upcoming'">Confirm</div>
-            <div class="button r-button check-out" v-else-if="this.$route.query.title === 'Checked-in'">
-              <p>Edit</p>
-              <p>Check-out time</p>
-            </div>
-            <div class="button r-button" v-else-if="this.$route.query.title === 'Completed'">Delete</div>
-            <div class="button r-button" v-else-if="this.$route.query.title === 'Cancelled'">Delete</div>
-
-            <!--<div class="button r-button" @click="cancel" v-if="this.$route.query.title !== 'Completed' && this.$route.query.title !== 'Cancelled'">Cancel</div>-->
-            <!--<div class="button r-button" @click="cancel" v-else>Share</div>-->
-            <div class="button r-button" @click="Back">Back</div>
+            <div class="button r-button" @click="$router.go(-1)">Back</div>
           </div>
         </div>
       </div>
@@ -159,9 +148,6 @@ export default {
           tripsitem: item
         }
       })
-    },
-    Back(){
-      this.$router.go(-1)
     }
   }
 }

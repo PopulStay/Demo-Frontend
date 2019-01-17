@@ -4,14 +4,14 @@
       <li v-for="(item, index) in hostsTabList" :key="index" :class="hostsTabTitle == item ? 'active' : ''" @click="tripsTabClick(item, index)">{{item}}</li>
     </ul>
     <ul class="list" v-if="hostsTabTitle == 'Published'">
-      <li v-for="(item, index) in dataList" :key="index" @click="toListing(item.placeId)">
+      <li v-for="(item, index) in dataList" :key="index">
 
         <div class="imgWrap" :style="{backgroundImage: 'url(' + item.picture[0].smallPictureUrl +')'}">
-          <div class="hover" v-if="hostsTabTitle == 'Drafts'">
+          <div class="hover" v-if="hostsTabTitle == 'Published'">
             <div slot="reference" class="modification">
               <ul class="popover-content">
-                <li class="red">Edit</li>
-                <li>Delete</li>
+                <li class="red"  @click="toListing(item.placeId)">View</li>
+                <li @click="hostsPublishedDelete(item.placeId)">Delete</li>
               </ul>
               <i class="icon iconfont icon-xiugai"></i>
             </div>
@@ -21,17 +21,18 @@
         <p class="text">{{ item.placeName}}</p>
         <p class="number">{{ item.prices[0].bestPrice }} {{ item.prices[0].currency }} per night</p>
       </li>
+      <div v-if="!dataList.length" class="no-data">No data</div>
     </ul>
 
     <ul class="list" v-if="hostsTabTitle == 'Drafts'">
-      <li v-for="(item, index) in DraftsList" :key="index">
+      <li v-for="(item, index) in DraftsList" :key="index" v-if="DraftsList.length">
 
         <div class="imgWrap" :style="{backgroundImage:(item.picture ? 'url(' + item.picture[0].smallPictureUrl +')' :'url('+Placechart+')')}">
           <div class="hover" v-if="hostsTabTitle == 'Drafts'">
               <div slot="reference" class="modification">
                 <ul class="popover-content">
                   <li class="red"  @click="hostsEdit(item.tempPlaceId)">Edit</li>
-                  <li @click="hostsDelete(item.tempPlaceId)">Delete</li>
+                  <li @click="hostsDraftsDelete(item.tempPlaceId)">Delete</li>
                 </ul>
                 <i class="icon iconfont icon-xiugai"></i>
               </div>
@@ -45,6 +46,7 @@
         <p class="number" v-else>No price set yet</p>
 
       </li>
+      <div v-if="!DraftsList.length" class="no-data">No data</div>
     </ul>
 
   </div>
@@ -87,6 +89,7 @@ export default {
         hostId: this.user.user_id
       }).then((res) => {
         if(res.code == 200){
+          console.log(res)
           res.data.dataList.forEach((val, key) => {
             if(val.placeName){
               this.translation(val.placeName)
@@ -136,9 +139,10 @@ export default {
       this.$router.push({path: '/listing/lstHome', query: {id: placeId}})
     },
     hostsEdit(tempPlaceId){
-      this.$router.push({path: '/becomeHost/propertyTypes', query: {id: tempPlaceId}})
+      this.$store.state.becomehosttempPlaceId = tempPlaceId
+      this.$router.push('/becomeHost/propertyTypes')
     },
-    hostsDelete(tempPlaceId){
+    hostsDraftsDelete(tempPlaceId){
       this.$confirm('This action will permanently delete the listing, Whether to continue?', 'prompt', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
@@ -155,6 +159,31 @@ export default {
               message: 'successfully deleted!'
             });
             this.hostsDrafts()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Undelete'
+        });
+      });
+    },
+    hostsPublishedDelete(placeId){
+      this.$confirm('This action will permanently delete the listing, Whether to continue?', 'prompt', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.placeUrl + '/place', {
+          placeId: placeId
+        }).then((res) => {
+          if(res.code == 200){
+            this.$notify({
+              title: 'success',
+              message: 'Operation is successful',
+              type: 'success'
+            });
+            this.hostsPublished()
           }
         })
       }).catch(() => {
@@ -273,7 +302,6 @@ $red-color: #F4436C;
   z-index: 1;
   width: 70px;
   padding: 0 20px;
-  height: 100px;
   background: white;
   border-radius: 3px;
   display: none;
