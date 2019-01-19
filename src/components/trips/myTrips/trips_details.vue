@@ -10,7 +10,7 @@
       </div>
       <div class="content flex-wrap">
         <div class="flex-1 c-left">
-          <img src="../../../assets/images/trips/checked-in.png" alt="">
+          <img :src="place_data.picture ? place_data.picture[0].originalUrl : '../../../assets/images/trips/checked-in.png'" alt="" @click="toListing($route.query.tripsitem.place_id)">
         </div>
         <div class="c-right">
           <!--<h3>Lorem ipsum dolor sit amet consectetur adipiscing elit</h3>-->
@@ -109,7 +109,7 @@ export default {
     return {
       pendingShow: false,
       value11: '',
-      tripsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
+      tripsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Collect', 'Completed', 'Cancelled', 'Refund'],
       options: [{
         value: '1',
         label: 'Please select one reason'
@@ -126,12 +126,22 @@ export default {
         value: '5',
         label: 'I’ve find a better place on another website'
       }],
-      user: ''
+      user: '',
+      place_id:'',
+      place_data:{},
     }
+  },
+  beforeMount () {
+    console.log(this.$route.query.tripsitem)
+    if(this.$route.query.tripsitem.place_id){
+      this.getplace(this.$route.query.tripsitem.place_id)
+    }else{
+      this.$router.push('/trips/tripsList')
+    }
+
   },
   created () {
     this.user = this.$store.state.userInfo;
-
   },
   methods: {
     cancel () {
@@ -148,6 +158,30 @@ export default {
           tripsitem: item
         }
       })
+    },
+    getplace(place_id){
+      this.$get(this.placeUrl + '/place', {
+        placeId: place_id
+      }).then((res) => {
+        if (res.code === 200){
+          if (res.code === 200){
+            if(res.data){
+              this.place_data = res.data
+            }else{
+              this.$notify({
+                title: 'warning',
+                message: 'The house has been deleted.',
+                type: 'warning'
+              });
+              this.$router.push('/trips/tripsList')
+            }
+          }
+
+        }
+      })
+    },
+    toListing (placeId) {
+      this.$router.push({path: '/listing/lstHome', query: {id: placeId}})
     }
   }
 }
@@ -195,6 +229,7 @@ $red-color: #F4436C;
       box-sizing: border-box;
       img {
         width: 100%;
+        cursor: pointer;
       }
     }
     .c-right {

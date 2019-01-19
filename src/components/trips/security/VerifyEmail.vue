@@ -24,6 +24,7 @@
 
 <script>
 const sha256 = require('js-sha256').sha256
+import utils from '../../../utils/utils.js'
 export default {
   data () {
     return {
@@ -37,29 +38,54 @@ export default {
   },
   methods: {
     next () {
-      if (this.data.encrypted_password === '' || this.data.email_address === '') return false
-      this.$post(this.userUrl + '/user', {
-        action: 'updateUserPrivateInfo',
-        data: {
-          user_id: this.$store.state.userInfo.user_id,
-          encrypted_password: sha256(this.data.encrypted_password),
-          user_data: {
-            email_address: this.data.email_address
-          }
-        }
-      }).then((res) => {
-        if (res.msg.code === 200) {
-          this.step = this.step + 1
-          let user = this.$store.state.userInfo
-          user.email_address = this.data.email_address
-          user.user_identity_confirmation.email_verified = true
-          this.$store.commit('userUpdate', user)
-        } else {
-          this.$alert('Please try again', 'Warning', {
-            confirmButtonText: 'Confirm'
+      if (this.data.encrypted_password != '' || this.data.email_address != ''){
+
+        if(!utils.checkEmail(this.data.email_address)){
+          this.$post(this.userUrl + '/user', {
+            action: 'updateUserPrivateInfo',
+            data: {
+              user_id: this.$store.state.userInfo.user_id,
+              encrypted_password: sha256(this.data.encrypted_password),
+              user_data: {
+                email_address: this.data.email_address
+              }
+            }
+          }).then((res) => {
+            if (res.msg.code === 200) {
+              this.step = this.step + 1
+              let user = this.$store.state.userInfo
+              user.email_address = this.data.email_address
+              user.user_identity_confirmation.email_verified = "true"
+              this.$store.commit('userUpdate', user)
+            }else if(res.msg.code === 951){
+              this.$notify({
+                title: 'warning',
+                message: 'This email address has been registered',
+                type: 'warning'
+              });
+            }else if(res.msg.code === 952){
+              this.$notify({
+                title: 'warning',
+                message: 'Your password is entered incorrectly',
+                type: 'warning'
+              });
+            }else {
+              this.$notify({
+                title: 'warning',
+                message: 'Operation failed, please try again later.',
+                type: 'warning'
+              });
+            }
           })
+        }else{
+          this.$notify({
+            title: 'warning',
+            message: 'Please input the correct email address',
+            type: 'warning'
+          });
         }
-      })
+
+      }
     }
   }
 }

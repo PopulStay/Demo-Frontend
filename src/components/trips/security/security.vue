@@ -77,7 +77,7 @@
             </div>
             <div class="r-button button" :class="user.user_identity_confirmation.phone_verified === 'true' ? 'verfied' : ''">
               <div v-show="user.user_identity_confirmation.phone_verified === 'true'">Verified</div>
-              <div v-show="user.user_identity_confirmation.phone_verified != 'true'" @click="showVerify = true">verification</div>
+              <div v-show="user.user_identity_confirmation.phone_verified != 'true'" @click="email_phone_Verify('phone')">verification</div>
               <!-- <router-link :to="{path:'ChangePhone'}" v-else>Change</router-link> -->
             </div>
           </li>
@@ -97,9 +97,9 @@
             <!--<span class="red flex-1"><router-link :to="{path:'ChangePhone'}">Change</router-link></span>-->
              <span class="red flex-1"><router-link :to="{path:'VerifyEmail', query: {type: 'email'}}">Change</router-link></span>
           </div>
-          <div class="r-button button" :class="user.user_identity_confirmation.email_verified === 'true' ? 'verfied' : ''">
-            <div v-show="user.user_identity_confirmation.email_verified === 'true'">Verified</div>
-            <div v-show="user.user_identity_confirmation.email_verified != 'true'" @click="showVerify = true">verification</div>
+          <div class="r-button button" :class="user.user_identity_confirmation.email_verified == 'true' ? 'verfied' : ''">
+            <div v-show="user.user_identity_confirmation.email_verified == 'true'">Verified</div>
+            <div v-show="user.user_identity_confirmation.email_verified != 'true'" @click="email_phone_Verify('email')">verification</div>
             <!-- <router-link :to="{path:'ChangePhone'}">Change</router-link> -->
           </div>
         </div>
@@ -109,14 +109,14 @@
     <!--验证手机/邮箱-->
     <el-dialog :visible.sync="showVerify" width="25%" class="checkoutWrap" :close-on-click-modal="true">
       <div class="verify-code">
-        Please enter verification code
+        Verification code has <br/> Please check your {{email_phone_show ? 'email address' : 'phone' }}
       </div>
       <div class="input-wrap">
-        <input type="text" placeholder="Verifiction Code">
+        <input type="text" placeholder="Please enter verification code" v-model="verificationCode">
       </div>
       <div class="flex-wrap flex-center-between">
         <div class="button" @click="showVerify = false">Cancel</div>
-        <div class="button" @click="showVerify = false">Confirm</div>
+        <div class="button" @click="ConfirmVerify">Confirm</div>
       </div>
     </el-dialog>
 
@@ -141,9 +141,9 @@
           <p class="text">Your ID has been verified.</p>
           <div class="r-button button verfied">verified</div>
         </div>
-        <div class="flex-wrap flex-center-between flex-wrap-wrap" v-if="this.$store.state.userInfo.user_identity_confirmation.document_verified === 'pendding'">
+        <div class="flex-wrap flex-center-between flex-wrap-wrap" v-if="this.$store.state.userInfo.user_identity_confirmation.document_verified === 'pending'">
           <p class="text">We're still reviewing your ID.</p>
-          <div class="r-button button" style="cursor: initial;">Waiting</div>
+          <div class="r-button button verfied" style="cursor: initial;">Waiting</div>
         </div>
         <div class="flex-wrap flex-center-between flex-wrap-wrap" v-if="this.$store.state.userInfo.user_identity_confirmation.document_verified === 'false'">
            <p class="text">You’ll need to provide identification before you book.</p>
@@ -183,7 +183,9 @@ export default {
       },
       showVerify: false,
       user: '',
-      UserPassword:''
+      UserPassword:'',
+      email_phone_show:'',
+      verificationCode:''
     }
   },
   created () {
@@ -209,14 +211,22 @@ export default {
             new: '',
             confirmNew: ''
           }
-          this.$message({
+          this.$notify({
+            title: 'success',
             message: 'Operation is successful',
             type: 'success'
-          })
+          });
         } else {
-          this.$alert('Operation failed, please try later', 'Warning', {
-            confirmButtonText: 'Confirm'
-          })
+          this.password = {
+            old: '',
+            new: '',
+            confirmNew: ''
+          }
+          this.$notify({
+            title: 'warning',
+            message: 'Operation failed, please try later',
+            type: 'warning'
+          });
         }
       })
     },
@@ -279,6 +289,126 @@ export default {
         }
       })
 
+    },
+    email_phone_Verify(type){
+      if(type == 'email'){
+        this.email_phone_show = true
+
+        this.$post(this.userUrl + '/user', {
+          action: 'sendUserIdentityconfirmationCode',
+          data: {
+            email_address: this.user.email_address,
+            send_method : "email"
+          }
+        }).then((res) => {
+          if (res.msg.code === 200) {
+            this.showVerify = true
+          }else{
+            this.$notify({
+              title: 'warning',
+              message: 'Operation failed, please try again later.',
+              type: 'warning'
+            });
+          }
+        })
+
+      }else{
+        this.email_phone_show = false
+
+        this.$post(this.userUrl + '/user', {
+          action: 'sendUserIdentityconfirmationCode',
+          data: {
+            phone_number: this.user.phone_number,
+            send_method : "phone"
+          }
+        }).then((res) => {
+          console.log(res)
+          if (res.msg.code === 200) {
+            this.showVerify = true
+          }else{
+            this.$notify({
+              title: 'warning',
+              message: 'Operation failed, please try again later.',
+              type: 'warning'
+            });
+          }
+        })
+
+      }
+    },
+    ConfirmVerify(){
+      let user = this.$store.state.userInfo
+      if(this.email_phone_show){
+        this.$post(this.userUrl + '/user', {
+          action: 'confirmUserIdentityconfirmation',
+          data: {
+            user_id: this.$store.state.userInfo.user_id,
+            user_identity_confirmation:{
+              verify_method:'email',
+              verification_code:this.verificationCode
+            }
+          }
+        }).then((res) => {
+          if (res.msg.code === 200) {
+            this.showVerify = false;
+            user.user_identity_confirmation.email_verified = "true"
+            this.$store.commit('userUpdate', user)
+            this.$notify({
+              title: 'success',
+              message: 'Operation is successful',
+              type: 'success'
+            });
+            this.verificationCode = '';
+          }else if(res.msg.code === 952){
+            this.$notify({
+              title: 'warning',
+              message: 'incorrect verification code',
+              type: 'warning'
+            });
+          }else{
+            this.$notify({
+              title: 'warning',
+              message: 'Operation failed, please try again later.',
+              type: 'warning'
+            });
+          }
+        })
+      }else{
+        this.$post(this.userUrl + '/user', {
+          action: 'confirmUserIdentityconfirmation',
+          data: {
+            user_id: this.$store.state.userInfo.user_id,
+            user_identity_confirmation:{
+              verify_method:'phone',
+              verification_code:this.verificationCode
+            }
+          }
+        }).then((res) => {
+          if (res.msg.code === 200) {
+            this.showVerify = false;
+            user.user_identity_confirmation.phone_verified = "true"
+            this.$store.commit('userUpdate', user)
+            this.$notify({
+              title: 'success',
+              message: 'Operation is successful',
+              type: 'success'
+            });
+            this.verificationCode = '';
+          }else if(res.msg.code === 952){
+            this.$notify({
+              title: 'warning',
+              message: 'incorrect verification code',
+              type: 'warning'
+            });
+          }else{
+            this.$notify({
+              title: 'warning',
+              message: 'Operation failed, please try again later.',
+              type: 'warning'
+            });
+          }
+        })
+      }
     }
   },
   computed: {
@@ -390,13 +520,13 @@ $red-color: #F4436C;
       color: #B1B3B6;
       letter-spacing: 0;
       width: 100%;
-      padding: 0 15px;
       color: #B1B3B6;
       box-sizing: border-box;
     }
   }
   .verify-code{
     font-size: 20px;
+    line-height: 1.5;
   }
   .button {
     width: 40%;

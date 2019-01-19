@@ -38,6 +38,7 @@
 
 <script>
   const sha256 = require('js-sha256').sha256
+  import utils from '../../../utils/utils.js'
   export default {
     data () {
       return {
@@ -54,7 +55,29 @@
     },
     methods: {
       next () {
-        if (this.data.encrypted_password === '' || this.data.phone_number === '') return false
+        if (this.data.encrypted_password != '' || this.data.phone_number != ''){
+
+          if (this.first == '+86') {
+
+            if(!utils.checkTel(this.data.phone_number)){
+              this.Verifie()
+            }else{
+              this.$notify({
+                title: 'warning',
+                message: 'Please input the correct phone number',
+                type: 'warning'
+              });
+            }
+
+          } else {
+            this.Verifie()
+          }
+
+
+        }
+
+      },
+      Verifie(){
         this.$post(this.userUrl + '/user', {
           action: 'updateUserPrivateInfo',
           data: {
@@ -71,10 +94,24 @@
             let user = this.$store.state.userInfo
             user.phone_number = this.first + this.data.phone_number
             this.$store.commit('userUpdate', user)
-          } else {
-            this.$alert('Your password is entered incorrectly', 'Warning', {
-              confirmButtonText: 'Confirm'
-            })
+          } else if(res.msg.code === 951){
+            this.$notify({
+              title: 'warning',
+              message: 'This phone number has been registered',
+              type: 'warning'
+            });
+          } else if(res.msg.code === 952) {
+            this.$notify({
+              title: 'warning',
+              message: 'Your password is entered incorrectly',
+              type: 'warning'
+            });
+          }else{
+            this.$notify({
+              title: 'warning',
+              message: 'Operation failed, please try again later.',
+              type: 'warning'
+            });
           }
         })
       }

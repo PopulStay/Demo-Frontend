@@ -20,7 +20,7 @@
         <div class="top flex-wrap flex-center-between">
           <div class="top-left">
             <p class="entire-p">{{data.category}}</p>
-            <p class="name-p">{{placeName}}</p>
+            <p class="name-p">{{data.placeName}}</p>
             <p class="address-p">{{listName}}</p>
           </div>
           <div class="top-right flex-wrap flex-column-center flex-align-center">
@@ -51,23 +51,23 @@
             </div>
           </div>
 
-          <p class="intro-p" v-if="!descriptionShowMore" v-html="description.substring(0,200)"></p>
-          <p class="intro-p" v-if="descriptionShowMore" v-html="description"></p>
+          <p class="intro-p" v-if="!descriptionShowMore" v-html="data.description.substring(0,200)"></p>
+          <p class="intro-p" v-if="descriptionShowMore" v-html="data.description"></p>
           <!-- <p class="intro-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 0 || descriptionShowMore">{{item.space}}</p> -->
         </div>
-        <div class="read-more flex-wrap flex-align-center"  @click="descriptionShowMore = !descriptionShowMore" v-if="description.length>200">
+        <div class="read-more flex-wrap flex-align-center"  @click="descriptionShowMore = !descriptionShowMore" v-if="data.description.length>200">
           <p>{{descriptionShowMore ? 'hide' : 'Read more about the space'}}</p>
           <i class="iconfont icon-54" :class="descriptionShowMore ? 'transform' : ''"></i>
         </div>
         <p class="spilt-p"></p>
 
-        <div class="d_item" v-show="data.arrangements.length">
+        <div class="d_item" v-show="data.arrangementsLen">
           <p class="h1-p">Sleeping arrangements</p>
           <div class="arrangement h1-p" v-for="(item, index) in data.arrangements"  :key="index" v-show="index < 4 || arrangementsShowMore">
             <i class="iconfont icon-chuang1"></i>
             <p class="arr-top" v-for="(items, index) in item.utilities" :key="index" v-show="items.count != 0">{{items.count}} {{items.utility}}</p>
           </div>
-          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore" v-if="data.arrangements.length>4">
+          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore" v-if="data.arrangementsLen>4">
             <p>{{arrangementsShowMore ? 'hide' : 'Show more sleeping arrangements'}}</p>
             <i class="iconfont icon-54" :class="arrangementsShowMore ? 'transform' : ''"></i>
           </div>
@@ -80,48 +80,48 @@
           <p class="spilt-p"></p>
         </div>
 
-        <div class="d_item" v-show="data.amenities.length">
+        <div class="d_item" v-show="data.amenitiesLen">
           <p class="h1-p">Amenities</p>
           <ul>
             <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 5 || amenitiesShowMore">{{item.amenity}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenities.length>5">
+          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenitiesLen>5">
             <p>{{amenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
             <i class="iconfont icon-54" :class="amenitiesShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
-        <div class="d_item" v-show="data.safeAmenities.length">
+        <div class="d_item" v-show="data.safeAmenitiesLen">
           <p class="h1-p">Safe Amenities</p>
           <ul>
             <li class="rules-p" v-for="(item, index) in data.safeAmenities" :key="index" v-show="index < 3 || safeAmenitiesShowMore">{{item.safeAmenity}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="safeAmenitiesShowMore = !safeAmenitiesShowMore" v-if="data.safeAmenities.length>3">
+          <div class="read-more flex-wrap flex-align-center" @click="safeAmenitiesShowMore = !safeAmenitiesShowMore" v-if="data.safeAmenitiesLen>3">
             <p>{{safeAmenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
             <i class="iconfont icon-54" :class="safeAmenitiesShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
-        <div class="d_item" v-show="data.spaces.length">
+        <div class="d_item" v-show="data.spacesLen">
           <p class="h1-p">Spaces</p>
           <ul>
             <li class="rules-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 3 || spaceShowMore">{{item.space}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="spaceShowMore = !spaceShowMore" v-if="data.spaces.length>3">
+          <div class="read-more flex-wrap flex-align-center" @click="spaceShowMore = !spaceShowMore" v-if="data.spacesLen>3">
             <p>{{spaceShowMore ? 'hide' : 'Read all spaces'}}</p>
             <i class="iconfont icon-54" :class="spaceShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
-        <div class="d_item" v-show="data.rules.length">
+        <div class="d_item" v-show="data.rulesLen">
           <p class="h1-p">House Rules</p>
           <ul>
-            <li class="rules-p" v-for="(item, index) in data.rules" :key="index" v-show="index < 3 || rulesShowMore">{{item.rule}}</li>
+            <li class="rules-p" v-for="(item, index) in data.rules" :key="index" v-show="index < 3 || rulesShowMore">{{item.additionalTitle == "" ? item.rule : item.additionalTitle}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="rulesShowMore = !rulesShowMore" v-if="data.rules.length>3">
+          <div class="read-more flex-wrap flex-align-center" @click="rulesShowMore = !rulesShowMore" v-if="data.rulesLen>3">
             <p>{{rulesShowMore ? 'hide' : 'Read all rules'}}</p>
             <i class="iconfont icon-54" :class="rulesShowMore ? 'transform' : ''"></i>
           </div>
@@ -257,7 +257,7 @@
             <div :class="channel == 'wx_pub_qr' ? 'active' : null" @click="channel = 'wx_pub_qr'"><i class="iconfont icon-weixinzhifu"></i>Wechat Pay</div>
           </div>
 
-          <button @click="Verify" :disabled="disVerify" :class="disVerify ? 'disabled' : null">Book</button>
+          <button @click="Verify" :disabled="disVerify" :class="disVerify ? 'disabled' : null" v-loading.fullscreen.lock="dialogloading">Book</button>
         </div>
       </el-col>
     </el-row>
@@ -347,6 +347,7 @@
         <button @click="Verify">Book</button>
       </div>
     </el-dialog>
+
   </div>
 </template>
 <script>
@@ -394,7 +395,15 @@ export default {
       cancellationsShowMore: false,
       channel:'alipay_qr',
       isBack: false,
-      data: {},
+      data: {
+        arrangementsLen:0,
+        amenitiesLen:0,
+        safeAmenitiesLen:0,
+        spacesLen:0,
+        rulesLen:0,
+        lng:'0',
+        lat:'0'
+      },
       bookInfo: '',
       pickerOptions: {
         onPick: ({maxDate, minDate}) => {
@@ -446,6 +455,7 @@ export default {
 
             }
           }
+          console.log(this.data.needNoticeDay)
 
           if(dates){
             return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates
@@ -457,21 +467,17 @@ export default {
       unavailableDate:[],
       currencyType:['PPS','CNY'],
       CurrentCurrency:'PPS',
-      disVerify:false
+      disVerify:false,
+      dialogloading:false
     }
   },
   created () {
-    console.log(this.$route.query.id)
     this.getPlace(this.$route.query.id)
     this.place_id = this.$route.query.id
-    let date = new Date().getTime()
-    // this.timeStart = new Date()
-    // this.timeEnd = new Date(date + (1000 * 60 * 60 * 24))
     this.startTextTime = String(this.timeStart).split(' ')
     this.endTextTime = String(this.timeEnd).split(' ')
     this.startTimestamp = Date.parse(this.timeStart)
     this.endTimestamp = Date.parse(this.timeEnd)
-    // this.getBookInfo()
 
   },
   methods: {
@@ -482,7 +488,17 @@ export default {
       this.endTextTime = String(this.timeEnd).split(' ')
       this.startTimestamp = Date.parse(this.timeStart)
       this.endTimestamp = Date.parse(this.timeEnd)
-      this.getBookInfo()
+      if(this.startTimestamp != this.endTimestamp){
+        this.getBookInfo()
+      }else{
+        this.$notify({
+          title: 'warning',
+          message: 'Check-in date and check-out date cannot be the same.',
+          type: 'warning'
+        });
+        this.timeStart = ""
+        this.timeEnd = ""
+      }
       this.maxDate = null;
       this.minDate = null;
     },
@@ -490,7 +506,6 @@ export default {
       this.getBookInfo()
     },
     Verify () {
-      this.disVerify = true
       let user = this.$store.state.userInfo
 
       if (!user) {
@@ -501,40 +516,74 @@ export default {
 
         if(user.user_identity_confirmation.document_verified === 'true' && user.user_identity_confirmation.email_verified === 'true' && user.user_identity_confirmation.phone_verified === 'true' ){
 
-          if(this.CurrentCurrency == "CNY"){
-            this.$post(this.bookUrl + '/booking ', {
-              action: 'makeBooking',
-              data: {
-                user_id: user.user_id,
-                place_id: this.place_id,
-                check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
-                check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
-                guest_number: this.num1 + this.num2,
-                currency: this.CurrentCurrency,
-                channel:this.channel
-              }
-            }).then((res) => {
-              if (res.msg.code === 200) {
-                this.$router.push({path: 'lstDetail', query: {book_id: res.data.booking_id ,guest_number:this.num1 + this.num2}})
-              }
-            })
+          if(user.user_id == this.data.hostId){
+            this.$notify({
+              title: 'warning',
+              message: 'Can\'t book your own house.',
+              type: 'warning'
+            });
           }else{
-            this.$post(this.bookUrl + '/booking ', {
-              action: 'makeBooking',
-              data: {
-                user_id: user.user_id,
-                place_id: this.place_id,
-                check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
-                check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
-                guest_number: this.num1 + this.num2,
-                currency: this.CurrentCurrency,
-              }
-            }).then((res) => {
-              console.log(res)
-              if (res.msg.code === 200) {
-                this.$router.push({path: 'lstDetail', query: {book_id: res.data.booking_id ,guest_number:this.num1 + this.num2}})
-              }
-            })
+            this.dialogloading = true
+            this.disVerify = true
+            if(this.CurrentCurrency == "CNY"){
+              this.$post(this.bookUrl + '/booking ', {
+                action: 'makeBooking',
+                data: {
+                  user_id: user.user_id,
+                  place_id: this.place_id,
+                  check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
+                  check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
+                  guest_number: this.num1 + this.num2,
+                  currency: this.CurrentCurrency,
+                  channel:this.channel
+                }
+              }).then((res) => {
+                this.dialogloading = false
+                if (res.msg.code === 200) {
+                  this.$router.push({path: 'lstDetail', query: {book_id: res.data.booking_id ,guest_number:this.num1 + this.num2}})
+                }
+
+                if (res.msg.code === 952) {
+                  this.$notify({
+                    title: 'warning',
+                    message: 'Current time period cannot be book.',
+                    type: 'warning'
+                  });
+                  this.disVerify = false
+                  this.timeStart = ""
+                  this.timeEnd = ""
+                }
+              })
+            }else{
+              this.$post(this.bookUrl + '/booking ', {
+                action: 'makeBooking',
+                data: {
+                  user_id: user.user_id,
+                  place_id: this.place_id,
+                  check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
+                  check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
+                  guest_number: this.num1 + this.num2,
+                  currency: this.CurrentCurrency,
+                }
+              }).then((res) => {
+                console.log(res)
+                this.dialogloading = false
+                if (res.msg.code === 200) {
+                  this.$router.push({path: 'lstDetail', query: {book_id: res.data.booking_id ,guest_number:this.num1 + this.num2}})
+                }
+
+                if (res.msg.code === 952) {
+                  this.$notify({
+                    title: 'warning',
+                    message: 'Current time period cannot be book.',
+                    type: 'warning'
+                  });
+                  this.disVerify = false
+                  this.timeStart = ""
+                  this.timeEnd = ""
+                }
+              })
+            }
           }
 
 
@@ -563,8 +612,8 @@ export default {
           var description = res.data.description
           that.getName(citycode)
           that.getUserName(hostname)
-          that.translation('placeName',placeName)
-          that.translation('description',description)
+          // that.translation('placeName',placeName)
+          // that.translation('description',description)
 
 
           if(res.data.arrangements[0]){
@@ -575,8 +624,13 @@ export default {
             }
           }
 
-          console.log(res.data)
           this.data = res.data
+
+          this.data.arrangementsLen = res.data.arrangements.length
+          this.data.amenitiesLen = res.data.amenities.length
+          this.data.safeAmenitiesLen = res.data.safeAmenities.length
+          this.data.spacesLen = res.data.spaces.length
+          this.data.rulesLen = res.data.rules.length
         }
       })
     },
@@ -600,7 +654,11 @@ export default {
       day = dayTime / (1000 * 60 * 60 * 24)
 
       if (type === 'days') {
-        data = this.data.prices[0].bestPrice + ' x ' + day
+        if(this.data.prices){
+          data = this.data.prices[0].bestPrice + ' x ' + day
+        }else{
+          data = 0 + ' x ' + day
+        }
       }
 
       else if (type === 'place_price') {
@@ -885,6 +943,7 @@ $red-color: #F4436C;
         .intro-p{
           letter-spacing: 0;
           line-height: 30px;
+          word-wrap:break-word;
           // height: 90px;
           // overflow: hidden;
         }

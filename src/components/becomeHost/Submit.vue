@@ -60,16 +60,51 @@
            this.$store.state.becomehostTitle.reservation != ""){
 
           this.confirmOK = false
-          this.$post(this.placeUrl + '/place', this.$store.state.host).then((res) => {
-            if (res.code === 200) {
-                this.$store.state.becomehostPlaceID = res.data
-                this.postarrangements(res.data)
-            }
-          })
+
+          if(this.$store.state.becomehostTitle.status){
+            this.puttempPlace();
+            this.delArrangements();
+
+          }else{
+
+            this.$store.state.becomehostTitle.status = true
+
+            this.$post(this.partialplaceUrl + '/temp/place?userId='+this.$store.state.userInfo.user_id, {
+              host:this.$store.state.host,
+              hostinfo:this.$store.state.hostinfo,
+              becomehostTitle:this.$store.state.becomehostTitle
+            }).then((res) => {
+              if (res.code === 200){
+                if(res.data){
+                  this.$store.state.host.tempPlaceId = res.data
+                  this.$post(this.placeUrl + '/place', this.$store.state.host).then((res) => {
+                    if (res.code === 200) {
+                      this.$store.state.becomehostPlaceID = res.data
+                      this.postarrangements(res.data)
+                    }else{
+                      this.$notify({
+                        title: 'warning',
+                        message: 'Operation failed, please try later.',
+                        type: 'warning'
+                      });
+                    }
+                  })
+                }
+
+              }else{
+                this.$notify({
+                  title: 'warning',
+                  message: 'Operation failed, please try later.',
+                  type: 'warning'
+                });
+              }
+            })
+          }
 
         }else{
-          this.$message({
-            message: 'Please complete the information',
+          this.$notify({
+            title: 'warning',
+            message: 'Please complete the information.',
             type: 'warning'
           });
         }
@@ -111,8 +146,41 @@
         this.$delete(this.partialplaceUrl + '/temp/place', {
           tempPlaceId: tempPlaceId
         }).then((res) => {
+          console.log(res)
           if(res.code != 200){
-            this.hostsDraftsDelete(this.$store.state.becomehosttempPlaceId)
+
+          }
+        })
+      },
+      puttempPlace(){
+        this.$store.state.host.tempPlaceId = this.$store.state.becomehosttempPlaceId
+        this.$put(this.partialplaceUrl + '/temp/place?tempPlaceId='+this.$store.state.becomehosttempPlaceId, {
+          host:this.$store.state.host,
+          hostinfo:this.$store.state.hostinfo,
+          becomehostTitle:this.$store.state.becomehostTitle
+        }).then((res) => {
+          if (res.code === 200) {
+            this.putplace();
+          }
+        })
+      },
+      delArrangements(){
+        this.$get(this.placeUrl + '/place', {
+          placeId: this.$store.state.becomehostPlaceID
+        }).then((res) => {
+          if (res.code === 200) {
+            for(let key in res.data.arrangements){
+              this.$delete(this.placeUrl + '/arrangement?arrangementId=' + res.data.arrangements[key].arrangementId).then((res) => {})
+            }
+          }
+        })
+      },
+      putplace(){
+        this.$put(this.placeUrl + '/place?placeId='+this.$store.state.becomehostPlaceID, this.$store.state.host).then((res) => {
+          if (res.code === 200) {
+            this.postarrangements(this.$store.state.becomehostPlaceID)
+            this.$router.push({path: '/becomeHost/success', query: {id: this.$route.query.id}})
+            this.$store.state.becomehostTitle.Submit = 'Submit'
           }
         })
       }

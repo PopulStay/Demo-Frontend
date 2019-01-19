@@ -6,28 +6,29 @@
     <ul class="list" v-if="hostsTabTitle == 'Published'">
       <li v-for="(item, index) in dataList" :key="index">
 
-        <div class="imgWrap" :style="{backgroundImage: 'url(' + item.picture[0].smallPictureUrl +')'}">
+        <div class="imgWrap" :style="{backgroundImage:(item.picture[0] ? 'url(' + item.picture[0].smallPictureUrl +')' :'url('+Placechart+')')}">
+        <!--<div class="imgWrap" :style="{backgroundImage: 'url(' + item.picture[0].smallPictureUrl +')'}">-->
           <div class="hover" v-if="hostsTabTitle == 'Published'">
             <div slot="reference" class="modification">
               <ul class="popover-content">
-                <li class="red"  @click="toListing(item.placeId)">View</li>
-                <li @click="hostsPublishedDelete(item.placeId)">Delete</li>
+                <li class="red"  @click="hostsPlaceEdit(item.placeId,item.tempPlaceId)">Edit</li>
+                <li @click="hostsPublishedDelete(item.placeId,item.tempPlaceId)">Delete</li>
               </ul>
               <i class="icon iconfont icon-xiugai"></i>
             </div>
           </div>
         </div>
 
-        <p class="text">{{ item.placeName}}</p>
-        <p class="number">{{ item.prices[0].bestPrice }} {{ item.prices[0].currency }} per night</p>
+        <p class="text" @click="toListing(item.placeId)">{{ item.placeName}}</p>
+        <p class="number" @click="toListing(item.placeId)">{{ item.prices[0].bestPrice }} {{ item.prices[0].currency }} per night</p>
       </li>
       <div v-if="!dataList.length" class="no-data">No data</div>
     </ul>
 
-    <ul class="list" v-if="hostsTabTitle == 'Drafts'">
-      <li v-for="(item, index) in DraftsList" :key="index" v-if="DraftsList.length">
 
-        <div class="imgWrap" :style="{backgroundImage:(item.picture ? 'url(' + item.picture[0].smallPictureUrl +')' :'url('+Placechart+')')}">
+    <ul class="list" v-if="hostsTabTitle == 'Drafts'">
+      <li v-for="(item, index) in DraftsList" :key="index" v-if="!item.becomehostTitle.status">
+        <div class="imgWrap" :style="{backgroundImage:(item.host.pictures[0] ? 'url(' + item.host.pictures[0].smallPictureUrl +')' :'url('+Placechart+')')}">
           <div class="hover" v-if="hostsTabTitle == 'Drafts'">
               <div slot="reference" class="modification">
                 <ul class="popover-content">
@@ -38,15 +39,14 @@
               </div>
           </div>
         </div>
-
-        <p class="text" v-if="item.placeName">{{ item.placeName }}</p>
+        <p class="text" v-if="item.host.placeName">{{ item.host.placeName }}</p>
         <p class="text" v-else>No title has been set yet</p>
 
-        <p class="number" v-if="item.prices">{{item.prices[0].bestPrice}} {{item.prices[0].currency}} per night</p>
+        <p class="number" v-if="item.host.prices[0].bestPrice">{{item.host.prices[0].bestPrice}} {{item.host.prices[0].currency}} per night</p>
         <p class="number" v-else>No price set yet</p>
 
       </li>
-      <div v-if="!DraftsList.length" class="no-data">No data</div>
+      <div v-if="!DraftsListshow" class="no-data">No data</div>
     </ul>
 
   </div>
@@ -64,7 +64,8 @@ export default {
       DraftsList: [],
       user:'',
       placeName: [],
-      Placechart:list1
+      Placechart:list1,
+      DraftsListshow:false
     }
   },
   created () {
@@ -89,7 +90,6 @@ export default {
         hostId: this.user.user_id
       }).then((res) => {
         if(res.code == 200){
-          console.log(res)
           res.data.dataList.forEach((val, key) => {
             if(val.placeName){
               this.translation(val.placeName)
@@ -107,6 +107,13 @@ export default {
       }).then((res) => {
         if(res.code == 200){
           this.DraftsList = res.data
+
+          res.data.forEach((val, key) => {
+            if(!val.becomehostTitle.status){
+              this.DraftsListshow = true
+            }
+          })
+
         }
       })
     },
@@ -129,7 +136,6 @@ export default {
       ).then(json => {
         return json.translation[0]
         placeName.push(json.translation[0])
-        console.log(placeName)
         this.placeName = placeName
       }).catch(err => {
         console.log(err)
@@ -138,7 +144,7 @@ export default {
     toListing (placeId) {
       this.$router.push({path: '/listing/lstHome', query: {id: placeId}})
     },
-    hostsEdit(tempPlaceId){
+    hostsEdit (tempPlaceId) {
       this.$store.state.becomehosttempPlaceId = tempPlaceId
       this.$router.push('/becomeHost/propertyTypes')
     },
@@ -148,7 +154,6 @@ export default {
         cancelButtonText: 'Cancel',
         type: 'warning'
       }).then(() => {
-
         this.$delete(this.partialplaceUrl + '/temp/place', {
           tempPlaceId: tempPlaceId
         }).then((res) => {
@@ -168,7 +173,13 @@ export default {
         });
       });
     },
-    hostsPublishedDelete(placeId){
+    hostsPlaceEdit(placeId,tempPlaceId){
+      this.$store.state.becomehostPlaceID = placeId
+      this.$store.state.becomehosttempPlaceId = tempPlaceId
+      this.$router.push('/becomeHost/propertyTypes')
+    },
+    hostsPublishedDelete(placeId,tempPlaceId){
+      let deltempPlaceId = tempPlaceId;
       this.$confirm('This action will permanently delete the listing, Whether to continue?', 'prompt', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
@@ -184,6 +195,14 @@ export default {
               type: 'success'
             });
             this.hostsPublished()
+            this.$delete(this.partialplaceUrl + '/temp/place', {
+              tempPlaceId: deltempPlaceId
+            }).then((res) => {
+              if(res.code == 200){
+                this.hostsDrafts()
+              }
+            })
+
           }
         })
       }).catch(() => {

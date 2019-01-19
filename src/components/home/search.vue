@@ -431,6 +431,7 @@ export default {
     },
     // 搜索请求
     search () {
+      this.isList = false
 
       var url = "?pageNo="+this.pageNo+"&pageSize="+this.pageSize;
 

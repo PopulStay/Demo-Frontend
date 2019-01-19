@@ -10,7 +10,7 @@
           <!-- <p class="time">Booked on 25 October, 2018</p> -->
         </div>
         <div class="list-content flex-wrap">
-          <!--<div class="list-img"></div>-->
+          <div class="list-img"></div>
           <div class="list-text">
             <div>
               <!-- <p class="title flex-item">{{item.title1}}</p> -->
@@ -34,11 +34,12 @@
 
             <!--支付-->
             <div class="OrderButton" v-if="item.status == 'Pending' && item.currency != 'CNY'" @click="PaymentShow = true; bookingID = item.booking_id">Payment</div>
-            <div class="OrderButton" v-if="item.status == 'Pending' && item.currency == 'CNY'" @click="bookingID = item.booking_id;CNYPayment()">Payment</div>
+            <div class="OrderButton" v-if="item.status == 'Pending' && item.currency == 'CNY'" @click="bookingID = item.booking_id;CNYPayment(); numprice = item.price; currency = item.currency">Payment</div>
 
             <!--入住-->
-            <div class="OrderButton" v-if="item.status == 'Upcoming' && new Date(item.end_time).getTime() > new Date().getTime()" @click=" bookingID = item.booking_id;CheckInOut('1')">Check in</div>
-            <div class="OrderButton disabledbtn" v-if="item.status == 'Upcoming' && new Date(item.end_time).getTime() < new Date().getTime()" >Time out</div>
+            <div class="OrderButton" v-if="item.status == 'Upcoming' && new Date(item.end_time).getTime() < new Date().getTime() && new Date(item.start_time).getTime() > new Date().getTime()" @click=" bookingID = item.booking_id;CheckInOut('1')">Check in</div>
+            <div class="OrderButton disabledbtn" v-if="item.status == 'Upcoming' && new Date(item.end_time).getTime() > new Date().getTime()" >Check in timeout</div>
+            <div class="OrderButton disabledbtn" v-if="item.status == 'Upcoming' && new Date(item.start_time).getTime() < new Date().getTime()" >Check in</div>
 
             <!--退房-->
             <div class="OrderButton" v-if="item.status == 'Checked-in' && new Date(item.end_time).getTime() > new Date().getTime()" @click="bookingID = item.booking_id;CheckInOut('0')">Check out</div>
@@ -106,7 +107,7 @@
     <!-- 扫码付款弹窗  -->
     <el-dialog  :visible.sync="qr_codeshow" class="cancelWrap">
       <div class="text-wrap">
-        <p>Please open Alipay, sweep the payment</p>
+        <p>Sweep the payment <span>{{numprice}}</span> {{currency}}</p>
       </div>
       <div class="asset">
         <img :src="qr_codeURL" alt="">
@@ -212,7 +213,9 @@ export default {
       totalPage:0,
       RefundFee:"",
       RefundFeeCurrency:"",
-      currentstatus:false
+      currentstatus:false,
+      numprice:"",
+      currency:"",
     }
   },
   created () {
@@ -298,13 +301,7 @@ export default {
             }
             res.data.booking_list[i].start_time = moment(res.data.booking_list[i].start_time).format('DD MMM YYYY')
             res.data.booking_list[i].end_time = moment(res.data.booking_list[i].end_time).format('DD MMM YYYY')
-            // console.log(moment.duration(res.data.booking_list[i].end_time - res.data.booking_list[i].strat_time), 'days')
-            let m1 = moment(res.data.booking_list[i].strat_time)
-            let m2 = moment(res.data.booking_list[i].end_time)
-            // console.log(m1)
-            // console.log(m2)
-            res.data.booking_list[i].cha_time = m2.diff(m1, 'day') + 'night'
-
+            res.data.booking_list[i].cha_time = ((new Date(res.data.booking_list[i].end_time).getTime() - new Date(res.data.booking_list[i].start_time).getTime())/ 1000 / 60 / 60 / 24) + 'night'
           }
           this.tripsList = res.data.booking_list;
           this.totalPage = res.data.total
@@ -332,7 +329,6 @@ export default {
 
     },
     getRefundFee(){
-      this.CancelBookingShow = true;
 
       if(this.currentstatus){
         this.$post(this.bookUrl + '/booking', {
@@ -343,10 +339,24 @@ export default {
         }).then((res) => {
           console.log(res)
           if (res.msg.code == 200) {
-            this.RefundFee = res.data.refund_fee
-            this.RefundFeeCurrency = res.data.currency
+
+            if(res.data.refund_fee == 0){
+              this.$notify({
+                title: 'warning',
+                message: 'Non-refundable.',
+                type: 'warning'
+              });
+            }else{
+              this.RefundFee = res.data.refund_fee
+              this.RefundFeeCurrency = res.data.currency
+              this.CancelBookingShow = true;
+            }
           } else {
-            this.RefundFee = 0
+            this.$notify({
+              title: 'warning',
+              message: 'Non-refundable.',
+              type: 'warning'
+            });
           }
         })
       }
@@ -363,12 +373,13 @@ export default {
         }
       }).then((res) => {
         if (res.msg.code == 200) {
-          this.$message({
-            customClass: 'centermessage',
-            showClose: true,
-            message: 'Check out successfully',
-            type: 'success',
-          })
+
+          this.$notify({
+            title: 'success',
+            message: 'Check out successfully.',
+            type: 'success'
+          });
+
           this.CancelBookingShow = false
           this.getTripsList()
         }
@@ -471,6 +482,7 @@ export default {
             booking_id: this.bookingID
           }
         }).then((res) => {
+
           console.log(res)
           if(res.msg.code == 200){
             this.$message({
@@ -481,6 +493,7 @@ export default {
             });
             this.getTripsList()
           }
+
         })
 
       }else{
@@ -625,7 +638,8 @@ $red-color: #F4436C;
     .OrderButton {
       display: inline-block;
       border-radius: 3px;
-      width: 130px;
+      min-width: 130px;
+      padding: 0 15px;
       height: 40px;
       line-height: 40px;
       text-align: center;
@@ -702,17 +716,25 @@ $red-color: #F4436C;
     padding: 10px 0;
     p {
       font-family: Roboto-Regular;
-      font-size: 16px;
+      font-size: 18px !important;
       color: #4A4A4A;
       letter-spacing: 0;
       text-align: center;
       line-height: 22px;
       cursor: pointer;
     }
+    span{
+      font-size: 30px;
+      color: $red-color;
+      font-family: Roboto-Medium;
+    }
   }
   .asset {
     text-align: center;
-    padding: 25px 0;
+    padding: 15px 0;
+    img{
+      width: 70%;
+    }
   }
   .button {
     width: 90%;

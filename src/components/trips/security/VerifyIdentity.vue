@@ -191,9 +191,16 @@ export default {
             message: 'Operation is successful',
             type: 'success'
           });
+          let user = this.$store.state.userInfo
+          user.user_identity_confirmation.document_verified = "pending"
+
           this.$router.go(-1)
-        } else {
-          this.$store.commit('hint', {show: false})
+        }else {
+          this.$notify({
+            title: 'warning',
+            message: 'Operation failed, please try again later.',
+            type: 'warning'
+          });
         }
       })
     }

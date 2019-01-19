@@ -6,7 +6,8 @@ var reg = {
   weakPassword: /(^\d{6,}$)|(^[a-zA-Z]{6,}$)|(^[^a-zA-Z0-9]{6,}$)/,
   password: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/,
   // password: /\d*\D*((\d+[a-zA-Z]+[^0-9a-zA-Z]+)|(\d+[^0-9a-zA-Z]+[a-zA-Z]+)|([a-zA-Z]+\d+[^0-9a-zA-Z]+)|([a-zA-Z]+[^0-9a-zA-Z]+\d+)|([^0-9a-zA-Z]+[a-zA-Z]+\d+)|([^0-9a-zA-Z]+\d+[a-zA-Z]+))\d*\D*/,
-  address: /^[A-Za-z0-9]{40,42}$/
+  address: /^[A-Za-z0-9]{40,42}$/,
+  price:/(^[0-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/,
 }
 export default {
   // 验证手机号
@@ -82,6 +83,17 @@ export default {
       return true
     }
     if (!(reg.address.test(value))) {
+      return true
+    } else {
+      return false
+    }
+  },
+  // 验证价格
+  checkPrice (value) {
+    if (value === ''|| value == 0) {
+      return true
+    }
+    if (!(reg.price.test(value))) {
       return true
     } else {
       return false

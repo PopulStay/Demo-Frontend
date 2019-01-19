@@ -8,7 +8,7 @@
       <div class="left">
         <h2>{{ leftTitle}}</h2>
         <ul class="tab-list">
-          <li v-for="(item, index) in tabList" :key="index" :class="$route.name == item.url ? 'active' : ''" @click="tabClick(item)">
+          <li v-for="(item, index) in tabList" :key="index" :class="routeName == item.url ? 'active' : ''" @click="tabClick(item)">
             <router-link :to="item.url">{{item.title}}</router-link>
           </li>
         </ul>
@@ -87,14 +87,22 @@ export default {
           url: 'invite'
         }],
       checkoutShow: false,
-      gender: 'My account'
+      gender: 'My account',
+      routeName:''
     }
   },
   beforeMount () {
-    console.log(this.$route.name)
+    if(this.$route.name == 'guests_details'){
+      this.routeName = "guests"
+    }else if(this.$route.name == 'trips_details'){
+      this.routeName = "tripsList"
+    }else{
+      this.routeName = this.$route.name
+    }
   },
   methods: {
     tabClick (value) {
+      this.routeName = value.url
       this.leftTitle = value.title
     }
   },

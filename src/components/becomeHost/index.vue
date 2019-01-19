@@ -147,6 +147,8 @@ export default {
     }
   },
   created () {
+    console.log(this.$store.state.becomehostTitle.status)
+
     this.$store.state.host.hostId = JSON.parse(localStorage.getItem('user')).user_id
 
     this.Verify()
@@ -188,70 +190,7 @@ export default {
           }).then((res) => {
             console.log(res)
             if (res.code === 200) {
-              this.$store.state.host={
-                hostId:'',
-                category: '',
-                propertyTypeId:'',
-                placeName:'',
-                description:'',
-                pictures:[],
-                weeklyDiscount:'',
-                monthlyDiscount:'',
-                checkOutTime:'',
-                guestNumber: 0,
-                bedroomNumber: 0,
-                bedNumber: 0,
-                bathNumber: 0,
-                arrangements:[],
-                citycode:'',
-                streetLineOne:'',
-                streetLineTwo:'',
-                needNoticeDay:'',
-                needNoticeBeforeTime: '',
-                availableCheckinTimeFrom:'',
-                availableCheckinTimeTo:'',
-                guestMinStayNight:'',
-                guestMaxStayNight:'',
-                amenities:[],
-                safeAmenities:[],
-                spaces:[],
-                rules:[],
-                cancellationPolicyId:'',
-                prices:[
-                  {
-                    currency:"PPS",
-                    bestPrice:'',
-                    minPrice:'',
-                    maxPrice:'',
-                    cleanupServiceFee:''
-                  }
-                ],
-              }
-              this.$store.state.hostinfo={
-                propertyName:'',
-                Countryvalue:'',
-                Statevalue:'',
-                Cityvalue:'',
-                AmenitiesArr:[],
-                safeAmenitiesArr:[],
-                SpacesArr:[],
-                rulesArr:[],
-                Addrules:[],
-                needNoticeDay:''
-              }
-              this.$store.state.becomehostTitle={
-                propertyTypes:"",
-                Rooms:"",
-                Location:"",
-                Amenities:"",
-                space:"",
-                Requirements:"",
-                Floating:"",
-                ServiceFee:"",
-                reservation:"",
-                Submit:'',
-              }
-              this.$store.state.becomehosttempPlaceId = ""
+              this.clearhost()
             }
           })
         }else{
@@ -261,76 +200,80 @@ export default {
             becomehostTitle:this.$store.state.becomehostTitle
           }).then((res) => {
             if (res.code === 200) {
-              this.$store.state.host={
-                hostId:'',
-                category: '',
-                propertyTypeId:'',
-                placeName:'',
-                description:'',
-                pictures:[],
-                weeklyDiscount:'',
-                monthlyDiscount:'',
-                checkOutTime:'',
-                guestNumber: 0,
-                bedroomNumber: 0,
-                bedNumber: 0,
-                bathNumber: 0,
-                arrangements:[],
-                citycode:'',
-                streetLineOne:'',
-                streetLineTwo:'',
-                needNoticeDay:'',
-                needNoticeBeforeTime: '',
-                availableCheckinTimeFrom:'',
-                availableCheckinTimeTo:'',
-                guestMinStayNight:'',
-                guestMaxStayNight:'',
-                amenities:[],
-                safeAmenities:[],
-                spaces:[],
-                rules:[],
-                cancellationPolicyId:'',
-                prices:[
-                  {
-                    currency:"PPS",
-                    bestPrice:'',
-                    minPrice:'',
-                    maxPrice:'',
-                    cleanupServiceFee:''
-                  }
-                ],
-              }
-              this.$store.state.hostinfo={
-                propertyName:'',
-                Countryvalue:'',
-                Statevalue:'',
-                Cityvalue:'',
-                AmenitiesArr:[],
-                safeAmenitiesArr:[],
-                SpacesArr:[],
-                rulesArr:[],
-                Addrules:[],
-                needNoticeDay:''
-              }
-              this.$store.state.becomehostTitle={
-                propertyTypes:"",
-                Rooms:"",
-                Location:"",
-                Amenities:"",
-                space:"",
-                Requirements:"",
-                Floating:"",
-                ServiceFee:"",
-                reservation:"",
-                Submit:'',
-              }
-
+              this.clearhost()
             }
           })
         }
 
       }
 
+    },
+    clearhost(){
+      this.$store.state.host={
+        hostId:'',
+        category: '',
+        propertyTypeId:'',
+        placeName:'',
+        description:'',
+        pictures:[],
+        weeklyDiscount:'',
+        monthlyDiscount:'',
+        checkOutTime:'',
+        guestNumber: 0,
+        bedroomNumber: 0,
+        bedNumber: 0,
+        bathNumber: 0,
+        arrangements:[],
+        citycode:'',
+        streetLineOne:'',
+        streetLineTwo:'',
+        needNoticeDay:'',
+        needNoticeBeforeTime: '',
+        availableCheckinTimeFrom:'',
+        availableCheckinTimeTo:'',
+        guestMinStayNight:'',
+        guestMaxStayNight:'',
+        amenities:[],
+        safeAmenities:[],
+        spaces:[],
+        rules:[],
+        cancellationPolicyId:'',
+        prices:[
+          {
+            currency:"PPS",
+            bestPrice:'',
+            minPrice:'',
+            maxPrice:'',
+            cleanupServiceFee:''
+          }
+        ],
+      }
+      this.$store.state.hostinfo={
+        propertyName:'',
+        Countryvalue:'',
+        Statevalue:'',
+        Cityvalue:'',
+        AmenitiesArr:[],
+        safeAmenitiesArr:[],
+        SpacesArr:[],
+        rulesArr:[],
+        Addrules:[],
+        needNoticeDay:''
+      }
+      this.$store.state.becomehostTitle={
+        propertyTypes:"",
+        Rooms:"",
+        Location:"",
+        Amenities:"",
+        space:"",
+        Requirements:"",
+        Floating:"",
+        ServiceFee:"",
+        reservation:"",
+        Submit:'',
+        status:false
+      }
+      this.$store.state.becomehosttempPlaceId = ""
     }
   },//退出前提醒
   beforeRouteLeave: function(to, from , next){
@@ -344,20 +287,14 @@ export default {
       this.$store.state.becomehostTitle.ServiceFee != "" ||
       this.$store.state.becomehostTitle.reservation != ""){
 
-      this.submit()
+      if(this.$store.state.becomehostTitle.status){
+        this.clearhost()
+      }else {
+        this.submit()
+      }
+
     }
     next()
-
-    // this.$confirm('Your information has not been completed, the system will help you save this data, confirm the exit?', 'Prompt', {
-    //   confirmButtonText: 'Confirm',
-    //   cancelButtonText: 'Cancel',
-    //   type: 'warning'
-    // }).then(() => {
-    //   console.log("退出")
-    //   next()
-    // }).catch(() => {
-    //   console.log("不退出")
-    // });
   }
 }
 </script>

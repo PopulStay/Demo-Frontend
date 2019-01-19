@@ -259,7 +259,7 @@
 
     <el-dialog  :visible.sync="qr_codeshow" width="22%" class="cancelWrap">
       <div class="text-wrap">
-        <p>Please open Alipay, sweep the payment</p>
+        <p>Sweep the payment <span>{{book_detail.total_price}}</span> {{this.book_detail.currency}}</p>
       </div>
       <div class="asset">
         <img :src="qr_codeURL" alt="">
@@ -484,7 +484,7 @@ export default {
     },
     day(type){
       if(type == "currencyPrice"){
-        return (new Date(book_detail.end_time).getTime() - new Date(book_detail.start_time).getTime())/ 1000 / 60 / 60 / 24
+        return (new Date(this.book_detail.end_time).getTime() - new Date(this.book_detail.start_time).getTime())/ 1000 / 60 / 60 / 24
       }
     }
   },
@@ -930,17 +930,25 @@ $red-color: #F4436C;
     padding: 10px 0;
     p {
       font-family: Roboto-Regular;
-      font-size: 16px;
+      font-size: 18px !important;
       color: #4A4A4A;
       letter-spacing: 0;
       text-align: center;
       line-height: 22px;
       cursor: pointer;
     }
+    span{
+      font-size: 30px;
+      color: $red-color;
+      font-family: Roboto-Medium;
+    }
   }
   .asset {
     text-align: center;
-    padding: 25px 0;
+    padding: 15px 0;
+    img{
+      width: 70%;
+    }
   }
   .button {
     width: 90%;

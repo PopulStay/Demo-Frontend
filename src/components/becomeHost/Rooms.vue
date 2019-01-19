@@ -51,7 +51,7 @@
                     <li class="flex-wrap flex-center-between" v-for="(items,indexs) in item.utilities" :key="indexs">
                       <span class="r-title" v-if="items.name">{{items.name}}</span>
                       <span class="r-title" v-if="items.utility">{{items.utility}}</span>
-                      <el-input-number v-model="items.count" :min="0" :max="10"></el-input-number>
+                      <el-input-number v-model="items.count" :min="0" :max="10" @change="Bedroomnumber(items.count)"></el-input-number>
                     </li>
                   </ul>
                   <div class="bottom flex-wrap flex-center-between">

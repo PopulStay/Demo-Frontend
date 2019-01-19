@@ -90,6 +90,7 @@ export default new vuex.Store({
           cleanupServiceFee:''
         }
       ],
+      tempPlaceId:''
     },
     hostinfo:{
       propertyName:'',
@@ -115,9 +116,11 @@ export default new vuex.Store({
       ServiceFee:"",
       reservation:"",
       Submit:'',
+      status:false
     },
     becomehostPlaceID:'',
     becomehosttempPlaceId:'',
+    becomehosttempStatus:false,
   },
   getters: {
     introduceState: state => state.currentMenus

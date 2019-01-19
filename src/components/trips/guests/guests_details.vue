@@ -10,7 +10,7 @@
       </div>
       <div class="content flex-wrap">
         <div class="flex-1 c-left">
-          <img src="../../../assets/images/trips/checked-in.png" alt="">
+          <img :src="place_data.picture ? place_data.picture[0].originalUrl : '../../../assets/images/trips/checked-in.png'" alt="" @click="toListing($route.query.tripsitem.place_id)">
         </div>
         <div class="c-right">
           <!--<h3>Lorem ipsum dolor sit amet consectetur adipiscing elit</h3>-->
@@ -109,7 +109,7 @@ export default {
     return {
       pendingShow: false,
       value11: '',
-      guestsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Completed', 'Cancelled'],
+      guestsTabList: ['All', 'Cancelled'],
       options: [{
         value: '1',
         label: 'Please select one reason'
@@ -127,7 +127,18 @@ export default {
         label: 'I’ve find a better place on another website'
       }],
       user: '',
+      place_data:{}
     }
+  },
+  beforeMount () {
+    console.log(this.$route.query.guestsitem)
+
+    if(this.$route.query.guestsitem.place_id){
+      this.getplace(this.$route.query.guestsitem.place_id)
+    }else{
+      this.$router.push('/trips/guests')
+    }
+
   },
   created () {
     this.user = this.$store.state.userInfo;
@@ -150,6 +161,27 @@ export default {
         }
       })
 
+    },
+    getplace(place_id){
+      this.$get(this.placeUrl + '/place', {
+        placeId: place_id
+      }).then((res) => {
+        if (res.code === 200){
+          if(res.data){
+            this.place_data = res.data
+          }else{
+            this.$notify({
+              title: 'warning',
+              message: 'The house has been deleted.',
+              type: 'warning'
+            });
+            this.$router.push('/trips/guests')
+          }
+        }
+      })
+    },
+    toListing (placeId) {
+      this.$router.push({path: '/listing/lstHome', query: {id: placeId}})
     }
   }
 }

@@ -222,10 +222,12 @@ export default {
     toLogin () {
       this.$store.state.show_signup = false
       this.$store.state.show_login = true
+      this.$store.state.warning = ""
     },
     toTerms () {
       this.$store.state.show_signup = false
       this.$store.state.show_term = true
+      this.$store.state.warning = ""
     },
     confirm () {
       if (this.data.encrypted_password !== this.data.confirm_password) {

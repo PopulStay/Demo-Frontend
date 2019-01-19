@@ -7,10 +7,33 @@
     <div class="reservation">
       <ul>
         <li>
+          <p class="label">Available Checkin Time From</p>
+          <el-select v-model="$store.state.host.availableCheckinTimeFrom">
+            <el-option
+              v-for="item in 24"
+              :key="item"
+              :label="item+' : 00'"
+              :value="item">
+            </el-option>
+          </el-select>
+        </li>
+        <li>
+          <p class="label">Available Checkin Time To</p>
+          <el-select v-model="$store.state.host.availableCheckinTimeTo" @change="$store.state.host.checkOutTime = ''">
+            <el-option
+              v-for="item in 24"
+              :key="item"
+              :label="item+' : 00'"
+              :value="item">
+            </el-option>
+          </el-select>
+        </li>
+        <li>
           <p class="label">Check Out Time</p>
           <el-select v-model="$store.state.host.checkOutTime">
             <el-option
               v-for="item in 24"
+              v-show="item < $store.state.host.availableCheckinTimeTo"
               :key="item"
               :label="item+' : 00'"
               :value="item">
@@ -34,28 +57,6 @@
             <el-option
               v-for="item in 24"
               v-if="item > 5 "
-              :key="item"
-              :label="item+' : 00'"
-              :value="item">
-            </el-option>
-          </el-select>
-        </li>
-        <li>
-          <p class="label">Available Checkin Time From</p>
-          <el-select v-model="$store.state.host.availableCheckinTimeFrom">
-            <el-option
-              v-for="item in 24"
-              :key="item"
-              :label="item+' : 00'"
-              :value="item">
-            </el-option>
-          </el-select>
-        </li>
-        <li>
-          <p class="label">Available Checkin Time To</p>
-          <el-select v-model="$store.state.host.availableCheckinTimeTo">
-            <el-option
-              v-for="item in 24"
               :key="item"
               :label="item+' : 00'"
               :value="item">

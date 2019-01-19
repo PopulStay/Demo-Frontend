@@ -2,7 +2,7 @@
   <div class="content" @click="toListing(houselist.placeId)">
     <div class="houseimg" :style="{backgroundImage: 'url(' + houselist.picture[0].smallPictureUrl +')'}" ></div>
     <p class="city">{{city}}</p>
-    <p class="title">{{housetitle}}</p>
+    <p class="title">{{houselist.placeName}}</p>
     <p class="number">{{houselist.prices[0].bestPrice}} pps per night</p>
     <el-rate  v-model="value" disabled show-score :colors="['#99A9BF', '#f4436C', '#FF9900']" text-color="#4A4A4A" score-template="5">
     </el-rate>
@@ -38,7 +38,7 @@
             this.city = res.data.fullAddress
           }
         })
-        this.translation()
+        // this.translation()
       }
 
 

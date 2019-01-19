@@ -30,7 +30,7 @@
         </div>
       </li>
     </ul>
-    <div class="no-data" v-if="guestsList.length">
+    <div class="no-data" v-if="islist == false">
       No data
     </div>
     <!-- 待定结账弹窗  -->
@@ -157,7 +157,8 @@
         this.$post(this.bookUrl + '/booking', {
           action: 'listHostBookings',
           data: {
-            host_id: user.user_id,
+            // host_id: this.user.user_id,
+            host_id: 2790,
             page: this.currentPage-1,
             status:status
           }

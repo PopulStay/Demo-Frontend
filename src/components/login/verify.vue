@@ -13,9 +13,7 @@
       <div class="input-text">
         <input type="password" placeholder="Password" class="psw" v-model="newpsw" @blur="blurPassword"/>
       </div>
-      <p class="warning-password" v-show="passwordStrength === 'length'">The password length is between 6 and 20 bits</p>
-        <p class="warning-password" v-show="passwordStrength === 'weak'">cryptographic strength: weak</p>
-        <p class="warning-password" v-show="passwordStrength === 'middle'">cryptographic strength: middle</p>
+      <p class="warning-password" v-show="passwordStrength">Please enter your password in the format 6-20 letters, numbers, special symbols</p>
       <button class="login-btn XY-fz16 XY-colf XY-cursorp" @click="toNewpsw">Next</button>
       <div class="flex-wrap flex-center verify-Next XY-cursorp" @click="toLogin">
         <i class="iconfont icon-54 red-color"></i>
@@ -46,13 +44,12 @@ export default {
       showThis: null,
       number: '',
       newpsw: '',
-      passwordStrength: '',
+      passwordStrength: false,
       clock: ''
     }
   },
   methods: {
     countDown () {
-      if (!this.canClick) return false
 
       let data = {}
       if (this.number.indexOf('@') === -1) {
@@ -60,36 +57,43 @@ export default {
       } else {
         data = {email_address: this.number, send_method: 'email'}
       }
-      this.$post(this.userUrl + '/user', {
-        action: 'sendUserUpdatePasswordVerificationCode',
-        data: data
-      }).then((res) => {
-        if (res.msg.code === 200) {
-          this.canClick = false
-          this.content = this.totalTime + 's'
-          this.clock = window.setInterval(() => {
-            this.totalTime--
+
+      if (this.canClick && this.$store.state.warning==""){
+        this.$post(this.userUrl + '/user', {
+          action: 'sendUserUpdatePasswordVerificationCode',
+          data: data
+        }).then((res) => {
+          if (res.msg.code === 200) {
+            this.canClick = false
             this.content = this.totalTime + 's'
-            if (this.totalTime < 0) {
-              window.clearInterval(this.clock)
-              this.content = 'Send'
-              this.totalTime = 60
-              this.canClick = true
-            }
-          }, 1000)
-        } else {
-          this.$alert('Please confirm whether to register or not', 'Warning', {
-            confirmButtonText: 'Confirm'
-          })
-        }
-      })
+            this.clock = window.setInterval(() => {
+              this.totalTime--
+              this.content = this.totalTime + 's'
+              if (this.totalTime < 0) {
+                window.clearInterval(this.clock)
+                this.content = 'Send'
+                this.totalTime = 60
+                this.canClick = true
+              }
+            }, 1000)
+          } else {
+            this.$notify({
+              title: 'warning',
+              message: 'Operation failed, please try later.',
+              type: 'warning'
+            });
+          }
+        })
+      }
+
     },
     toLogin () {
+      this.totalTime = 60
       this.$store.state.show_verify = false
       this.$store.state.show_login = true
     },
     toNewpsw () {
-      if (this.newpsw === '' || this.code === '' || this.passwordStrength === 'length') return false
+      if (this.newpsw === '' || this.code === '' || this.passwordStrength) return false
 
       if(this.number.indexOf('@') === -1){
         this.$post(this.userUrl + '/user', {
@@ -118,21 +122,29 @@ export default {
             new_encrypted_password: sha256(this.newpsw)
           }
         }).then((res) => {
+          console.log(res)
           if (res.msg.code === 200) {
             this.$store.state.show_verify = false
             this.$store.state.show_resetcuss = true
+          } else if(res.msg.code === 952){
+            this.$notify({
+              title: 'warning',
+              message: 'Account or password entered incorrectly.',
+              type: 'warning'
+            });
           } else {
-            this.$alert('Operation failed, please try later', 'Warning', {
-              confirmButtonText: 'Confirm'
-            })
+            this.$notify({
+              title: 'warning',
+              message: 'Operation failed, please try later.',
+              type: 'warning'
+            });
           }
         })
       }
 
     },
     blurPassword () {
-      let passwordStrength = utils.checkPasswordStrength(this.newpsw)
-      passwordStrength ? this.passwordStrength = passwordStrength : this.passwordStrength = ''
+      utils.checkPassword(this.newpsw) ? this.passwordStrength = true : this.passwordStrength = false
     },
     close () {
       this.number = ''

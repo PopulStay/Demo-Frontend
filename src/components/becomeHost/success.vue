@@ -26,6 +26,8 @@
     methods:{
       success(){
         this.$router.push({path: '/listing/lstHome', query: {id: this.$store.state.becomehostPlaceID}})
+      },
+      clearhost(){
         this.$store.state.host={
           hostId:'',
           category: '',
@@ -66,31 +68,37 @@
           ],
         }
         this.$store.state.hostinfo={
-            propertyName:'',
-            Countryvalue:'',
-            Statevalue:'',
-            Cityvalue:'',
-            AmenitiesArr:[],
-            safeAmenitiesArr:[],
-            SpacesArr:[],
-            rulesArr:[],
-            Addrules:[],
-            needNoticeDay:''
+          propertyName:'',
+          Countryvalue:'',
+          Statevalue:'',
+          Cityvalue:'',
+          AmenitiesArr:[],
+          safeAmenitiesArr:[],
+          SpacesArr:[],
+          rulesArr:[],
+          Addrules:[],
+          needNoticeDay:''
         }
         this.$store.state.becomehostTitle={
-            propertyTypes:"",
-            Rooms:"",
-            Location:"",
-            Amenities:"",
-            space:"",
-            Requirements:"",
-            Floating:"",
-            ServiceFee:"",
-            reservation:"",
-            Submit:'',
+          propertyTypes:"",
+          Rooms:"",
+          Location:"",
+          Amenities:"",
+          space:"",
+          Requirements:"",
+          Floating:"",
+          ServiceFee:"",
+          reservation:"",
+          Submit:'',
+          status:false
         }
-        this.$store.state.becomehostPlaceID=''
+        this.$store.state.becomehosttempPlaceId = ""
       }
+    },
+    beforeDestroy(){
+      this.clearhost()
+
+      console.log(this.$store.state)
     }
   }
 </script>
