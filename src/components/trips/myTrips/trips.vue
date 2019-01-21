@@ -10,7 +10,7 @@
           <!-- <p class="time">Booked on 25 October, 2018</p> -->
         </div>
         <div class="list-content flex-wrap">
-          <div class="list-img"></div>
+          <!--<div class="list-img"></div>-->
           <div class="list-text">
             <div>
               <!-- <p class="title flex-item">{{item.title1}}</p> -->

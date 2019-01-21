@@ -413,6 +413,7 @@ export default {
         disabledDate: (time) => {
 
           let dates = new Date().getTime() + (1000 * 60 * 60 * 24) * this.data.guestMaxStayNight
+          let dateNeedNoticeDay = new Date().getTime() + (1000 * 60 * 60 * 24) * this.data.needNoticeDay
 
           let startdateArr = [];
           let enddateArr = [];
@@ -455,10 +456,10 @@ export default {
 
             }
           }
-          console.log(this.data.needNoticeDay)
+
 
           if(dates){
-            return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates
+            return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates || time.getTime() < dateNeedNoticeDay
           }
 
         }

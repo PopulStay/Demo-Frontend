@@ -69,11 +69,11 @@ export default {
 
       }else{
 
-        this.$message({
-          message: 'Please confirm user information',
+        this.$notify({
+          title: 'warning',
+          message: 'Please confirm user information.',
           type: 'warning'
         });
-
       }
     }
   },

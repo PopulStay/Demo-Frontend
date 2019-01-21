@@ -157,8 +157,8 @@
         this.$post(this.bookUrl + '/booking', {
           action: 'listHostBookings',
           data: {
-            // host_id: this.user.user_id,
-            host_id: 2790,
+            host_id: this.user.user_id,
+            // host_id: 2790,
             page: this.currentPage-1,
             status:status
           }

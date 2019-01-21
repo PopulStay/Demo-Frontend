@@ -31,12 +31,28 @@
         <li><a href="https://blog.naver.com/PopulStay" target="_blank" class="icon iconfont icon-naver margin"></a></li>
       </ul>
     </div>
+    <e-Live_Chat></e-Live_Chat>
+
+    <div class="Live_Chat_Win_box">
+      <e-Live_Chat_Win ></e-Live_Chat_Win>
+    </div>
   </div>
 </template>
 
 <script>
 const wechatimg = require("../../assets/images/qrcode.jpg");
+import Live_Chat from '../livechat/index'
+import win from '../livechat/win'
   export default {
+    components: {
+      'e-Live_Chat': Live_Chat,
+      'e-Live_Chat_Win': win
+    },
+    data () {
+      return {
+        Live_ChatList:['123','4556'],
+      }
+    },
     methods: {
       openwechat() {
         this.$confirm('<img src='+wechatimg+'/>', '', {
@@ -53,6 +69,7 @@ const wechatimg = require("../../assets/images/qrcode.jpg");
 
 <style scoped lang="scss">
 .footer {
+  position: relative;
   border-top: 1px solid #eee;
   .footer-nav {
     width: 1500px;
@@ -111,6 +128,14 @@ const wechatimg = require("../../assets/images/qrcode.jpg");
         }
       }
     }
+  }
+
+  .Live_Chat_Win_box{
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    margin: 0 5px;
+    width: 83%;
   }
 }
 @media only screen and (max-width: 1500px) {
