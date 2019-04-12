@@ -2,17 +2,16 @@
   <div class="footer">
     <div class="footer-nav flex-wrap">
         <ul>
-            <li><router-link to="/becomeHost/propertyTypes">Become a host</router-link></li>
-            <li><router-link to="/trips/tripsList">Trips</router-link></li>
-            <li><router-link to="/trips/messages">Messages</router-link></li>
-            <li><router-link to="/trips/walletHome">Wallet</router-link></li>
-            <li><a href="javascript:void(0)" @click="$store.state.show_signup = true" v-show="$store.state.userInfo == null">Sign up</a></li>
-            <li><a href="javascript:void(0)" @click="$store.state.show_login = true" v-show="$store.state.userInfo == null">Log in</a></li>
+          <li><router-link to="/becomeHost/propertyTypes">{{$t('message.Starthosting')}}</router-link></li>
+            <li><router-link to="/trips/tripsList">{{$t('message.Trips')}}</router-link></li>
+            <!--<li><router-link to="/trips/messages">{{$t('message.Messages')}}</router-link></li>-->
+            <li><router-link to="/trips/walletHome">{{$t('message.Wallet')}}</router-link></li>
+            <li><a href="javascript:void(0)" @click="$store.state.show_signup = true" v-show="$store.state.userInfo == null">{{$t('message.Signup')}}</a></li>
+            <li><a href="javascript:void(0)" @click="$store.state.show_login = true" v-show="$store.state.userInfo == null">{{$t('message.Login')}}</a></li>
         </ul>
         <div class="language">
-            <span>English</span>
-            <span>中文</span>
-            <span>日本語</span>
+            <span :class="$i18n.locale == 'en' ? 'active' : null" @click="language('en')">English</span>
+            <span :class="$i18n.locale == 'cn' ? 'active' : null" @click="language('cn')">中文</span>
         </div>
     </div>
     <div class="footer-link flex-wrap flex-content-between flex-align-center">
@@ -31,18 +30,15 @@
         <li><a href="https://blog.naver.com/PopulStay" target="_blank" class="icon iconfont icon-naver margin"></a></li>
       </ul>
     </div>
-    <e-Live_Chat></e-Live_Chat>
-
-    <div class="Live_Chat_Win_box">
-      <e-Live_Chat_Win ></e-Live_Chat_Win>
-    </div>
+    <!--<e-Live_Chat></e-Live_Chat>-->
   </div>
 </template>
 
 <script>
 const wechatimg = require("../../assets/images/qrcode.jpg");
-import Live_Chat from '../livechat/index'
-import win from '../livechat/win'
+import Live_Chat from '../livechat/index';
+import win from '../livechat/win';
+
   export default {
     components: {
       'e-Live_Chat': Live_Chat,
@@ -50,10 +46,18 @@ import win from '../livechat/win'
     },
     data () {
       return {
+        userData:null,
         Live_ChatList:['123','4556'],
       }
     },
+    created() {
+      this.$i18n.locale = localStorage.populstayLang == undefined ? 'en' : localStorage.populstayLang
+    },
     methods: {
+      language(type){
+        this.$i18n.locale = type
+        localStorage.setItem('populstayLang',type);
+      },
       openwechat() {
         this.$confirm('<img src='+wechatimg+'/>', '', {
           dangerouslyUseHTMLString: true,
@@ -72,11 +76,9 @@ import win from '../livechat/win'
   position: relative;
   border-top: 1px solid #eee;
   .footer-nav {
-    width: 1500px;
-    margin: 0 auto;
     justify-content: space-between;
     align-items: flex-end;
-    padding: 30px 0;
+    padding: 30px 200px;
     ul{
       li {
         font-family: Roboto-Regular;
@@ -87,7 +89,7 @@ import win from '../livechat/win'
       }
     }
     .language {
-      display: none;
+
 
       span {
         font-family: PingFangSC-Regular;
@@ -101,14 +103,16 @@ import win from '../livechat/win'
         &:last-child {
           margin-right: 0
         }
+        &.active{
+          color: #f4436c;
+        }
       }
     }
   }
   .footer-link {
-    width: 1500px;
     margin: 0 auto;
     border-top: 1px solid #eee;
-    padding: 40px 0;
+    padding: 40px 200px;
     p {
       font-family: Roboto-Regular;
       font-size: 14px;
@@ -132,24 +136,28 @@ import win from '../livechat/win'
 
   .Live_Chat_Win_box{
     position: fixed;
-    bottom: 0px;
-    left: 0px;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
     margin: 0 5px;
-    width: 83%;
+    z-index: 9999;
   }
 }
 @media only screen and (max-width: 1500px) {
-  .footer .footer-nav,.footer .footer-link {
-    width: auto;
-    padding: 30px 30px;
+  .footer .footer-nav,
+  .footer .footer-link {
+    padding: 30px 100px;
   }
 }
 @media only screen and (max-width:780px) {
   .footer {
+    .footer-nav,
+    .footer-link {
+      padding: 30px 20px;
+    }
     .footer-link {
       display: block;
       text-align: center;
-      padding: 20px 30px;
       p {
         margin-bottom: 10px;
       }

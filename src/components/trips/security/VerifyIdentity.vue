@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="wrap">
-      <div class="wrap-header">Verify your Identity Card / Passport / Driver’s license</div>
+      <div class="wrap-header">{{$t('message.VerifyyourIdentityCardPassportDriverslicense')}}</div>
       <div class="content">
         <!-- <div class="list verifyIdentity">
           <div class="item flex-wrap">
@@ -32,8 +32,8 @@
           </div>
         </div> -->
         <div class="identity i_content" v-show="issuing === 0">
-            <h3>Upload images of your identity card</h3>
-            <p>Upload images of the front and back of your identity card (United States).<br>Make sure your images aren’t blurry and the front clearly shows your face.</p>
+            <h3>{{$t('message.Uploadimagesofyouridentitycard')}}</h3>
+            <p>{{$t('message.UploadimagesofthefrontandbackofyouridentitycardUnitedStates')}}<br>{{$t('message.Makesureyourimagesarentblurryandthefrontclearlyshowsyourface')}}</p>
             <ul class="flex-wrap flex-content-between">
               <li>
                 <el-upload
@@ -44,10 +44,10 @@
                   :show-file-list="false"
                   :on-progress="handleAvatarProgress"
                   :on-error="handleAvatarError" v-loading="loading">
-                  <img v-if="frontImageUrl" :src="frontImageUrl" class="avatar">
+                  <div v-if="frontImageUrl" class="avatar" :style="{backgroundImage:'url(' + frontImageUrl + ')'}" ></div>
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
-                <p>Add front</p>
+                <p>{{$t('message.Addfront')}}</p>
               </li>
               <li>
                 <el-upload
@@ -58,17 +58,17 @@
                   :show-file-list="false"
                   :on-progress="handleAvatarProgress2"
                   :on-error="handleAvatarError2" v-loading="loading2">
-                  <img v-if="handImageUrl" :src="handImageUrl" class="avatar">
+                  <div v-if="handImageUrl" class="avatar" :style="{backgroundImage:'url(' + handImageUrl + ')'}" ></div>
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
-                <p>Hand-held documents</p>
+                <p>{{$t('message.Handhelddocuments')}}</p>
               </li>
             </ul>
         </div>
         <div class="Passport i_content" v-show="issuing === 1">
-            <h3>Upload images of your Passport</h3>
-            <p>Upload images of the front and back of your passport (United States).<br>Make sure your images aren’t blurry and the front clearly shows your face.</p>
-            <ul class="flex-wrap flex-content-between">
+            <h3>{{$t('message.UploadimagesofyourPassport')}}</h3>
+            <p>{{$t('message.UploadimagesofthefrontandbackofyourpassportUnitedStates')}}<br>{{$t('message.Makesureyourimagesarentblurryandthefrontclearlyshowsyourface')}}</p>
+          <ul class="flex-wrap flex-content-between">
               <li>
                 <el-upload
                   class="avatar-uploader"
@@ -77,23 +77,23 @@
                   <img v-if="imageUrl" :src="imageUrl" class="avatar">
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
-                <p>Add photo page</p>
+                <p>{{$t('message.Addphotopage')}}</p>
               </li>
             </ul>
         </div>
         <div class="license i_content" v-show="issuing === 3">
-            <h3>Upload images of your Driver’s license</h3>
-            <p>Upload images of the front and back of your Driver’s license (United States).<br>Make sure your images aren’t blurry and the front clearly shows your face.</p>
+            <h3>{{$t('message.UploadimagesofyourDriverslicense')}}</h3>
+            <p>{{$t('message.UploadimagesofthefrontandbackofyourDriverslicenseUnitedStates')}}<br>{{$t('message.Makesureyourimagesarentblurryandthefrontclearlyshowsyourface')}}</p>
             <ul class="flex-wrap flex-content-between">
               <li>
                 <el-upload
                   class="avatar-uploader"
                   action=""
                   :show-file-list="false">
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                  <div v-if="imageUrl" class="avatar" :style="{backgroundImage:'url(' + imageUrl + ')'}" ></div>
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
-                <p>Add front</p>
+                <p>{{$t('message.Addfront')}}</p>
               </li>
               <li>
                 <el-upload
@@ -103,11 +103,11 @@
                   <img v-if="imageUrl" :src="imageUrl" class="avatar">
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
-                <p>Add back</p>
+                <p>{{$t('message.Addback')}}</p>
               </li>
             </ul>
         </div>
-        <div class="r-button button" @click="save">Save</div>
+        <div class="r-button button" @click="save">{{$t('message.Save')}}</div>
       </div>
     </div>
     <e-hint></e-hint>
@@ -151,9 +151,11 @@ export default {
     },
     handleAvatarError (errs, file, fileList) {
       this.loading = false
-      this.$alert('Please confirm whether the picture has been updated', 'Warning', {
-        confirmButtonText: 'Confirm'
-      })
+      this.$notify({
+        title: this.$t('message.Warning'),
+        message: this.$t('message.Pleaseconfirmwhetherthepicturehasbeenupdated'),
+        type: 'warning'
+      });
     },
     // 图片上传时
     handleAvatarProgress (event, file, fileList) {
@@ -165,9 +167,11 @@ export default {
     },
     handleAvatarError2 (errs, file, fileList) {
       this.loading2 = false
-      this.$alert('Please confirm whether the picture has been updated', 'Warning', {
-        confirmButtonText: 'Confirm'
-      })
+      this.$notify({
+        title: this.$t('message.Warning'),
+        message: this.$t('message.Pleaseconfirmwhetherthepicturehasbeenupdated'),
+        type: 'warning'
+      });
     },
     // 图片上传时
     handleAvatarProgress2 (event, file, fileList) {
@@ -187,8 +191,8 @@ export default {
       }).then((res) => {
         if (res.msg.code === 200) {
           this.$notify({
-            title: 'success',
-            message: 'Operation is successful',
+            title: this.$t('message.Success'),
+            message: this.$t('message.Operationissuccessful'),
             type: 'success'
           });
           let user = this.$store.state.userInfo
@@ -196,11 +200,13 @@ export default {
 
           this.$router.go(-1)
         }else {
+
           this.$notify({
-            title: 'warning',
-            message: 'Operation failed, please try again later.',
+            title: this.$t('message.Warning'),
+            message: this.$t('message.Operationfailedpleasetrylater'),
             type: 'warning'
           });
+
         }
       })
     }
@@ -296,9 +302,11 @@ $red-color: #F4436C;
   text-align: center;
 }
 .avatar {
-  // width: 300px;
-  max-width:100%;
-  display: block;
+  width: 300px;
+  height: 180px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .button {
   font-family: Roboto-Medium;

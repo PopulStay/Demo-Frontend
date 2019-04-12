@@ -1,37 +1,37 @@
 <template>
   <div>
     <div class="becomeHost-header">
-      <div class="title">Basics</div>
-      <h3>Rooms</h3>
+      <div class="title">{{$t('message.Basics')}}</div>
+      <h3>{{$t('message.Rooms')}}</h3>
     </div>
     <div class="rooms">
 
       <ul class="rooms-list">
         <li>
-          <span class="title">Guests</span>
+          <span class="title">{{$t('message.Guests')}}</span>
           <el-input-number v-model="$store.state.host.guestNumber" :min="0" :max="10" @change="nextdisable"></el-input-number>
         </li>
         <li>
-          <span class="title">Bedrooms</span>
+          <span class="title">{{$t('message.Bedrooms')}}</span>
           <el-input-number v-model="$store.state.host.bedroomNumber" :min="0" :max="10"></el-input-number>
         </li>
         <li>
-          <span class="title">Beds</span>
+          <span class="title">{{$t('message.Beds')}}</span>
           <el-input-number v-model="$store.state.host.bedNumber" :min="0" :max="10"></el-input-number>
         </li>
         <li>
-          <span class="title">Baths</span>
+          <span class="title">{{$t('message.Baths')}}</span>
           <el-input-number v-model="$store.state.host.bathNumber" :min="0" :max="10"></el-input-number>
         </li>
       </ul>
 
       <div class="bedrooms">
-        <h3>Bedrooms <span class="button" slot="reference" @click="getutilities">Add</span></h3>
+        <h3>{{$t('message.Bedrooms')}} <span class="button" slot="reference" @click="getutilities">{{$t('message.Add')}}</span></h3>
         <ul class="bedrooms-list">
           <li v-for="(item,index) in $store.state.host.arrangements" :key="index">
             <div class="flex-wrap">
               <div class="title">
-                <p>Bedroom {{index+1}}</p>
+                <p>{{$t('message.Bedroom')}} {{index+1}}</p>
                 <p>
                   <span v-for="(items,indexs) in item.utilities" :key="indexs" v-if="items.name && items.count" >{{items.count}} {{items.name}} </span>
                   <span v-for="(items,indexs) in item.utilities" :key="indexs" v-if="items.utility && items.count">{{items.count}} {{items.utility}}</span>
@@ -39,14 +39,14 @@
               </div>
 
               <div class="buttonBOX">
-                <div class="button" @click="popover = index">Edit</div>
-                <div class="button" @click="Delete(index)" v-if="$store.state.host.arrangements.length>1">Delete</div>
+                <div class="button" @click="popover = index">{{$t('message.Edit')}}</div>
+                <div class="button" @click="Delete(index)" v-if="$store.state.host.arrangements.length>1">{{$t('message.Delete')}}</div>
               </div>
 
               <div class="roomselect" v-if="popover == index">
 
                 <div class="popover">
-                  <h4>Bedroom {{index+1}}</h4>
+                  <h4>{{$t('message.Bedroom')}} {{index+1}}</h4>
                   <ul class="rooms">
                     <li class="flex-wrap flex-center-between" v-for="(items,indexs) in item.utilities" :key="indexs">
                       <span class="r-title" v-if="items.name">{{items.name}}</span>
@@ -55,8 +55,8 @@
                     </li>
                   </ul>
                   <div class="bottom flex-wrap flex-center-between">
-                    <span @click="Clear(index)">Clear</span>
-                    <span class="red" @click="Apply(index)">Apply</span>
+                    <span @click="Clear(index)">{{$t('message.Clear')}}</span>
+                    <span class="red" @click="Apply(index)">{{$t('message.Apply')}}</span>
                   </div>
                 </div>
 
@@ -67,7 +67,7 @@
         </ul>
       </div>
     </div>
-    <button class="r-button next" :class="$store.state.host.arrangements.length ?  null : 'disable'" :disabled="$store.state.host.arrangements.length ? null : 'true' "  @click="next">Next</button>
+    <button class="r-button next" :class="$store.state.host.arrangements.length ?  null : 'disable'" :disabled="$store.state.host.arrangements.length ? null : 'true' "  @click="next">{{$t('message.Next')}}</button>
 
   </div>
 </template>

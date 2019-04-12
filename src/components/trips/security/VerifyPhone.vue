@@ -52,12 +52,14 @@
             this.step = this.step + 1
             let user = this.$store.state.userInfo
             user.phone_number = this.data.phone_number
-            user.user_identity_confirmation.phone_verified = true
             this.$store.commit('userUpdate', user)
           } else {
-            this.$alert('Please try again', 'Warning', {
-              confirmButtonText: 'Confirm'
-            })
+
+            this.$notify({
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Pleasetryagain'),
+              type: 'warning'
+            });
           }
         })
       }

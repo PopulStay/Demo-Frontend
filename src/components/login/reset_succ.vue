@@ -4,12 +4,11 @@
     <div class="succ-div">
       <div class="XY-center">
         <i class="iconfont icon-success XY-fz60"></i>
-        <p class="RobotoM center XY-fz20 red-color succ-p-set">Your password has been reset.</p>
+        <p class="RobotoM center XY-fz20 red-color succ-p-set">{{$t('message.Yourpasswordhasbeenreset')}}</p>
       </div>
-      <p class="XY-fz16 XY-center success-trip">You can log in to your account using
-your new password. </p>
+      <p class="XY-fz16 XY-center success-trip">{{$t('message.Youcanlogintoyouraccountusingyournewpassword')}}</p>
       <div class="sup-btn">
-        <button class="XY-fz16 XY-cursorp" @click="hideModel">Start exploring</button>
+        <button class="XY-fz16 XY-cursorp" @click="hideModel">{{$t('message.Login')}}</button>
       </div>
     </div>
   </el-dialog>
@@ -25,6 +24,7 @@ export default {
   methods: {
     hideModel () {
       this.$store.state.show_resetcuss = false
+      this.$store.state.show_login = true
     }
   }
 }

@@ -1,51 +1,14 @@
-
-@font-face{
-    font-family: 'Roboto-Black';
-    src : url('../fonts/Roboto-Black.ttf');
-}
-@font-face{
-    font-family: 'Roboto-BlackItalic';
-    src : url('../fonts/Roboto-BlackItalic.ttf');
-}
-@font-face{
-    font-family: 'Roboto-Bold';
-    src : url('../fonts/Roboto-Bold.ttf');
-}
-@font-face{
-    font-family: 'Roboto-BoldItalic';
-    src : url('../fonts/Roboto-BoldItalic.ttf');
-}
-@font-face{
-    font-family: 'Roboto-Italic';
-    src : url('../fonts/Roboto-Italic.ttf');
-}
 @font-face{
     font-family: 'Roboto-Light';
     src : url('../fonts/Roboto-Light.ttf');
-}
-@font-face{
-    font-family: 'Roboto-LightItalic';
-    src : url('../fonts/Roboto-LightItalic.ttf');
 }
 @font-face{
     font-family: 'Roboto-Medium';
     src : url('../fonts/Roboto-Medium.ttf');
 }
 @font-face{
-    font-family: 'Roboto-MediumItalic';
-    src : url('../fonts/Roboto-MediumItalic.ttf');
-}
-@font-face{
     font-family: 'Roboto-Regular';
     src : url('../fonts/Roboto-Regular.ttf');
-}
-@font-face{
-    font-family: 'Roboto-Thin';
-    src : url('../fonts/Roboto-Thin.ttf');
-}
-@font-face{
-    font-family: 'Roboto-ThinItalic';
-    src : url('../fonts/Roboto-ThinItalic.ttf');
 }
 body {
     margin: 0
@@ -197,7 +160,24 @@ input[type='number']::-webkit-inner-spin-button{
 /*在firefox下移除input[number]的上下箭头*/
 input[type="number"]{-moz-appearance:textfield;}
 
+
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color:    #B1B3B6 !important;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color:    #B1B3B6 !important;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color:    #B1B3B6 !important;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color:    #B1B3B6 !important;
+}
+
+
+
 /***********element样式修改****************/
+
 .el-dialog {
     border-radius: 3px;
 }
@@ -227,9 +207,11 @@ input[type="number"]{-moz-appearance:textfield;}
 .el-input-number {
     width: 120px;
 }
+
 .el-range-editor .el-range-input{
   cursor: pointer;
 }
+
 .el-popover {
     padding: 30px;
     box-shadow: 2px 10px 20px 0 rgba(0,0,0,0.15);
@@ -237,28 +219,35 @@ input[type="number"]{-moz-appearance:textfield;}
     font-size: 16px;
     color: #4A4A4A;
 }
+
 .el-input.is-active .el-input__inner, .el-input__inner:focus {
     border-color: #dcdfe6
 }
+
 .el-checkbox__inner:hover{
     border-color: #F4436C;
 }
+
 .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner {
     background: #F4436C;
     border-color: #F4436C!important;
 }
+
 .el-checkbox__input.is-checked+.el-checkbox__label {
     color: #4a4a4a;
 }
+
 .el-checkbox__input.is-focus .el-checkbox__inner {
     border-color: #dcdfe6
 }
+
 .el-checkbox__inner {
     border-color: #F4436C!important;
     border-radius: 3px;
     width: 20px;
     height: 20px;
 }
+
 .el-checkbox__inner::after {
     height: 14px;
     left: 6px;
@@ -413,6 +402,10 @@ input[type="number"]{-moz-appearance:textfield;}
 .el-notification{
   background: #f4436c;
   padding: 14px 40px 14px 13px;
+  cursor: pointer;
+}
+.el-notification__content{
+  margin: 0;
 }
 .el-notification i,
 .el-notification__content p,
@@ -432,6 +425,27 @@ input[type="number"]{-moz-appearance:textfield;}
   top: 10px;
 }
 
+.el-carousel__arrow{
+  width:50px;
+  height:50px;
+  background-color:rgba(0,0,0,.5);
+}
+
+.el-carousel__arrow:hover{
+  background-color:rgba(0,0,0,1);
+}
+
+.el-carousel__arrow--left{
+  left:2%;
+}
+
+.el-carousel__arrow--right{
+  right:2%;
+}
+
+.el-carousel__arrow i{
+  font-size:30px;
+}
 @media only screen and (max-width: 700px) {
   .el-date-range-picker {
     width: 100%;

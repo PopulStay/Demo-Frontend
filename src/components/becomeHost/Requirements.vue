@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="becomeHost-header">
-      <div class="title">Space</div>
-      <h3>Requirements</h3>
+      <div class="title">{{$t('message.Space')}}</div>
+      <h3>{{$t('message.Requirements')}}</h3>
     </div>
     <div class="requirements">
       <div class="item">
-        <h3>Guest requirements</h3>
+        <h3>{{$t('message.Guestrequirements')}}</h3>
         <p>Lorem ipsum dolor sit amet</p>
         <p>Etiam a elit et sapien dictum hendrerit</p>
         <p>Vestibulum quis purus convallis</p>
@@ -15,7 +15,7 @@
         <p>Phasellus semper libero nec</p>
       </div>
       <div class="item">
-        <h3 class="h3">House Rules</h3>
+        <h3 class="h3">{{$t('message.HouseRules')}}</h3>
         <ul>
           <el-checkbox-group v-model="$store.state.hostinfo.rulesArr"  @change="changeRule">
             <li v-for="(item, index) in rules" :key="item.ruleId"><el-checkbox :label="item.ruleId">{{item.rule}}</el-checkbox></li>
@@ -24,7 +24,7 @@
       </div>
 
       <div class="item Additionalrules" v-if="$store.state.hostinfo.rulesArr.indexOf(5316) > -1">
-        <h3 class="h3">Additional rules</h3>
+        <h3 class="h3">{{$t('message.Additionalrules')}}</h3>
         <ul>
             <li v-for="(item, index) in $store.state.hostinfo.Addrules" :key="item.ruleId">{{item}} <i class="el-icon-close" @click="RemoveRules(index)"></i></li>
         </ul>
@@ -36,7 +36,7 @@
       </div>
 
       <div class="item">
-        <h3 class="h3">Cancellations</h3>
+        <h3 class="h3">{{$t('message.Cancellations')}}</h3>
          <ul>
            <el-radio-group v-model="$store.state.host.cancellationPolicyId">
               <li v-for="(item, index) in cancellationsObj" :key="item.cancellationPolicyId">
@@ -50,7 +50,7 @@
     <button class="r-button next"
             :class="$store.state.host.cancellationPolicyId == '' ? 'disable' : null"
             :disabled="$store.state.host.cancellationPolicyId == ''"
-            @click="next">Next</button>
+            @click="next">{{$t('message.Next')}}</button>
 
   </div>
 </template>
@@ -108,6 +108,15 @@
               })
             }
 
+          }else{
+            this.$notify({
+              message: 'Operation failed, please try later.',
+              showClose:false,
+              type: 'warning',
+              onClick(){
+                this.close()
+              }
+            });
           }
         })
       },

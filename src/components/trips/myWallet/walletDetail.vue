@@ -1,22 +1,22 @@
 <template>
   <div class="wallet-detail">
-    <button @click="toCreate">Create</button>
+    <!--<button @click="toCreate">Create</button>-->
     <!-- <button class="imp" @click="toImport">Import</button> -->
     <div>
         <div class="wallet-list">
             <div class="wallet-wrap-top flex-wrap flex-center-between">
-              <div class="top-left">{{walletList.primary===1?'Default wallet':''}}</div>
+              <div class="top-left">{{walletList.primary===1? $t('message.Defaultwallet'):''}}</div>
               <div class="top-right">
-                <span>Delete</span>
+                <span>{{$t('message.Delete')}}</span>
               </div>
             </div>
             <div class="wallet-wrap-down flex-wrap flex-center-between">
               <div class="flex-wrap flex-column-center">
-                <p>Wallet name</p>
+                <p>{{$t('message.Walletname')}}</p>
                 <input class="down-left" placeholder="Please enter a name" v-model="name" value="walletList.name"/>
               </div>
               <div class="down-right">
-                <span>PPS Balance</span>
+                <span>{{$t('message.Balance')}}</span>
                 <span class="pps-price">{{walletList.balance}}</span>
                 <span class="pps-pps">{{walletList.eth_balance > 0 ? 'ETH' : 'PPS'}}</span>
               </div>
@@ -26,33 +26,33 @@
                 <p>{{walletList.address}}</p>
               </div>
               <div class="down-right">
-                <span style="margin-right:15px;">PPS address</span>
+                <span style="margin-right:15px;">PPS {{$t('message.address')}}</span>
                 <!-- <span class="pps-price">{{walletList.pps}}567</span> -->
                 <button
                 v-clipboard:copy="walletList.address"
                 v-clipboard:success="CopyPPS"
-                >Copy</button>
+                >{{$t('message.Copy')}}</button>
               </div>
             </div>
             <div class="wallet-wrap-set flex-wrap flex-center-between">
-                <p>Password</p>
-                <button @click="toReset">Reset</button>
+                <p>{{$t('message.Password')}}</p>
+                <button @click="toReset">{{$t('message.Reset')}}</button>
             </div>
             <div class="wallet-wrap-set flex-wrap flex-center-between">
-                <p>Export private key</p>
-                <button @click="showEnterpsw_p">Export</button>
+                <p>{{$t('message.Exportprivatekey')}}</p>
+                <button @click="showEnterpsw_p">{{$t('message.Export')}}</button>
             </div>
             <div class="wallet-wrap-set flex-wrap flex-center-between">
-                <p>Export keystore</p>
-                <button @click="showEnterpsw_k">Export</button>
+                <p>{{$t('message.Exportkeystore')}}</p>
+                <button @click="showEnterpsw_k">{{$t('message.Export')}}</button>
             </div>
             <div class="choose-btn">
-                <button @click="$router.go(-1);">Back</button>
-                <button @click="Save">Save</button>
+                <button @click="$router.go(-1);">{{$t('message.Back')}}</button>
+                <button @click="Save">{{$t('message.Save')}}</button>
             </div>
         </div>
-        <div class="transactions">
-            <p class="tran-text">transactions</p>
+        <div class="transactions" v-show="false">
+            <p class="tran-text">{{$t('message.transactions')}}</p>
             <div class="transactions-wrap" v-for="(item,index) in transActions" :key="index">
                 <p class="tran-title">{{item.title}}</p>
                 <p class="tran-date">{{item.date}}</p>
@@ -96,13 +96,12 @@ export default {
     }
   },
   created () {
-    console.log(JSON.parse(this.$route.query.List))
     this.walletList = JSON.parse(this.$route.query.List)
     this.name = this.walletList.name
   },
   methods: {
     Save () {
-      let user = JSON.parse(localStorage.getItem('user'))
+      let user = this.$store.state.userInfo
       this.$post(this.userUrl + '/user', {
         action: 'updateUserWallet',
         data: {
@@ -140,15 +139,6 @@ export default {
     CopyETH () {
       alert('Copied')
     }
-    // copyETH () {
-    //   this.$copyText(this.walletList.eth_address).then(function (e) {
-    //     alert('Copied')
-    //     console.log(e)
-    //   }, function (e) {
-    //     alert('Can not copy')
-    //     console.log(e)
-    //   })
-    // }
   }
 }
 </script>

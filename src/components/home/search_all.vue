@@ -1,5 +1,5 @@
 <template>
-  <div class="search-all" @scroll="gd_add" id="search-all">
+  <div class="search-all" @scroll="gd_add" id="search-all" v-loading.fullscreen.lock="allLoading">
     <e-header></e-header>
     <!-- 列表  -->
     <div class="list home-list">
@@ -19,7 +19,7 @@
       <div class="listitem"  v-for="(item, index) in HouseList">
         <House-Item :key="index" :houselist="item"></House-Item>
       </div>
-      <p class="loading" v-if="loading">加载中<i class="el-icon-loading"></i></p>
+      <p class="loading" v-if="loading">{{$t('message.Loading')}}<i class="el-icon-loading"></i></p>
     </div>
     <e-footer></e-footer>
   </div>
@@ -44,7 +44,8 @@ export default {
       visible: false,
       Page:2,
       nowPage:1,
-      loading:false
+      loading:false,
+      allLoading:true
     }
   },
   created () {
@@ -58,6 +59,7 @@ export default {
           pageNo: this.nowPage,
           pageSize: 12
         }).then((res) => {
+          this.allLoading = false
           if (res.code === 200) {
             this.Page = res.data.count/12
             for(var item in res.data.dataList){
@@ -108,9 +110,7 @@ export default {
 <style scoped lang="scss">
 $red-color: #F4436C;
 .list {
-  width: 1500px;
-  margin: 0 auto;
-  padding: 30px 0;
+  padding: 30px 200px;
   overflow: hidden;
   h3 {
     margin: 30px 0;
@@ -131,6 +131,35 @@ $red-color: #F4436C;
     display: inline-block;
     vertical-align: top;
     margin: 20px 0;
+
+    @media only screen and (max-width: 1300px){
+      width:33.3%;
+    }
+
+    @media only screen and (max-width: 800px) {
+      width:50%;
+      &:nth-child(odd){
+        .content{
+          margin-left: 0px;
+        }
+      }
+
+      &:nth-child(even){
+        .content{
+          margin-right: 0px;
+        }
+      }
+
+    }
+
+    @media only screen and (max-width: 640px) {
+      width:100%;
+
+      .content{
+        margin: 0px;
+      }
+    }
+
   }
 
 }
@@ -146,12 +175,35 @@ $red-color: #F4436C;
 @media only screen and (max-width: 1500px) {
   .list {
     width: auto;
-    padding: 0 30px;
-
+    padding: 0 100px;
+    ul {
+      text-align: center;
+      li {
+        float: none;
+        display: inline-block;
+      }
+    }
   }
 }
 
-.loading{
+@media only screen and (max-width:800px) {
+  .list {
+    padding: 0 20px;
+    ul {
+      li {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.loading {
+  color: #F4436C;
   text-align: center;
+  font-size: 18px;
+  margin-bottom: 20px;
+  i{
+    margin-left: 10px;
+  }
 }
 </style>

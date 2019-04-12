@@ -1,8 +1,8 @@
 <template>
   <div class="content lst-index">
     <el-dialog :visible.sync="isVerify" class="verify" center>
-      <p class="red-color" style="margin-bottom:28px;">You’ll need to provide identification<br />before you book.</p>
-      <button class="verify-btn XY-cursorp" @click="toDetail">Verify</button>
+      <p class="red-color" style="margin-bottom:28px;">{{$t('message.Youwillneedtoverify')}}</p>
+      <button class="verify-btn XY-cursorp" @click="toDetail">{{$t('message.Verify')}}</button>
     </el-dialog>
     <!-- <e-header></e-header> -->
     <!-- 轮播  -->
@@ -15,7 +15,7 @@
         </el-carousel>
       </div>
     </div>
-    <el-row type="flex" class="lst-home">
+    <el-row type="flex" class="lst-home" id="BOOKing">
       <div class="lst-home-left">
         <div class="top flex-wrap flex-center-between">
           <div class="top-left">
@@ -24,8 +24,9 @@
             <p class="address-p">{{listName}}</p>
           </div>
           <div class="top-right flex-wrap flex-column-center flex-align-center">
-            <img src="../../assets/images/listing/Group.png" />
-            <p>{{hostName}}</p>
+            <div class="Img" :style="{backgroundImage:'url(' + hostImg + ')'}" ></div>
+            <p>{{host.first_name}}{{host.last_name}}</p>
+            <!--<button class="LiveChat" @click="LiveChat()" v-if="$store.state.userInfo">Live Chat</button>-->
           </div>
         </div>
         <div class="detail-wrap">
@@ -33,115 +34,114 @@
           <div class="wrap-top flex-wrap">
             <div class="flex-wrap flex-align-center">
               <i class="iconfont icon-geren"></i>
-              <span>{{data.guestNumber}} guests</span>
+              <span>{{data.guestNumber}} {{$t('message.guests')}}</span>
             </div>
             <div class="wrap-mgr">
               <i class="iconfont icon-185038homehousestreamline"></i>
-              <span>{{data.bedroomNumber}} bedroom</span>
+              <span>{{data.bedroomNumber}} {{$t('message.bedroom')}}</span>
             </div>
           </div>
           <div class="wrap-top flex-wrap">
             <div class="flex-wrap flex-align-center">
               <i class="iconfont icon-chuang1"></i>
-              <span>{{data.bedNumber}} bed</span>
+              <span>{{data.bedNumber}} {{$t('message.bed')}}</span>
             </div>
             <div class="wrap-mgr">
               <i class="iconfont icon-weiyu"></i>
-              <span>{{data.bathNumber}} bath</span>
+              <span>{{data.bathNumber}} {{$t('message.bath')}}</span>
             </div>
           </div>
-
-          <p class="intro-p" v-if="!descriptionShowMore" v-html="data.description.substring(0,200)"></p>
-          <p class="intro-p" v-if="descriptionShowMore" v-html="data.description"></p>
+          <p class="intro-p" v-if="!descriptionShowMore">{{data.description ? data.description.substring(0,200) : null}}</p>
+          <p class="intro-p" v-if="descriptionShowMore" >{{data.description}}</p>
           <!-- <p class="intro-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 0 || descriptionShowMore">{{item.space}}</p> -->
         </div>
-        <div class="read-more flex-wrap flex-align-center"  @click="descriptionShowMore = !descriptionShowMore" v-if="data.description.length>200">
-          <p>{{descriptionShowMore ? 'hide' : 'Read more about the space'}}</p>
-          <i class="iconfont icon-54" :class="descriptionShowMore ? 'transform' : ''"></i>
-        </div>
+        <!--<div class="read-more flex-wrap flex-align-center"  @click="descriptionShowMore = !descriptionShowMore" v-if="data.description.length>200">-->
+          <!--<p>{{descriptionShowMore ? 'hide' : 'Read more about the space'}}</p>-->
+          <!--<i class="iconfont icon-54" :class="descriptionShowMore ? 'transform' : ''"></i>-->
+        <!--</div>-->
         <p class="spilt-p"></p>
 
         <div class="d_item" v-show="data.arrangementsLen">
-          <p class="h1-p">Sleeping arrangements</p>
+          <p class="h1-p">{{$t('message.Sleepingarrangements')}}</p>
           <div class="arrangement h1-p" v-for="(item, index) in data.arrangements"  :key="index" v-show="index < 4 || arrangementsShowMore">
             <i class="iconfont icon-chuang1"></i>
             <p class="arr-top" v-for="(items, index) in item.utilities" :key="index" v-show="items.count != 0">{{items.count}} {{items.utility}}</p>
           </div>
           <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore" v-if="data.arrangementsLen>4">
-            <p>{{arrangementsShowMore ? 'hide' : 'Show more sleeping arrangements'}}</p>
+            <p>{{arrangementsShowMore ? $t('message.hide') : $t('message.Showmoresleepingarrangements')}}</p>
             <i class="iconfont icon-54" :class="arrangementsShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
         <div class="d_item">
-          <p class="h1-p">Check in/out</p>
-          <p>Check in time {{data.availableCheckinTimeFrom}}:00 － {{data.availableCheckinTimeTo}}:00 · Check-out time before {{data.checkOutTime}}:00</p>
+          <p class="h1-p">{{$t('message.Checkinout')}}</p>
+          <p>{{$t('message.Checkintime')}} {{data.availableCheckinTimeFrom}}:00 － {{data.availableCheckinTimeTo}}:00 · {{$t('message.Checkouttimebefore')}} {{data.checkOutTime}}:00</p>
           <p class="spilt-p"></p>
         </div>
 
         <div class="d_item" v-show="data.amenitiesLen">
-          <p class="h1-p">Amenities</p>
+          <p class="h1-p">{{$t('message.Amenities')}}</p>
           <ul>
             <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 5 || amenitiesShowMore">{{item.amenity}}</li>
           </ul>
           <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenitiesLen>5">
-            <p>{{amenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
+            <p>{{amenitiesShowMore ? $t('message.hide') : $t('message.Showmoreamenities')}}</p>
             <i class="iconfont icon-54" :class="amenitiesShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
         <div class="d_item" v-show="data.safeAmenitiesLen">
-          <p class="h1-p">Safe Amenities</p>
+          <p class="h1-p">{{$t('message.SafeAmenities')}}</p>
           <ul>
             <li class="rules-p" v-for="(item, index) in data.safeAmenities" :key="index" v-show="index < 3 || safeAmenitiesShowMore">{{item.safeAmenity}}</li>
           </ul>
           <div class="read-more flex-wrap flex-align-center" @click="safeAmenitiesShowMore = !safeAmenitiesShowMore" v-if="data.safeAmenitiesLen>3">
-            <p>{{safeAmenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
+            <p>{{safeAmenitiesShowMore ? $t('message.hide') : $t('message.Showmoresafeamenities')}}</p>
             <i class="iconfont icon-54" :class="safeAmenitiesShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
         <div class="d_item" v-show="data.spacesLen">
-          <p class="h1-p">Spaces</p>
+          <p class="h1-p">{{$t('message.Spaces')}}</p>
           <ul>
             <li class="rules-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 3 || spaceShowMore">{{item.space}}</li>
           </ul>
           <div class="read-more flex-wrap flex-align-center" @click="spaceShowMore = !spaceShowMore" v-if="data.spacesLen>3">
-            <p>{{spaceShowMore ? 'hide' : 'Read all spaces'}}</p>
+            <p>{{spaceShowMore ? $t('message.hide') : $t('message.Readallspaces')}}</p>
             <i class="iconfont icon-54" :class="spaceShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
         <div class="d_item" v-show="data.rulesLen">
-          <p class="h1-p">House Rules</p>
+          <p class="h1-p">{{$t('message.HouseRules')}}</p>
           <ul>
             <li class="rules-p" v-for="(item, index) in data.rules" :key="index" v-show="index < 3 || rulesShowMore">{{item.additionalTitle == "" ? item.rule : item.additionalTitle}}</li>
           </ul>
           <div class="read-more flex-wrap flex-align-center" @click="rulesShowMore = !rulesShowMore" v-if="data.rulesLen>3">
-            <p>{{rulesShowMore ? 'hide' : 'Read all rules'}}</p>
+            <p>{{rulesShowMore ? $t('message.hide') : $t('message.Readallrules')}}</p>
             <i class="iconfont icon-54" :class="rulesShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
         <div class="d_item">
-          <p class="h1-p">Cancellations</p>
+          <p class="h1-p">{{$t('message.Cancellations')}}</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.name : ''}}</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.title : ''}}</p>
           <p class="arr-down" v-if="cancellationsShowMore">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
           <div class="read-more flex-wrap flex-align-center" @click="cancellationsShowMore = !cancellationsShowMore">
-            <p>{{cancellationsShowMore ? 'hide' : 'Read more about the policy'}}</p>
+            <p>{{cancellationsShowMore ? $t('message.hide') : $t('message.Readmoreaboutthepolicy')}}</p>
             <i class="iconfont icon-54" :class="cancellationsShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
         <div class="d_item">
-          <p class="h1-p">Nearby landmarks</p>
+          <p class="h1-p">{{$t('message.Landmarksnearby')}}</p>
           <el-amap v-if="Object.keys(data).length !== 0" vid="amapDemo" :zoom="6" :center="[data.lng, data.lat]" class="amap">
               <el-amap-marker
               :position="[data.lng, data.lat]"
@@ -158,9 +158,8 @@
         </div>
       </div>
 
-      <el-col :span="7" class="scrool-fix-rili" :class="isShow?'scrool-fix-rili-show':'scrool-fix-rili-hide'"></el-col>
-      <el-col :span="7" class="lst-home-right lst-home-right-xl" :class="isShow?'lst-home-right-xl-fix':'lst-home-right-xl-sta'">
-        <div>
+      <div  class="lst-home-right lst-home-right-xl" :class="isShow?'lst-home-right-xl-fix':'lst-home-right-xl-sta'">
+        <div :class="AmapFixed ? 'isFixed' : null">
           <div class="top flex-wrap flex-center-between">
             <div class="top-wrap flex-wrap flex-center">
               <el-dropdown  trigger="click" @command="CurrentCurrencyfun">
@@ -172,59 +171,59 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
-            <p class="top-wrap-p"><em>{{CurrentCurrency}} {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p>
+            <p class="top-wrap-p"><em>{{this.data.prices ? this.data.prices[0].bestPrice : 0}} {{CurrentCurrency}}</em> {{$t('message.pernighten')}} {{$t('message.pernightcn')}}</p>
           </div>
           <div class="select-time flex-wrap">
             <div class="select-time-start flex-1">
-              <p>Check-in</p>
+              <p>{{$t('message.Checkin')}}</p>
               <el-date-picker v-model="timeStart" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
               </el-date-picker>
               <div class="startTime text" v-if="timeStart != ''">
-                <p>{{startTextTime[2]}} {{startTextTime[1]}} {{startTextTime[3]}} </p>
-                <span> {{startTextTime[0]}}</span>
+                <p>{{getMoment(timeStart)}} </p>
+                <span> {{getWeek(timeStart)}}</span>
               </div>
               <div class="startTime text text1" v-if="timeStart == ''">
-                <span>Check in</span>
+                <span>{{$t('message.Checkin')}}</span>
               </div>
             </div>
             <div class="select-time-end flex-1">
-              <p>Check-out</p>
+              <p>{{$t('message.Checkout')}}</p>
               <el-date-picker v-model="timeEnd" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
               <div class="endTime text" v-if="timeEnd != ''">
-                <p>{{endTextTime[2]}} {{endTextTime[1]}} {{endTextTime[3]}}</p>
-                <span>{{endTextTime[0]}}</span>
+                <p>{{getMoment(timeEnd)}}</p>
+                <span>{{getWeek(timeEnd)}}</span>
               </div>
               <div class="endTime text text1" v-if="timeEnd == ''">
-                <span>Check out</span>
+                <span>{{$t('message.Checkout')}}</span>
               </div>
               <i v-if="timeEnd != ''" class="el-icon-error clonetime" @click="timeStart='';timeEnd='';"></i>
             </div>
           </div>
           <div class="guests listing_index">
-            <p>Guests</p>
+            <p>{{$t('message.Guests')}}</p>
             <el-popover placement="bottom" width="300"  v-model="visible_xl" popper-class="c_guests">
               <div class="select flex-wrap flex-center-between" slot="reference" @click="visible_xl = !visible_xl">
-                <span>{{num1 + num2}} guests {{num3 >=1 ? "," + num3 + "infants":''}}</span>
+                <span>{{num1 + num2}} {{num1+num2 >1 ? $t('message.guests') : $t('message.guest')}} {{num3 >=1 ? num3 > 1 ? ", " + num3 + ' ' +$t('message.infants') : "," + num3 + ' ' + $t('message.infant') :''}}</span>
                 <i class="icon iconfont" :class="visible_xl ? 'icon-arrow-up' : 'icon-54'"></i>
               </div>
               <div class="placementbottom">
                 <ul class="rooms">
                   <li class="flex-wrap flex-center-between">
-                    <span class="r-title">Adults</span>
+                    <span class="r-title">{{$t('message.Adults')}}</span>
                     <el-input-number v-model="num1" :min="1" :max="data.guestNumber - num2" @change="HandleChangeAdult"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">
-                      Children
-                      <p>Ages 2-12</p>
+                      {{$t('message.Children')}}
+                      <p>{{$t('message.Ages212')}}</p>
                     </span>
                     <el-input-number v-model="num2" :min="0" :max="data.guestNumber - num1" @change="HandleChangeAdult"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
-                    <span class="r-title">Infants
-                      <p>Under 2</p>
+                    <span class="r-title">{{$t('message.Infants')}}
+                      <p>{{$t('message.Under2')}}</p>
                     </span>
-                    <el-input-number v-model="num3" :min="0" :max="10"></el-input-number>
+                    <el-input-number v-model="num3" :min="0" :max="5"></el-input-number>
                   </li>
                 </ul>
                 <div class="bottom flex-wrap flex-center-between">
@@ -237,29 +236,29 @@
           <div class="gus-wrap flex-wrap flex-center-between " v-if="timeStart != ''">
             <div class="gus-div ">
               <!-- <div class="left">PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}} x {{time | days}} nights</div> -->
-              <div class="left">{{CurrentCurrency}} {{days('days')}} nights</div>
+              <div class="left">{{data.prices[0].bestPrice}} {{CurrentCurrency}} × {{days('days')}} {{$t('message.night')}}</div>
               <!-- days('days') -->
-              <div class="left">Cleaning fee</div>
-               <div class="left">Service fee</div>
-              <div class="left">Total</div>
+              <div class="left">{{$t('message.Cleaningfee')}}</div>
+               <div class="left">{{$t('message.Servicefee')}}</div>
+              <div class="left">{{$t('message.Total')}}</div>
             </div>
             <div class="gus-div ">
-              <div class="left">{{CurrentCurrency}} {{days('place_price')}}</div>
-              <div class="left">{{CurrentCurrency}} {{data.prices[0].cleanupServiceFee}}</div>
-              <div class="left">{{CurrentCurrency}} {{days('service')}}</div>
+              <div class="right">{{days('place_price')}} {{CurrentCurrency}}</div>
+              <div class="right">{{data.prices[0].cleanupServiceFee}} {{CurrentCurrency}}</div>
+              <div class="right">{{days('service')}} {{CurrentCurrency}}</div>
               <!-- <div class="left">{{days('service')}}</div> -->
-              <div class="left">{{CurrentCurrency}} {{days('total_price')}}</div>
+              <div class="right">{{days('total_price')}} {{CurrentCurrency}}</div>
             </div>
           </div>
 
           <div class="qrbox" v-if="CurrentCurrency == 'CNY'">
-            <div :class="channel == 'alipay_qr' ? 'active' : null" @click="channel = 'alipay_qr'"><i class="iconfont icon-zhifubao"></i>AliPay</div>
-            <div :class="channel == 'wx_pub_qr' ? 'active' : null" @click="channel = 'wx_pub_qr'"><i class="iconfont icon-weixinzhifu"></i>Wechat Pay</div>
+            <div :class="channel == 'alipay_qr' ? 'active' : null" @click="channel = 'alipay_qr'"><i class="iconfont icon-zhifubao"></i>{{$t('message.AliPay')}}</div>
+            <div :class="channel == 'wx_pub_qr' ? 'active' : null" @click="channel = 'wx_pub_qr'"><i class="iconfont icon-weixinzhifu"></i>{{$t('message.WechatPay')}}</div>
           </div>
 
-          <button @click="Verify" :disabled="disVerify" :class="disVerify ? 'disabled' : null" v-loading.fullscreen.lock="dialogloading">Book</button>
+          <button @click="Verify">{{$t('message.Book')}}</button>
         </div>
-      </el-col>
+      </div>
     </el-row>
     <!-- 移动端固定底部  -->
     <div class="lst-footer">
@@ -269,58 +268,72 @@
       </div>
     </div>
     <el-dialog :visible.sync="isBack" class="isBack" center :close-on-click-modal="true">
-       <div class="lst-home-right lst-home-right-xl" :class="isShow?'lst-home-right-xl-fix':'lst-home-right-xl-sta'">
-        <div class="top flex-wrap flex-center-between">
-          <div class="top-wrap flex-wrap flex-center">
-            <p class="pps-p">{{CurrentCurrency}}</p>
-            <i class="iconfont icon-54"></i>
+      <div  class="lst-home-right lst-home-right-xl" :class="isShow?'lst-home-right-xl-fix':'lst-home-right-xl-sta'">
+        <div :class="AmapFixed ? 'isFixed' : null">
+          <div class="top flex-wrap flex-center-between">
+            <div class="top-wrap flex-wrap flex-center">
+              <el-dropdown  trigger="click" @command="CurrentCurrencyfun">
+                <span class="el-dropdown-link pps-p XY-cursorp">
+                  {{CurrentCurrency}}<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item class="pps-p" :command="item" v-for="(item,index) in currencyType" :key="index" >{{item}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
+            <p class="top-wrap-p"><em>{{this.data.prices ? this.data.prices[0].bestPrice : 0}} {{CurrentCurrency}}</em> {{$t('message.pernighten')}} {{$t('message.pernightcn')}}</p>
           </div>
-          <p class="top-wrap-p"><em>{{CurrentCurrency}} {{this.data.prices ? this.data.prices[0].bestPrice : 0}}</em>per night</p>
-        </div>
-        <div class="select-time flex-wrap">
-          <div class="select-time-start flex-1">
-            <p>Check-in</p>
-            <el-date-picker v-model="time" type="daterange" range-separator="" @input="selectTime" :picker-options="pickerOptions">
-            </el-date-picker>
-            <div class="startTime text">
-              <p>{{startTextTime[2]}} {{startTextTime[1]}} {{startTextTime[3]}} </p>
-              <span> {{startTextTime[0]}}</span>
+          <div class="select-time flex-wrap">
+            <div class="select-time-start flex-1">
+              <p>{{$t('message.Checkin')}}</p>
+              <el-date-picker v-model="timeStart" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
+              </el-date-picker>
+              <div class="startTime text" v-if="timeStart != ''">
+                <p>{{getMoment(timeStart)}} </p>
+                <span> {{getWeek(timeStart)}}</span>
+              </div>
+              <div class="startTime text text1" v-if="timeStart == ''">
+                <span>{{$t('message.Checkin')}}</span>
+              </div>
+            </div>
+            <div class="select-time-end flex-1">
+              <p>{{$t('message.Checkout')}}</p>
+              <el-date-picker v-model="timeEnd" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
+              <div class="endTime text" v-if="timeEnd != ''">
+                <p>{{getMoment(timeEnd)}}</p>
+                <span>{{getWeek(timeEnd)}}</span>
+              </div>
+              <div class="endTime text text1" v-if="timeEnd == ''">
+                <span>{{$t('message.Checkout')}}</span>
+              </div>
+              <i v-if="timeEnd != ''" class="el-icon-error clonetime" @click="timeStart='';timeEnd='';"></i>
             </div>
           </div>
-          <div class="select-time-end flex-1">
-            <p>Check-out</p>
-            <el-date-picker v-model="time" type="daterange" range-separator="" @input="selectTime" :picker-options="pickerOptions"></el-date-picker>
-            <div class="endTime text">
-              <p>{{endTextTime[2]}} {{endTextTime[1]}} {{endTextTime[3]}}</p>
-              <span>{{endTextTime[0]}}</span>
-            </div>
-          </div>
-        </div>
-        <div class="guests listing_index">
-          <p>Guests</p>
-          <el-popover placement="bottom" width="300"  v-model="visible_xl2">
-              <div class="select flex-wrap flex-center-between" slot="reference" @click="visible_xl2 = !visible_xl2">
-                <span>{{num1 + num2}} guests {{num3 >=1 ? "," + num3 + "infants":''}}</span>
-                <i class="icon iconfont" :class="visible_xl2 ? 'icon-arrow-up' : 'icon-54'"></i>
+          <div class="guests listing_index">
+            <p>{{$t('message.Guests')}}</p>
+            <el-popover placement="bottom" width="300"  v-model="visible_xl" popper-class="c_guests">
+              <div class="select flex-wrap flex-center-between" slot="reference" @click="visible_xl = !visible_xl">
+                <span>{{num1 + num2}} {{num1+num2 >1 ? $t('message.guests') : $t('message.guest')}} {{num3 >=1 ? num3 > 1 ? ", " + num3 + ' ' +$t('message.infants') : "," + num3 + ' ' + $t('message.infant') :''}}</span>
+                <i class="icon iconfont" :class="visible_xl ? 'icon-arrow-up' : 'icon-54'"></i>
               </div>
               <div class="placementbottom">
                 <ul class="rooms">
                   <li class="flex-wrap flex-center-between">
-                    <span class="r-title">Adults</span>
+                    <span class="r-title">{{$t('message.Adults')}}</span>
                     <el-input-number v-model="num1" :min="1" :max="data.guestNumber - num2" @change="HandleChangeAdult"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
                     <span class="r-title">
-                      Children
-                      <p>Ages 2-12</p>
+                      {{$t('message.Children')}}
+                      <p>{{$t('message.Ages212')}}</p>
                     </span>
                     <el-input-number v-model="num2" :min="0" :max="data.guestNumber - num1" @change="HandleChangeAdult"></el-input-number>
                   </li>
                   <li class="flex-wrap flex-center-between">
-                    <span class="r-title">Infants
-                      <p>Under 2</p>
+                    <span class="r-title">{{$t('message.Infants')}}
+                      <p>{{$t('message.Under2')}}</p>
                     </span>
-                    <el-input-number v-model="num3" :min="0" :max="10"></el-input-number>
+                    <el-input-number v-model="num3" :min="0" :max="5"></el-input-number>
                   </li>
                 </ul>
                 <div class="bottom flex-wrap flex-center-between">
@@ -329,43 +342,46 @@
                 </div>
               </div>
             </el-popover>
-        </div>
-        <div class="gus-wrap flex-wrap flex-center-between ">
-          <div class="gus-div ">
-            <div class="left">PPS {{days('days')}} nights</div>
-            <div class="left">Cleaning Service fee</div>
-            <!-- <div class="left">Service fee</div> -->
-            <div class="left">Total</div>
           </div>
-          <div class="gus-div ">
-            <div class="left">PPS {{days('place_price')}}</div>
-            <!-- <div class="left">0</div> -->
-            <div class="left">{{days('clean')}}</div>
-            <div class="left">{{days('total_price')}}</div>
+          <div class="gus-wrap flex-wrap flex-center-between " v-if="timeStart != ''">
+            <div class="gus-div ">
+              <!-- <div class="left">PPS {{this.data.prices ? this.data.prices[0].bestPrice : 0}} x {{time | days}} nights</div> -->
+              <div class="left">{{data.prices[0].bestPrice}} {{CurrentCurrency}} × {{days('days')}} {{$t('message.night')}}</div>
+              <!-- days('days') -->
+              <div class="left">{{$t('message.Cleaningfee')}}</div>
+              <div class="left">{{$t('message.Servicefee')}}</div>
+              <div class="left">{{$t('message.Total')}}</div>
+            </div>
+            <div class="gus-div ">
+              <div class="right">{{days('place_price')}} {{CurrentCurrency}}</div>
+              <div class="right">{{data.prices[0].cleanupServiceFee}} {{CurrentCurrency}}</div>
+              <div class="right">{{days('service')}} {{CurrentCurrency}}</div>
+              <!-- <div class="left">{{days('service')}}</div> -->
+              <div class="right">{{days('total_price')}} {{CurrentCurrency}}</div>
+            </div>
           </div>
+
+          <div class="qrbox" v-if="CurrentCurrency == 'CNY'">
+            <div :class="channel == 'alipay_qr' ? 'active' : null" @click="channel = 'alipay_qr'"><i class="iconfont icon-zhifubao"></i>{{$t('message.AliPay')}}</div>
+            <div :class="channel == 'wx_pub_qr' ? 'active' : null" @click="channel = 'wx_pub_qr'"><i class="iconfont icon-weixinzhifu"></i>{{$t('message.WechatPay')}}</div>
+          </div>
+
+          <button @click="Verify">{{$t('message.Book')}}</button>
         </div>
-        <button @click="Verify">Book</button>
       </div>
     </el-dialog>
 
   </div>
 </template>
 <script>
-import banner1 from '../../assets/images/index/banner-1.png'
-import banner2 from '../../assets/images/index/banner-2.png'
-import banner3 from '../../assets/images/index/banner-3.png'
-import banner4 from '../../assets/images/index/banner-4.png'
 var moment = require('moment')
+import Cookies from 'js-cookie';
 export default {
   name: 'listing-home',
-  components: {
-    // 'e-header': header,
-    // 'e-footer': footer
-  },
   data () {
     return {
       isLogin: false,
-      img: [banner1, banner2, banner3, banner4],
+      img: [],
       time: '',
       place_id: '',
       listName: '',
@@ -377,14 +393,12 @@ export default {
       endTextTime: [],
       startTimestamp: '',
       endTimestamp: '',
-      selectValue: '1 guest',
-      hostName: '',
+      host: {},
       num1: 1,
       num2: 0,
       num3: 0,
       isVerify: false,
-      visible_xs: false,
-      visible_xl2: false,
+      visible: false,
       visible_xl: false,
       descriptionShowMore: false,
       arrangementsShowMore:false,
@@ -422,9 +436,11 @@ export default {
             if(this.unavailableDate.length){
 
               for(var item in this.unavailableDate){
+                var fromDateStr =  this.unavailableDate[item].fromDate.toString();
+                var toDateStr =  this.unavailableDate[item].toDate.toString();
 
-                var startDate = new Date(this.unavailableDate[item].startDate).getTime()-86400000;
-                var endDate = new Date(this.unavailableDate[item].endDate).getTime()-86400000;
+                var startDate = new Date(fromDateStr.substring(0, 4) + "-" + fromDateStr.substring(4, 6) + "-" + fromDateStr.substring(6, 8)).getTime()-86400000;
+                var endDate = new Date(toDateStr.substring(0, 4) + "-" + toDateStr.substring(4, 6) + "-" + toDateStr.substring(6, 8)).getTime()-86400000;
 
                 if(!this.minDate){
                   if (time.getTime() > startDate && time.getTime() < endDate) {
@@ -457,19 +473,18 @@ export default {
             }
           }
 
-
           if(dates){
-            return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates || time.getTime() < dateNeedNoticeDay
+            return time.getTime() < Date.now() - 8.64e7 || time.getTime() > dates || time.getTime() < dateNeedNoticeDay-86400000
           }
 
         }
       },
       isShow: false,
       unavailableDate:[],
-      currencyType:['PPS','CNY'],
+      currencyType:['PPS'],
       CurrentCurrency:'PPS',
-      disVerify:false,
-      dialogloading:false
+      hostImg:'',
+      AmapFixed:false,
     }
   },
   created () {
@@ -480,21 +495,24 @@ export default {
     this.startTimestamp = Date.parse(this.timeStart)
     this.endTimestamp = Date.parse(this.timeEnd)
 
+    //获取不可预定日历
+    this.getDate(this.$route.query.id)
+
   },
   methods: {
     selectTime (e) {
       this.timeStart = e[0]
       this.timeEnd = e[1]
-      this.startTextTime = String(this.timeStart).split(' ')
-      this.endTextTime = String(this.timeEnd).split(' ')
+      // this.startTextTime = String(this.timeStart).split(' ')
+      // this.endTextTime = String(this.timeEnd).split(' ')
       this.startTimestamp = Date.parse(this.timeStart)
       this.endTimestamp = Date.parse(this.timeEnd)
       if(this.startTimestamp != this.endTimestamp){
         this.getBookInfo()
       }else{
         this.$notify({
-          title: 'warning',
-          message: 'Check-in date and check-out date cannot be the same.',
+          title: this.$t('message.Warning'),
+          message: this.$t('message.Checkindateandcheckoutdatecannotbethesame'),
           type: 'warning'
         });
         this.timeStart = ""
@@ -519,72 +537,25 @@ export default {
 
           if(user.user_id == this.data.hostId){
             this.$notify({
-              title: 'warning',
-              message: 'Can\'t book your own house.',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Cantbookyourownhouse'),
               type: 'warning'
             });
           }else{
-            this.dialogloading = true
-            this.disVerify = true
-            if(this.CurrentCurrency == "CNY"){
-              this.$post(this.bookUrl + '/booking ', {
-                action: 'makeBooking',
-                data: {
-                  user_id: user.user_id,
-                  place_id: this.place_id,
-                  check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
-                  check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
-                  guest_number: this.num1 + this.num2,
-                  currency: this.CurrentCurrency,
-                  channel:this.channel
-                }
-              }).then((res) => {
-                this.dialogloading = false
-                if (res.msg.code === 200) {
-                  this.$router.push({path: 'lstDetail', query: {book_id: res.data.booking_id ,guest_number:this.num1 + this.num2}})
-                }
-
-                if (res.msg.code === 952) {
-                  this.$notify({
-                    title: 'warning',
-                    message: 'Current time period cannot be book.',
-                    type: 'warning'
-                  });
-                  this.disVerify = false
-                  this.timeStart = ""
-                  this.timeEnd = ""
-                }
-              })
-            }else{
-              this.$post(this.bookUrl + '/booking ', {
-                action: 'makeBooking',
-                data: {
-                  user_id: user.user_id,
-                  place_id: this.place_id,
-                  check_in_date: moment(this.startTimestamp).format('YYYY-MM-DD'),
-                  check_out_date: moment(this.endTimestamp).format('YYYY-MM-DD'),
-                  guest_number: this.num1 + this.num2,
-                  currency: this.CurrentCurrency,
-                }
-              }).then((res) => {
-                console.log(res)
-                this.dialogloading = false
-                if (res.msg.code === 200) {
-                  this.$router.push({path: 'lstDetail', query: {book_id: res.data.booking_id ,guest_number:this.num1 + this.num2}})
-                }
-
-                if (res.msg.code === 952) {
-                  this.$notify({
-                    title: 'warning',
-                    message: 'Current time period cannot be book.',
-                    type: 'warning'
-                  });
-                  this.disVerify = false
-                  this.timeStart = ""
-                  this.timeEnd = ""
-                }
-              })
+            let Book = {
+              "placeId": this.place_id,
+              "night": this.days('days'),
+              "Cleaningfee": this.data.prices[0].cleanupServiceFee,
+              "Servicefee": this.days('service'),
+              "Total": this.days('total_price'),
+              "check_in_date": moment(this.startTimestamp).format('YYYY-MM-DD'),
+              "check_out_date": moment(this.endTimestamp).format('YYYY-MM-DD'),
+              "guest_number": this.num1 + this.num2,
+              "currency": this.CurrentCurrency,
+              "channel": this.channel
             }
+            Cookies.set('Book', JSON.stringify(Book));
+            this.$router.push('/listing/lstDetail')
           }
 
 
@@ -597,8 +568,21 @@ export default {
 
     },
     toDetail () {
-      this.$router.push({path: 'VerifyIdentity'})
+      this.$router.push({path: '/trips/security'})
     },
+    //获取不可预定列表
+    getDate(id){
+        this.$get(this.placeUrl + '/place/unavailableDate', {
+          placeId: id
+        }).then((res) => {
+          if(res.code == 200){
+            for(var item in res.data){
+              this.unavailableDate = res.data
+            }
+          }
+        })
+    },
+
     // 搜索请求
     getPlace (id) {
       var that = this
@@ -608,30 +592,30 @@ export default {
         if (res.code === 200) {
           if (res.data.prices.length === 0) res.data.prices.push([{bestPrice: 0}])
           var citycode = res.data.citycode
-          var hostname = res.data.hostId
-          var placeName = res.data.placeName
-          var description = res.data.description
           that.getName(citycode)
-          that.getUserName(hostname)
-          // that.translation('placeName',placeName)
-          // that.translation('description',description)
-
-
-          if(res.data.arrangements[0]){
-            if(res.data.arrangements[0].unavailableDate){
-              for(var item in res.data.arrangements[0].unavailableDate){
-                this.unavailableDate.push(res.data.arrangements[0].unavailableDate[item])
-              }
-            }
-          }
-
+          that.getUserName(res.data.hostId)
           this.data = res.data
-
           this.data.arrangementsLen = res.data.arrangements.length
           this.data.amenitiesLen = res.data.amenities.length
           this.data.safeAmenitiesLen = res.data.safeAmenities.length
           this.data.spacesLen = res.data.spaces.length
           this.data.rulesLen = res.data.rules.length
+        }
+
+        this.GetHostImg(res.data.hostId)
+      })
+    },
+    GetHostImg(hostid){
+      this.$post(this.userUrl + '/user', {
+        action: "getUserInfo",
+        data: {
+          user_id : hostid
+        }
+      }).then((res) => {
+        if(res.msg.code == 200){
+          this.hostImg = res.data.image_url
+        }else{
+          this.hostImg = "https://testapi.image.populstay.com/files/populstay_placeimage/on2m5nqk5t_original.jpg"
         }
       })
     },
@@ -655,11 +639,12 @@ export default {
       day = dayTime / (1000 * 60 * 60 * 24)
 
       if (type === 'days') {
-        if(this.data.prices){
-          data = this.data.prices[0].bestPrice + ' x ' + day
-        }else{
-          data = 0 + ' x ' + day
-        }
+        // if(this.data.prices){
+        //   data = this.data.prices[0].bestPrice + ' x ' + day
+        // }else{
+        //   data = 0 + ' x ' + day
+        // }
+        data = day
       }
 
       else if (type === 'place_price') {
@@ -687,7 +672,7 @@ export default {
           user_id: hostid
         }
       }).then((res) => {
-        this.hostName = res.data.first_name + res.data.last_name
+        this.host = res.data
       })
     },
     getBookInfo () {
@@ -709,40 +694,44 @@ export default {
       })
 
     },
-    //翻译
-    translation(type,obj){
-
-      this.$jsonp(this.youdaoUrl+'/api',
-          {
-            q: obj,
-            appKey: this.$store.state.appKey,
-            salt: this.$store.state.salt,
-            from: '',
-            to: 'en',
-            sign:this.$md5(this.$store.state.appKey+obj+this.$store.state.salt+this.$store.state.secret_key)
-          }
-      ).then(json => {
-          if(type == "placeName"){
-            this.placeName = json.translation[0]
-          }else if(type == "description"){
-            this.description = json.translation[0].replace('\n','<br/>')
-          }
-      }).catch(err => {
-        console.log(err)
-      })
+    getMoment(time){
+      if(this.$i18n.locale == 'cn'){
+        return moment(time).locale("zh-cn").format('LL')
+      }else{
+        return moment(time).locale("en-au").format('DD MMM YYYY')
+      }
+    },
+    getWeek(time){
+      if(this.$i18n.locale == 'cn'){
+        return moment(time).locale("zh-cn").format('dddd')
+      }else{
+        return moment(time).locale("en-au").format('dddd')
+      }
     },
     //book吸顶
     handleBook () {
-      var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      // console.log(scrollTop)
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      let offsetTop = document.querySelector('#BOOKing').offsetTop
+      this.AmapFixed = scrollTop > (offsetTop - 100)
     },
     CurrentCurrencyfun(command){
       this.CurrentCurrency = command
+    },
+    LiveChat(){
+      this.$store.state.Live_Chat_userid={
+        user_id:this.host.user_id,
+        first_name:this.host.first_name,
+        last_name:this.host.last_name,
+        image_url:this.host.image_url
+      }
     }
 
   },
   mounted () {
     window.addEventListener('scroll', this.handleBook)
+  },
+  destroyed () {
+    window.removeEventListener('scroll', this.handleBook)
   },
   computed: {
     days () {
@@ -801,6 +790,7 @@ $red-color: #F4436C;
   }
 
   @media only screen and (max-width: 1500px) {
+
     .list {
       width: auto;
       padding: 0 30px;
@@ -867,9 +857,16 @@ $red-color: #F4436C;
     font-size: 16px;
     color: #4A4A4A;
     position: relative;
-    justify-content: space-around;
+    margin: 0 200px;
+    @media only screen and (max-width:1500px){
+      margin: 0 100px;
+    }
+
+    @media only screen and (max-width:780px){
+      margin: 0 20px;
+    }
     .lst-home-left{
-      width: 37.5%;
+      width: 60%;
       // margin-right: 21%;
       // margin-left: 10%;
       .more-p-title{
@@ -914,10 +911,28 @@ $red-color: #F4436C;
           justify-content: start;
           letter-spacing: 0.56px;
           line-height: 20px;
-          img{
+          div.Img{
             width:80px;
             height: 80px;
             margin-bottom: 10px;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 50%;
+          }
+          .LiveChat{
+            background: #F4436C;
+            border-radius: 3px;
+            border: none;
+            padding: 10px 5px;
+            font-family: Roboto-Medium;
+            font-size: 14px;
+            color: #FFFFFF;
+            letter-spacing: 0;
+            text-align: center;
+            line-height: 11px;
+            cursor: pointer;
+            margin-top: 10px;
           }
         }
       }
@@ -978,7 +993,7 @@ $red-color: #F4436C;
         vertical-align: top;
       }
       .function-p{
-        width: 250px;
+        width: 50%;
         line-height: 36px;
         display: inline-block;
         &:first-child{
@@ -1013,16 +1028,12 @@ $red-color: #F4436C;
         margin-top: 20px;
         line-height: 1.5;
         font-size: 16px;
+        text-align: justify;
       }
-      // .amap-page-container {
-      //   height: 400px;
-      //   max-width: 600px;
-      //   min-width: 300px;
-      // }
       .el-vue-amap-container{
         height: 400px;
-        max-width: 600px;
         min-width: 300px;
+        max-width: 700px;
       }
     }
     .scrool-fix-rili{
@@ -1043,17 +1054,32 @@ $red-color: #F4436C;
   display: none;
 }
 .lst-home-right{
-  margin-top: 60px;
-  // margin-left: 10%;
+  width: 40%;
   max-width: 400px;
   font-family: Roboto-Regular;
   font-size: 16px;
   color: #4A4A4A;
-  // margin-right: 21%;
+  position: absolute;
+  top: 60px;
+  right: 0px;
+
   &>div{
     border: 1px solid #E6E7E8;
     padding: 34px 20px;
     border-radius: 3px;
+  }
+  .isFixed{
+    position: fixed;
+    right: 200px;
+    top: 110px;
+    width: 100%;
+    max-width: 358px;
+    background: white;
+    z-index: 99;
+    @media only screen and (max-width:1500px){
+      right: 100px;
+    }
+
   }
 
   .qrbox{
@@ -1093,8 +1119,11 @@ $red-color: #F4436C;
   .left{
     margin-top: 10px;
   }
-  .gus-wrap{
+  .gus-wrap {
     margin-top: 15px;
+    .gus-div .right{
+      text-align: right;
+    }
   }
   button{
     background: #F4436C;
@@ -1146,11 +1175,15 @@ $red-color: #F4436C;
   z-index: 1000;
   height: 60px;
   box-sizing: border-box;
-  padding: 0 30px;
+  padding: 0 100px;
   border-top: 1px solid rgb(235, 235, 235) !important;
   font-family: Roboto-Regular;
   font-size: 16px;
   color: #4A4A4A;
+
+  @media only screen and (max-width: 780px){
+    padding: 0 20px;
+  }
   .button {
     background: #F4436C;
     border-radius: 3px;
@@ -1167,26 +1200,30 @@ $red-color: #F4436C;
   }
 }
 
-button.disabled{
-  opacity:0.5;
-  cursor: not-allowed;
-}
 .isBack {
   .lst-home-right {
+    width: 100%;
     margin-top: 0;
     border: 0;
     padding: 30px 0;
     height: auto;
+    position: inherit;
+    max-width: 100%;
+    .isFixed{
+      position: inherit;
+      max-width: 100%;
+      padding: 0;
+      border: none;
+    }
   }
 }
 .transform {
   display: inline-block;
   transform: rotate(180deg)
 }
-@media only screen and (max-width: 1000px){
+@media only screen and (max-width: 1300px){
   .lst-index .lst-home .lst-home-left{
     width: 100%;
-    padding: 10px;
     box-sizing: border-box;
   }
   .lst-home-right-xs{
@@ -1214,6 +1251,11 @@ button.disabled{
 }
 </style>
 <style lang="scss">
+  .isBack {
+    .el-dialog {
+      max-height: 520px;
+    }
+  }
  .lst-index{
     .verify{
       .el-dialog--center .el-dialog__body{
@@ -1222,7 +1264,6 @@ button.disabled{
       .el-dialog{
         max-width: 440px;
         min-width: 300px;
-        height: 224px;
       }
       p{
         font-size: 16px;
@@ -1230,6 +1271,7 @@ button.disabled{
         letter-spacing: 0.5px;
         text-align: center;
         line-height: 22px;
+        margin: 20px 0;
       }
       .verify-btn{
         margin: 0 auto;
@@ -1373,7 +1415,7 @@ button.disabled{
 .guests .el-select, .banner-content .el-date-editor.el-input {
   width: 100%;
 }
-.lst-index .el-popover .red{
+.el-popover .red{
   color: #F4436C;
   cursor: pointer;
 }
@@ -1389,6 +1431,7 @@ button.disabled{
 .banner-content .el-input.is-active .el-input__inner,.banner-content .el-input__inner:focus {
   border-color: #dcdfe6
 }
+
 .banner-content .el-date-editor .el-range__icon {
   display: none
 }

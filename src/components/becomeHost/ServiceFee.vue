@@ -1,8 +1,8 @@
 <template>
   <div>
      <div class="becomeHost-header">
-      <div class="title">Get ready</div>
-      <h3>Cleanup Service Fee</h3>
+      <div class="title">{{$t('message.Getready')}}</div>
+      <h3>{{$t('message.CleanupServiceFee')}}</h3>
     </div>
     <div class="fixed">
       <ul>
@@ -10,29 +10,29 @@
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">CNY</p>
           <input type="text"  v-model="$store.state.host.prices[0].cleanupServiceFee"  @blur="bindingVerify('cleanupServiceFee', $store.state.host.prices[0].cleanupServiceFee)">
-          <p class="warning" v-show="verify.indexOf('cleanupServiceFee') !== -1">Please enter the correct cleaning fee price</p>
+          <p class="warning" v-show="verify.indexOf('cleanupServiceFee') !== -1">{{$t('message.Pleaseenterthecorrectcleaningfeeprice')}}</p>
         </li>
-        <h3>Long-term reservation</h3>
+        <h3>{{$t('message.Longtermreservation')}}</h3>
         <li>
-          <p class="label">Weekly Discount</p>
+          <p class="label">{{$t('message.WeeklyDiscount')}}</p>
           <input type="text" v-model="$store.state.host.weeklyDiscount" @blur="bindingVerify('weeklyDiscount'),$store.state.host.weeklyDiscount">
-          <p class="warning" v-show="verify.indexOf('weeklyDiscount') !== -1">Please enter the correct price</p>
+          <p class="warning" v-show="verify.indexOf('weeklyDiscount') !== -1">{{$t('message.Pleaseenterthecorrectprice')}}</p>
         </li>
         <li>
-          <p class="label">Monthly Discount</p>
+          <p class="label">{{$t('message.MonthlyDiscount')}}</p>
           <input type="text" v-model="$store.state.host.monthlyDiscount" @blur="bindingVerify('monthlyDiscount'),$store.state.host.monthlyDiscount">
-          <p class="warning" v-show="verify.indexOf('monthlyDiscount') !== -1">Please enter the correct price</p>
+          <p class="warning" v-show="verify.indexOf('monthlyDiscount') !== -1">{{$t('message.Pleaseenterthecorrectprice')}}</p>
         </li>
-        <h3>How long can tenants live?</h3>
+        <h3>{{$t('message.Howlongcantenantslive')}}</h3>
         <li>
-          <p class="label">Minimum number of days</p>
+          <p class="label">{{$t('message.Minimumnumberofdays')}}</p>
           <input type="text" v-model="$store.state.host.guestMinStayNight" @blur="bindingVerify('guestMinStayNight'),$store.state.host.guestMinStayNight">
-          <p class="warning" v-show="verify.indexOf('guestMinStayNight') !== -1">Please enter the correct price</p>
+          <p class="warning" v-show="verify.indexOf('guestMinStayNight') !== -1">{{$t('message.Pleaseenterthecorrectprice')}}</p>
         </li>
         <li>
-          <p class="label">Maximum number of days</p>
+          <p class="label">{{$t('message.Maximumnumberofdays')}}</p>
           <input type="text" v-model="$store.state.host.guestMaxStayNight" @blur="bindingVerify('guestMaxStayNight'),$store.state.host.guestMaxStayNight">
-          <p class="warning" v-show="verify.indexOf('guestMaxStayNight') !== -1">Please enter the correct price</p>
+          <p class="warning" v-show="verify.indexOf('guestMaxStayNight') !== -1">{{$t('message.Pleaseenterthecorrectprice')}}</p>
         </li>
       </ul>
     </div>
@@ -48,7 +48,7 @@
                     $store.state.host.monthlyDiscount == '' ||
                     $store.state.host.guestMinStayNight == '' ||
                     $store.state.host.guestMaxStayNight == ''"
-            @click="next" >Next</button>
+            @click="next" >{{$t('message.Next')}}</button>
 
   </div>
 </template>

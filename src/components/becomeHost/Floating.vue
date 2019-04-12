@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="becomeHost-header">
-      <div class="title">Get ready</div>
-      <h3>Fixed price</h3>
+      <div class="title">{{$t('message.Getready')}}</div>
+      <h3>{{$t('message.Fixedprice')}}</h3>
     </div>
     <div class="floating">
       <ul>
@@ -10,36 +10,36 @@
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">CNY</p>
           <input v-model="$store.state.host.prices[0].bestPrice" type="text" @blur="bindingVerify('bestPrice', $store.state.host.prices[0].bestPrice)" />
-          <p class="warning" v-show="verify.indexOf('bestPrice') !== -1">Please enter the correct price</p>
+          <p class="warning" v-show="verify.indexOf('bestPrice') !== -1">{{$t('message.Pleaseenterthecorrectprice')}}</p>
         </li>
       </ul>
     </div>
 
     <div class="becomeHost-header">
-      <h3>Floating price</h3>
+      <h3>{{$t('message.Floatingprice')}}</h3>
     </div>
     <div class="floating">
       <ul>
         <li>
-          <h5>Lowest price</h5>
+          <h5>{{$t('message.Lowestprice')}}</h5>
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">CNY</p>
           <input v-model="$store.state.host.prices[0].minPrice" type="text" @blur="bindingVerify('minPrice', $store.state.host.prices[0].minPrice)" />
-          <p class="warning" v-show="verify.indexOf('minPrice') !== -1">Please enter the correct price</p>
+          <p class="warning" v-show="verify.indexOf('minPrice') !== -1">{{$t('message.Pleaseenterthecorrectprice')}}</p>
         </li>
         <li>
-          <h5>Highest price</h5>
+          <h5>{{$t('message.Highestprice')}}</h5>
           <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Suspendisse sodales enim ac justo vehicula faucibus. </p>
           <p class="label">CNY</p>
           <input v-model="$store.state.host.prices[0].maxPrice" type="text" @blur="bindingVerify('maxPrice', $store.state.host.prices[0].maxPrice)" />
-          <p class="warning" v-show="verify.indexOf('maxPrice') !== -1">Please enter the correct price</p>
+          <p class="warning" v-show="verify.indexOf('maxPrice') !== -1">{{$t('message.Pleaseenterthecorrectprice')}}</p>
         </li>
       </ul>
     </div>
     <button class="r-button next"
             :class="verify.length || $store.state.host.prices[0].bestPrice =='' || $store.state.host.prices[0].minPrice =='' || $store.state.host.prices[0].maxPrice ==''  ? 'disable' : null"
             :disabled="verify.length != 0 || $store.state.host.prices[0].bestPrice =='' || $store.state.host.prices[0].minPrice =='' || $store.state.host.prices[0].maxPrice ==''"
-            @click="next" >Next</button>
+            @click="next" >{{$t('message.Next')}}</button>
 
   </div>
 </template>

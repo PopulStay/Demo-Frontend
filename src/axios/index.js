@@ -4,13 +4,15 @@ import axios from 'axios'
 // Vue.prototype.HOST = '/api'
 Vue.prototype.youdaoUrl = 'https://openapi.youdao.com'
 Vue.prototype.userUrl = 'https://testapi.user.populstay.com'
-Vue.prototype.placeUrl = 'https://tesapi.place.populstay.com'
+Vue.prototype.placeUrl = 'http://tesapi.place.populstay.com'
 Vue.prototype.cityUrl = 'https://testapi.citycode.populstay.com'
 Vue.prototype.bookUrl = 'https://testapi.booking.populstay.com'
 Vue.prototype.paymentUrl = 'http://testapi.payment.populstay.com'
 Vue.prototype.partialplaceUrl = 'https://testapi.partialplace.populstay.com'
-Vue.prototype.imageUrl = 'https://testapi.image.populstay.com/image?dir=populstay_placeimage'
+Vue.prototype.imageUrl = 'http://testapi.image.populstay.com/image?dir=populstay_placeimage'
 Vue.prototype.walletUrl = 'https://testapi.wallet.populstay.com'
+Vue.prototype.calendarUrl = 'http://testapi.calendar.populstay.com'
+
 
 Vue.prototype.$axios = axios
 // axios.defaults.baseURL = Vue.prototype.HOST

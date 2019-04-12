@@ -10,28 +10,28 @@
       </div>
       <div class="content flex-wrap">
         <div class="flex-1 c-left">
-          <img :src="place_data.picture ? place_data.picture[0].originalUrl : '../../../assets/images/trips/checked-in.png'" alt="" @click="toListing($route.query.tripsitem.place_id)">
+          <img :src="place_data.picture ? place_data.picture[0].mediumPictureUrl : '../../../assets/images/trips/checked-in.png'" alt="" @click="toListing($route.query.tripsitem.place_id)">
         </div>
         <div class="c-right">
           <!--<h3>Lorem ipsum dolor sit amet consectetur adipiscing elit</h3>-->
           <ul>
             <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Booking ID</div>
+              <div class="title flex-1">{{$t('message.Booking')}} ID</div>
               <div class="text flex-2 flex-wrap">{{this.$route.query.tripsitem.booking_id}}</div>
             </li>
             <li class="flex-wrap">
               <div class="title flex-1">
-                <p class="check">Check-in</p>
-                <p class="check">Check-out</p>
+                <p class="check">{{$t('message.Checkin')}}</p>
+                <p class="check">{{$t('message.Checkout')}}</p>
               </div>
               <div class="text flex-2">
-                <p class="check">{{this.$route.query.tripsitem.start_time}} {{this.$route.query.tripsitem.available_checkin_time_from}}:00 - {{this.$route.query.tripsitem.available_checkin_time_to}}:00</p>
-                <p class="check">{{this.$route.query.tripsitem.end_time}} {{this.$route.query.tripsitem.check_out_time}}:00</p>
-                <p class="check">{{(new Date(this.$route.query.tripsitem.end_time) - new Date(this.$route.query.tripsitem.start_time)) / 1000 / 60 / 60 / 24}} night</p>
+                <p class="check">{{getMoment(this.$route.query.tripsitem.start_time)}} {{this.$route.query.tripsitem.available_checkin_time_from}}:00 - {{this.$route.query.tripsitem.available_checkin_time_to}}:00</p>
+                <p class="check">{{getMoment(this.$route.query.tripsitem.end_time)}} {{this.$route.query.tripsitem.check_out_time}}:00</p>
+                <p class="check">{{(new Date(this.$route.query.tripsitem.end_time) - new Date(this.$route.query.tripsitem.start_time)) / 1000 / 60 / 60 / 24}} {{$t('message.night')}}</p>
               </div>
             </li>
             <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Contact details</div>
+              <div class="title flex-1">{{$t('message.Contactdetails')}}</div>
               <div class="text flex-2 flex-wrap">{{this.user.email_address}}</div>
             </li>
             <!--<li class="flex-wrap flex-align-center">-->
@@ -47,28 +47,28 @@
               <!--<div class="text flex-2 flex-wrap">2 adults</div>-->
             <!--</li>-->
             <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Payment details</div>
+              <div class="title flex-1">{{$t('message.Paymentdetails')}}</div>
               <div class="text flex-2 flex-wrap">
-                <span class="flex-2">{{parseInt(this.$route.query.tripsitem.cha_time)}} night</span>
+                <span class="flex-2">{{parseInt(this.$route.query.tripsitem.cha_time)}} {{$t('message.night')}}</span>
                 <span class="flex-1">{{this.$route.query.tripsitem.currency}}</span>
-                <span class="flex-1">{{this.$route.query.tripsitem.price}}</span>
+                <span class="flex-1">{{parseInt(this.$route.query.tripsitem.cha_time) * this.$route.query.tripsitem.price}}</span>
               </div>
             </li>
             <li class="flex-wrap flex-align-center">
               <div class="title flex-1"></div>
               <div class="text last-li flex-2">
                 <p class="flex-wrap">
-                  <span class="flex-2">Cleaning fee</span>
-                  <span class="flex-1">{{this.$route.query.tripsitem.currency}}</span>
-                  <span class="flex-1">0</span>
-                </p>
-                <p class="flex-wrap">
-                  <span class="flex-2">Service fee</span>
+                  <span class="flex-2">{{$t('message.Cleaningfee')}}</span>
                   <span class="flex-1">{{this.$route.query.tripsitem.currency}}</span>
                   <span class="flex-1">{{this.$route.query.tripsitem.cleanup_service_fee}}</span>
                 </p>
                 <p class="flex-wrap">
-                  <span class="flex-2 red">Total</span>
+                  <span class="flex-2">{{$t('message.Servicefee')}}</span>
+                  <span class="flex-1">{{this.$route.query.tripsitem.currency}}</span>
+                  <span class="flex-1">{{(this.$route.query.tripsitem.total_price - this.$route.query.tripsitem.price).toFixed(2)}}</span>
+                </p>
+                <p class="flex-wrap">
+                  <span class="flex-2 red">{{$t('message.Total')}}</span>
                   <span class="flex-1 red">{{this.$route.query.tripsitem.currency}}</span>
                   <span class="flex-1 red">{{this.$route.query.tripsitem.total_price}}</span>
                 </p>
@@ -76,16 +76,16 @@
             </li>
           </ul>
           <div class="button-wrap flex-wrap">
-            <div class="button r-button" @click="$router.go(-1)">Back</div>
+            <div class="button r-button" @click="$router.go(-1)">{{$t('message.Back')}}</div>
           </div>
         </div>
       </div>
 
       <!-- 待定取消弹窗  -->
       <el-dialog  :visible.sync="pendingShow" width="500px" class="pendingWrap">
-        <h3>Cancel my booking</h3>
-        <p>Please let us know the reason why you</p>
-        <p>wish to cancel your booking.</p>
+        <h3>{{$t('message.Cancelmybooking')}}</h3>
+        <p>{{$t('message.Pleaseletusknowthereasonwhyyou')}}</p>
+        <p>{{$t('message.wishtocancelyourbooking')}}</p>
         <div class="select-wrap">
           <el-select v-model="value11" placeholder="Please select one reason" style="width:100% !important;">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"  class="pendingWrap-select">
@@ -94,9 +94,12 @@
             </el-option>
           </el-select>
         </div>
-        <div class="r-button button" @click="submit">Submit</div>
+        <div class="r-button button" @click="submit">{{$t('message.Submit')}}</div>
       </el-dialog>
     </div>
+
+    <p v-if="$i18n.locale != language ? onloading() : null"></p>
+
   </div>
 </template>
 
@@ -108,8 +111,9 @@ export default {
   data () {
     return {
       pendingShow: false,
+      language: this.$i18n.locale,
       value11: '',
-      tripsTabList: ['All', 'Pending', 'Upcoming', 'Checked-in', 'Collect', 'Completed', 'Cancelled', 'Refund'],
+      tripsTabList: [this.$t('message.All'), this.$t('message.Pending'), this.$t('message.Upcoming'), this.$t('message.Checkedin'), this.$t('message.Collect'), this.$t('message.Completed'), this.$t('message.Cancelled'), this.$t('message.Refund')],
       options: [{
         value: '1',
         label: 'Please select one reason'
@@ -132,7 +136,6 @@ export default {
     }
   },
   beforeMount () {
-    console.log(this.$route.query.tripsitem)
     if(this.$route.query.tripsitem.place_id){
       this.getplace(this.$route.query.tripsitem.place_id)
     }else{
@@ -144,6 +147,16 @@ export default {
     this.user = this.$store.state.userInfo;
   },
   methods: {
+    onloading(){
+      this.$router.push('/trips/tripsList')
+    },
+    getMoment(time){
+      if(this.$i18n.locale == 'cn'){
+        return moment(time).locale("zh-cn").format('LL')
+      }else{
+        return moment(time).locale("en-au").format('DD MMM YYYY')
+      }
+    },
     cancel () {
       this.pendingShow = true
     },
@@ -163,21 +176,20 @@ export default {
       this.$get(this.placeUrl + '/place', {
         placeId: place_id
       }).then((res) => {
-        if (res.code === 200){
           if (res.code === 200){
+            console.log(res)
             if(res.data){
               this.place_data = res.data
             }else{
               this.$notify({
-                title: 'warning',
-                message: 'The house has been deleted.',
+                title: this.$t('message.Warning'),
+                message: this.$t('message.Thehousehasbeendeleted'),
                 type: 'warning'
               });
               this.$router.push('/trips/tripsList')
             }
           }
 
-        }
       })
     },
     toListing (placeId) {

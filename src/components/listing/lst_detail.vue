@@ -1,9 +1,5 @@
 <template>
   <div class="content lst-detail">
-  <el-dialog :visible.sync="isVerify" class="verify" center>
-    <p class="red-color" style="margin-bottom:28px;">You’ll need to provide identification</p>
-    <button class="verify-btn XY-cursorp">Verify</button>
-  </el-dialog>
     <div type="flex" class="lst-home">
       <div class="lst-home-right">
         <div class="top flex-wrap flex-center-between">
@@ -11,20 +7,20 @@
             <p class="pps-p">{{this.book_detail.currency}}</p>
             <!--<i class="iconfont icon-54"></i>-->
           </div>
-           <p class="top-wrap-p"><em>{{this.book_detail.currency}} {{book_detail.total_price}}</em>per night</p>
+           <p class="top-wrap-p"><em>{{book_detail.Total}} {{this.book_detail.currency}}</em> {{$t('message.pernighten')}} {{$t('message.pernightcn')}}</p>
         </div>
         <div class="detail-content">
           <div class="content-wrap">
             <i class="iconfont icon-rili"></i>
-            <span>{{book_detail.start_time}}</span>
+            <span>{{book_detail.check_in_date}}</span>
             <i class="iconfont icon-54 icon-class"></i>
-            <span>{{book_detail.end_time}}</span>
+            <span>{{book_detail.check_out_date}}</span>
             <!-- <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime">
             </el-date-picker> -->
           </div>
           <div class="content-wrap mgt20">
             <i class="iconfont icon-geren"></i>
-            <span>{{guest_number}} guests</span>
+            <span>{{book_detail.guest_number}} {{$t('message.guests')}}</span>
           </div>
         </div>
         <!-- <div class="select-time flex-wrap">
@@ -40,17 +36,17 @@
 
         <div class="gus-wrap flex-wrap flex-center-between">
           <div class="gus-div">
-            <div class="left">{{this.book_detail.currency}} {{day('currencyPrice')}} nights</div>
-            <div class="left">Cleaning fee</div>
-            <div class="left">Service fee</div>
-            <div class="left">Total</div>
+            <div class="left">{{data.prices ? data.prices[0].bestPrice : null}} {{book_detail.currency}} × {{book_detail.night}} {{$t('message.night')}}</div>
+            <div class="left">{{$t('message.Cleaningfee')}}</div>
+            <div class="left">{{$t('message.Servicefee')}}</div>
+            <div class="left">{{$t('message.Total')}}</div>
           </div>
           <div class="gus-div ">
-            <div class="left">{{this.book_detail.currency}} {{data.prices[0].bestPrice}}</div>
-            <div class="left">{{this.book_detail.currency}} {{book_detail.cleanup_service_fee}}</div>
-            <div class="left">{{this.book_detail.currency}} 3.5%</div>
+            <div class="right">{{data.prices ? data.prices[0].bestPrice * book_detail.night : null}} {{this.book_detail.currency}}</div>
+            <div class="right">{{book_detail.Cleaningfee}} {{this.book_detail.currency}}</div>
+            <div class="right">{{book_detail.Servicefee}} {{this.book_detail.currency}}</div>
             <!-- <div class="left">7.5</div> -->
-            <div class="left">{{this.book_detail.currency}} {{book_detail.total_price}}</div>
+            <div class="right">{{book_detail.Total}} {{this.book_detail.currency}}</div>
           </div>
         </div>
         <div class="foot-wrap flex-wrap flex-center-between">
@@ -66,7 +62,7 @@
         <div class="top flex-wrap flex-center-between">
           <div class="top-left">
             <p class="entire-p">{{data.category}}</p>
-            <p class="name-p">{{placeName}}</p>
+            <p class="name-p">{{data.placeName}}</p>
             <p class="address-p">{{listName}}</p>
           </div>
         </div>
@@ -131,78 +127,85 @@
           <!--<p>Add a guest</p>-->
           <!--<i class="iconfont icon-54"></i>-->
         <!--</div>-->
-        <div class="d_item" >
-          <p class="h1-p">Sleeping arrangements</p>
+        <div class="d_item" v-show="data.arrangementsLen">
+          <p class="h1-p">{{$t('message.Sleepingarrangements')}}</p>
           <div class="arrangement h1-p" v-for="(item, index) in data.arrangements"  :key="index" v-show="index < 4 || arrangementsShowMore">
             <i class="iconfont icon-chuang1"></i>
-            <p class="arr-top" v-for="(items, index) in item.utilities" :key="index"  v-show="items.count != 0">{{items.count}} {{items.utility}}</p>
+            <p class="arr-top" v-for="(items, index) in item.utilities" :key="index" v-show="items.count != 0">{{items.count}} {{items.utility}}</p>
           </div>
-          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore" v-if="data.arrangements.length>3">
-            <p>{{arrangementsShowMore ? 'hide' : 'Show more sleeping arrangements'}}</p>
+          <div class="read-more flex-wrap flex-align-center" @click="arrangementsShowMore = !arrangementsShowMore" v-if="data.arrangementsLen>4">
+            <p>{{arrangementsShowMore ? $t('message.hide') : $t('message.Showmoresleepingarrangements')}}</p>
             <i class="iconfont icon-54" :class="arrangementsShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
-        <div class="d_item" v-show="data.amenities.length">
-          <p class="h1-p">Amenities</p>
+        <div class="d_item">
+          <p class="h1-p">{{$t('message.Checkinout')}}</p>
+          <p>{{$t('message.Checkintime')}} {{data.availableCheckinTimeFrom}}:00 － {{data.availableCheckinTimeTo}}:00 · {{$t('message.Checkouttimebefore')}} {{data.checkOutTime}}:00</p>
+          <p class="spilt-p"></p>
+        </div>
+
+        <div class="d_item" v-show="data.amenitiesLen">
+          <p class="h1-p">{{$t('message.Amenities')}}</p>
           <ul>
             <li class="function-p" v-for="(item, index) in data.amenities" :key="index" v-show="index < 5 || amenitiesShowMore">{{item.amenity}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenities.length>5">
-            <p>{{amenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
+          <div class="read-more flex-wrap flex-align-center" @click="amenitiesShowMore = !amenitiesShowMore" v-if="data.amenitiesLen>5">
+            <p>{{amenitiesShowMore ? $t('message.hide') : $t('message.Showmoreamenities')}}</p>
             <i class="iconfont icon-54" :class="amenitiesShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
-        <div class="d_item" v-show="data.safeAmenities.length">
-          <p class="h1-p">Safe Amenities</p>
+        <div class="d_item" v-show="data.safeAmenitiesLen">
+          <p class="h1-p">{{$t('message.SafeAmenities')}}</p>
           <ul>
             <li class="rules-p" v-for="(item, index) in data.safeAmenities" :key="index" v-show="index < 3 || safeAmenitiesShowMore">{{item.safeAmenity}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="safeAmenitiesShowMore = !safeAmenitiesShowMore" v-if="data.safeAmenities.length>3">
-            <p>{{safeAmenitiesShowMore ? 'hide' : 'Show more amenities'}}</p>
+          <div class="read-more flex-wrap flex-align-center" @click="safeAmenitiesShowMore = !safeAmenitiesShowMore" v-if="data.safeAmenitiesLen>3">
+            <p>{{safeAmenitiesShowMore ? $t('message.hide') : $t('message.Showmoresafeamenities')}}</p>
             <i class="iconfont icon-54" :class="safeAmenitiesShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
-        <div class="d_item" v-show="data.spaces.length">
-          <p class="h1-p">Spaces</p>
+        <div class="d_item" v-show="data.spacesLen">
+          <p class="h1-p">{{$t('message.Spaces')}}</p>
           <ul>
             <li class="rules-p" v-for="(item, index) in data.spaces" :key="index" v-show="index < 3 || spaceShowMore">{{item.space}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="spaceShowMore = !spaceShowMore" v-if="data.spaces.length>3">
-            <p>{{spaceShowMore ? 'hide' : 'Read all spaces'}}</p>
+          <div class="read-more flex-wrap flex-align-center" @click="spaceShowMore = !spaceShowMore" v-if="data.spacesLen>3">
+            <p>{{spaceShowMore ? $t('message.hide') : $t('message.Readallspaces')}}</p>
             <i class="iconfont icon-54" :class="spaceShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
-        <div class="d_item" v-show="data.rules.length">
-          <p class="h1-p">House Rules</p>
+        <div class="d_item" v-show="data.rulesLen">
+          <p class="h1-p">{{$t('message.HouseRules')}}</p>
           <ul>
-            <li class="rules-p" v-for="(item, index) in data.rules" :key="index" v-show="index < 3 || rulesShowMore">{{item.rule}}</li>
+            <li class="rules-p" v-for="(item, index) in data.rules" :key="index" v-show="index < 3 || rulesShowMore">{{item.additionalTitle == "" ? item.rule : item.additionalTitle}}</li>
           </ul>
-          <div class="read-more flex-wrap flex-align-center" @click="rulesShowMore = !rulesShowMore" v-if="data.rules.length>3">
-            <p>{{rulesShowMore ? 'hide' : 'Read all rules'}}</p>
+          <div class="read-more flex-wrap flex-align-center" @click="rulesShowMore = !rulesShowMore" v-if="data.rulesLen>3">
+            <p>{{rulesShowMore ? $t('message.hide') : $t('message.Readallrules')}}</p>
             <i class="iconfont icon-54" :class="rulesShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
 
         <div class="d_item">
-          <p class="h1-p">Cancellations</p>
+          <p class="h1-p">{{$t('message.Cancellations')}}</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.name : ''}}</p>
           <p class="arr-top">{{data.cancellationPolicy ? data.cancellationPolicy.title : ''}}</p>
           <p class="arr-down" v-if="cancellationsShowMore">{{data.cancellationPolicy ? data.cancellationPolicy.description : ''}}</p>
           <div class="read-more flex-wrap flex-align-center" @click="cancellationsShowMore = !cancellationsShowMore">
-            <p>{{cancellationsShowMore ? 'hide' : 'Read more about the policy'}}</p>
+            <p>{{cancellationsShowMore ? $t('message.hide') : $t('message.Readmoreaboutthepolicy')}}</p>
             <i class="iconfont icon-54" :class="cancellationsShowMore ? 'transform' : ''"></i>
           </div>
           <p class="spilt-p"></p>
         </div>
+
         <!-- <div v-show="isShowMore4">
           <p class="more-p-title">Nulla ut neque nec</p>
           <p class="more-p-content">Arcu faucibus ullamcorper id sit amet augue. Nunc non sem non massa finibus pellentesque ut id lorem. In vitae mi a urna congue fringilla a suscipit arcu. Vestibulum non urna tincidunt leo faucibus ultricies dignissim interdum nibh. Nunc sollicitudin accumsan tellus quis pulvinar. Integer volutpat est a ante tempor pulvinar. Morbi rhoncus felis ac arcu </p>
@@ -215,8 +218,7 @@
         <!--<textarea name="" id="" class="textarea-say"></textarea>-->
         <!--<p class="spilt-p"></p>-->
         <!--<p class="detail-terms-p">I agree to the <em>House Rules</em>,<em> Terms and Conditions</em>,<em> Privacy Policy</em>,<em> Cancellation Policy</em>, and the <em>Guest Refund Policy</em>. I also agree to pay the total amount shown, which includes Service Fees.</p>-->
-        <button class="confirm-btn" style="margin-top:47px;" @click="CNYpaynext" v-if="this.book_detail.currency == 'CNY'">Confirm and pay</button>
-        <button class="confirm-btn" style="margin-top:47px;" @click="pswInput = true" v-else>Confirm and pay</button>
+        <button class="confirm-btn" style="margin-top:47px;" @click="toBook" :disabled="disVerify" :class="disVerify ? 'disabled' : null" v-loading.fullscreen.lock="dialogloading">{{$t('message.Confirmandpay')}}</button>
         <!-- <p class="h1-p">Nearby landmarks</p>
         <el-amap></el-amap> -->
       </div>
@@ -224,33 +226,21 @@
     <div class="qrcode-confirm-pay-model-out">
       <el-dialog :visible.sync="qrcode">
         <div class="login-frame-content">
-          <p class="qrcode-p">Your balance is not enough.<br />Please use the Token wallet to scan the<br />QR code to make a payment.</p>
+          <p class="qrcode-p">{{$t('message.Yourbalanceisnotenough')}}</p>
           <img src="../../assets/images/trips/showqrcode.png" class="qrcode-img">
-          <button class="confirm-qrcode-btn confirm-btn XY-fz16 XY-colf XY-cursorp" @click="qrcode = false">Cancel</button>
+          <button class="confirm-qrcode-btn confirm-btn XY-fz16 XY-colf XY-cursorp" @click="qrcode = false">{{$t('message.Cancel')}}</button>
         </div>
       </el-dialog>
     </div>
+
+    <!-- pps支付-->
     <div class="confirm-pay-model-out">
 
       <el-dialog  :visible.sync="pswInput" class="checkoutWrap" :before-close="handleClose">
-        <el-popover placement="bottom-start" width="300" trigger="manual" v-model="walletshow" popper-class="state-popover">
-          <div slot="reference" class="walletList flex-wrap flex-center-between" @click="walletshow = !walletshow">
-            <p>{{wallet}}</p>
-            <i class="icon iconfont" :class="walletshow ? 'icon-arrow-up' : 'icon-54'"></i>
-          </div>
-          <div class="popover">
-            <ul>
-              <li v-for="(item, index) in walletList" :key="index" @click="wallet = item.name; walletID = item.user_wallet_id; walletshow = false">
-                {{item.name}}
-              </li>
-            </ul>
-          </div>
-        </el-popover>
-
         <div class="input-wrap">
-          <input type="password"  autocomplete="off" placeholder="Payment password" v-model="userPassword">
+          <input type="password"  autocomplete="new-password" :placeholder="$t('message.Paymentpassword')" v-model="userPassword">
         </div>
-        <div class="button" @click="paynext">Confirm and pay</div>
+        <div class="button" @click="paynext">{{$t('message.Confirmandpay')}}</div>
       </el-dialog>
 
     </div>
@@ -267,14 +257,22 @@
       <div class="button" @click="qr_codeshow = false">Cancel</div>
     </el-dialog>
 
+    <!--支付成功提示-->
+    <el-dialog
+      :visible.sync="SuccessfulPayment"
+      width="22%"
+      class="SuccessfulPayment"
+      :show-close="false"
+      :close-on-press-escape="false">
+      <p>{{$t('message.Successfulpaymentwilljumptotheorder')}}</p>
+      <i class="el-icon-loading"></i>
+    </el-dialog>
+
+
   </div>
 </template>
 <script>
-import banner1 from '../../assets/images/index/banner-1.png'
-import banner2 from '../../assets/images/index/banner-2.png'
-import banner3 from '../../assets/images/index/banner-3.png'
-import banner4 from '../../assets/images/index/banner-4.png'
-
+import Cookies from 'js-cookie';
 import QRCode from 'qrcode'
 var moment = require('moment')
 const sha256 = require('js-sha256').sha256
@@ -284,7 +282,6 @@ export default {
   data () {
     return {
       isLogin: false,
-      img: [banner1, banner2, banner3, banner4],
       SelectList: ['Identity Card', 'Passport', 'Driver’s license'],
       Country: ['China', 'England'],
       Country_name: 'Issuing Country',
@@ -304,7 +301,6 @@ export default {
         year: []
       },
       selectValue: '1 guest',
-      isVerify: false,
       visible: false,
       arrangementsShowMore:false,
       amenitiesShowMore: false,
@@ -317,19 +313,44 @@ export default {
       isShowMoreAddfooter: false,
       pswInput: false,
       qrcode: false,
+      booking_id:'',
       wallet:'Please choose a wallet',
       walletID:0,
-      walletList:[],
       walletshow:false,
       userPassword:'',
-      data:{},
+      data: {
+        arrangementsLen:0,
+        amenitiesLen:0,
+        safeAmenitiesLen:0,
+        spacesLen:0,
+        rulesLen:0,
+        lng:'0',
+        lat:'0'
+      },
       listName: '',
       placeName:'',
       guest_number:0,
       qr_codeshow:false,
       qr_codeURL:'',
-      alreadyPay:false
+      alreadyPay:false,
+      SuccessfulPayment:false,
+      dialogloading:false,
+      disVerify:false
     }
+  },
+  created () {
+    if(Cookies.get('Book')){
+      let Book = JSON.parse(Cookies.get('Book'))
+      this.getPlace(Book.placeId)
+      this.book_detail = Book
+
+    }else{
+      this.$router.go(-1)
+    }
+
+  },
+  mounted(){
+    this.getWalletList()
   },
   methods: {
     readBooking(id){
@@ -351,9 +372,6 @@ export default {
       this.startTextTime = String(e[0]).split(' ')
       this.endTextTime = String(e[1]).split(' ')
     },
-    Verify () {
-      this.isVerify = !this.isVerify
-    },
     getWalletList(){
 
       this.$post(this.userUrl + '/user', {
@@ -364,35 +382,133 @@ export default {
       }).then((res) => {
 
         if(res.msg.code == 200){
-          console.log(res.data.user_wallets)
-          this.walletList = res.data.user_wallets
+          this.walletID = res.data.user_wallets[0].user_wallet_id
         }
       })
 
     },
+    toBook(){
+      this.dialogloading = true;
+      this.disVerify = true;
+      if(this.book_detail.currency == "CNY"){
+        this.$post(this.bookUrl + '/booking ', {
+          action: 'makeBooking',
+          data: {
+            user_id: this.$store.state.userInfo.user_id,
+            place_id: this.book_detail.place_id,
+            check_in_date: this.book_detail.check_in_date,
+            check_out_date: this.book_detail.check_out_date,
+            guest_number: this.book_detail.guest_number,
+            currency: this.book_detail.currency,
+            channel:this.book_detail.channel
+          }
+        }).then((res) => {
+          this.dialogloading = false
+          if (res.msg.code === 200) {
+            this.pswInput = true
+            this.booking_id = res.data.booking_id
+          }
+
+          if (res.msg.code === 952) {
+            this.$notify({
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Currenttimeperiodcannotbebook'),
+              type: 'warning'
+            });
+            this.timeStart = ""
+            this.timeEnd = ""
+          }
+
+          if (res.msg.code === 500){
+            this.$notify({
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Operationfailedpleasetrylater'),
+              type: 'warning'
+            });
+          }
+
+        })
+      }else{
+        this.$post(this.bookUrl + '/booking ', {
+          action: 'makeBooking',
+          data: {
+            user_id: this.$store.state.userInfo.user_id,
+            place_id: this.book_detail.placeId,
+            check_in_date: this.book_detail.check_in_date,
+            check_out_date: this.book_detail.check_out_date,
+            guest_number: this.book_detail.guest_number,
+            currency: this.book_detail.currency,
+          }
+        }).then((res) => {
+          this.dialogloading = false
+          if (res.msg.code === 200) {
+            this.booking_id = res.data.booking_id
+            this.pswInput = true
+          }
+
+          if (res.msg.code === 952) {
+            this.$notify({
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Currenttimeperiodcannotbebook'),
+              type: 'warning'
+            });
+          }
+        })
+      }
+
+    },
     paynext () {
+
 
         this.$post(this.userUrl + '/user', {
           action: "depositPPS",
           data: {
             user_id:this.$store.state.userInfo.user_id,
-            booking_id: this.$route.query.book_id,
+            booking_id: this.booking_id,
             user_wallet_id: this.walletID,
             encrypted_password:sha256(this.userPassword)
           }
         }).then((res) => {
-          console.log(res)
-        }).catch(err => {
-          console.log(err)
-        })
+          if(res.msg.code == 952){
 
-        this.$alert('The transaction is going on, please check the order status in time.', 'Paying', {
-          confirmButtonText: 'OK',
-          callback: action => {
-            location.reload();
+            this.$notify({
+              message: this.$t('message.Incorrectpassword'),
+              showClose:false,
+              type: 'warning',
+              onClick(){
+                this.close()
+              }
+            });
+
           }
-        });
+          if(res.msg.code == 500){
 
+            this.$notify({
+              message: this.$t('message.Thebalanceisinsufficientandtheoperationfailed'),
+              showClose:false,
+              type: 'warning',
+              onClick(){
+                this.close()
+              }
+            });
+
+          }
+
+          if(res.msg.code == 200){
+
+            this.pswInput = false;
+            this.SuccessfulPayment = true;
+
+            this.clock = window.setInterval(() => {
+              window.clearInterval(this.clock)
+              this.SuccessfulPayment = false;
+              this.$router.push({path: '/trips/tripsList'})
+            }, 3000)
+          }
+
+        }).catch(err => {
+          console.log(err.response.data.status)
+        })
     },
     CNYpaynext(){
       this.$post(this.bookUrl + '/booking ', {
@@ -444,8 +560,13 @@ export default {
         if (res.code === 200) {
           var placeName = res.data.placeName
           that.getName(res.data.citycode)
-          that.translation('placeName',placeName)
+          // that.translation('placeName',placeName)
           this.data = res.data
+          this.data.arrangementsLen = res.data.arrangements.length
+          this.data.amenitiesLen = res.data.amenities.length
+          this.data.safeAmenitiesLen = res.data.safeAmenities.length
+          this.data.spacesLen = res.data.spaces.length
+          this.data.rulesLen = res.data.rules.length
         }
       })
     },
@@ -486,18 +607,16 @@ export default {
       if(type == "currencyPrice"){
         return (new Date(this.book_detail.end_time).getTime() - new Date(this.book_detail.start_time).getTime())/ 1000 / 60 / 60 / 24
       }
+    },
+    close(){
+      this.$notify.close()
     }
   },
   mounted () {
     this.getWalletList()
   },
-  created () {
-    if(this.$route.query.book_id == undefined) {
-      this.$router.go(-1)
-    }else{
-      this.readBooking(this.$route.query.book_id)
-      this.guest_number = this.$route.query.guest_number
-    }
+  destroyed () {
+    Cookies.remove('Book')
   }
 }
 </script>
@@ -511,10 +630,10 @@ $red-color: #F4436C;
     font-size: 16px;
     color: #4A4A4A;
     position: relative;
+    margin: 0 200px;
+
     .lst-home-left{
-      // margin-right: 21%;
-      margin-left: 10%;
-      width: 37.5%;
+      width: 60%;
       .more-p-title{
         font-family: Roboto-Medium;
         margin-top: 30px;
@@ -611,7 +730,7 @@ $red-color: #F4436C;
         margin-bottom: 10px;
       }
       .function-p{
-        width: 250px;
+        width: 50%;
         line-height: 36px;
         display: inline-block;
         &:first-child{
@@ -646,6 +765,7 @@ $red-color: #F4436C;
         margin-top: 20px;
         line-height: 1.5;
         font-size: 16px;
+        text-align: justify;
       }
       .el-vue-amap-container{
         height: 400px;
@@ -661,21 +781,22 @@ $red-color: #F4436C;
     }
     .lst-home-right{
       position: fixed;
-      right: 12%;
+      right: 200px;
       top: 150px;
-      width:  400px;
+      width:  380px;
       border: 1px solid #E6E7E8;
-      // height: 509px;
       border-radius: 3px;
       font-family: Roboto-Regular;
       font-size: 16px;
       color: #4A4A4A;
       padding: 34px 20px 0;
-      // margin-right: 21%;
       .gus-wrap{
         margin-top: 15px;
         padding-bottom: 20px;
         border-bottom: 1px solid #e6e7e8;
+        .gus-div .right{
+          text-align: right;
+        }
       }
       button{
         background: #F4436C;
@@ -905,7 +1026,7 @@ $red-color: #F4436C;
       letter-spacing: 0;
       width: 100%;
       padding: 0 15px;
-      color: #B1B3B6;
+      color: #000000;
       box-sizing: border-box;
     }
   }
@@ -996,39 +1117,76 @@ $red-color: #F4436C;
   transform: rotate(180deg)
 }
 
-@media only screen and (max-width:1131px) {
-  .lst-detail .lst-home{
-    display: block;
-    // margin: 0 auto;
-  }
-  .lst-detail .lst-home .lst-home-right{
-    position: initial;
-    margin: 0 auto;
-  }
-  .lst-detail .lst-home .lst-home-left{
-    width: 100%;
-    margin: 0 auto;
-    padding: 30px;
-    box-sizing: border-box;
-  }
-}
-@media only screen and (max-width:480px) {
-  .lst-detail .lst-home .lst-home-right{
-    position: initial;
-    margin: 0 auto;
-    width: 300px;
-  }
-  .content-wrap{
-      .icon-class {
-        margin-left: 10px!important;
-      }
-      span{
-        margin-left: 10px!important;
-      }
+@media only screen and (max-width:1500px) {
+  .lst-detail {
+    .lst-home {
+      display: block;
+      margin: 0 100px;
     }
+    .lst-home-left{
+      width: 50% !important;
+    }
+
+    .lst-home-right{
+      right: 100px !important;
+    }
+  }
 }
+
+@media only screen and (max-width:1300px) {
+  .lst-detail {
+
+    .lst-home-right{
+      width: auto !important;
+      position: inherit !important;
+      top:20px !important;
+      right:0px !important;
+
+    }
+
+    .lst-home-left{
+      width: 100% !important;
+    }
+
+
+  }
+}
+
+@media only screen and (max-width:800px) {
+  .lst-detail {
+    .lst-home{
+      margin: 0 20px;
+    }
+
+    .lst-home-right{
+      width: auto !important;
+      position: inherit !important;
+      top:20px !important;
+      right:0px !important;
+
+    }
+
+    .lst-home-left{
+      width: 100% !important;
+    }
+
+
+  }
+}
+
 </style>
 <style lang="scss">
+  .SuccessfulPayment {
+    text-align: center;
+    p {
+      font-size: 18px;
+    }
+    i {
+      font-size:30px;
+      margin-top:20px;
+      color:#F4436C;
+    }
+  }
 
 .cancelWrap {
 
@@ -1205,7 +1363,9 @@ $red-color: #F4436C;
 .lst-detail-select .el-select .el-input{
   width: 112px;
 }
-// .footer{
-//   border-top: none !important;
-// }
+
+button.disabled{
+  opacity:0.5;
+  cursor: not-allowed;
+}
 </style>

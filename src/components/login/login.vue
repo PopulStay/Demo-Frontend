@@ -2,7 +2,7 @@
 <div class="login-model-out">
   <el-dialog :visible.sync="$store.state.show_login" :close-on-click-modal="true" @close="close">
       <div class="login-frame-content" ref="login">
-        <p class="red-color XY-fz30 lineh36" style="margin-bottom:14px;">Welcome back!</p>
+        <p class="red-color XY-fz30 lineh36" style="margin-bottom:14px;">{{$t('message.Welcomeback')}}</p>
         <!-- <div class="input-text login-select">
           <el-select v-model="type">
             <el-option key="0" label="Email address" value="email"></el-option>
@@ -13,27 +13,30 @@
           <phoneInput v-model="data.number" ref="phoneInput" @cut="cut"></phoneInput>
         </div>
         <div class="input-text" v-if="!isCode">
-          <input :type="checked ? 'text' : 'password'" placeholder="Password" ref="dataPsw" v-model="data.encrypted_password">
+          <input :type="checked ? 'text' : 'password'" :placeholder="$t('message.Password')" ref="dataPsw" v-model="data.encrypted_password">
           <div class="XY-right lineb eye" @click="checked=!checked">
             <i class="iconfont icon-view XY-fz24 red-color" v-show="checked"></i>
             <i class="iconfont icon-hide XY-fz24" v-show="!checked"></i>
           </div>
         </div>
         <div class="input-text" v-else>
-          <input type="text" placeholder="Verification code" ref="dataPsw" class="psw" v-model="data.code" maxlength="6">
+          <input type="text" :placeholder="$t('message.Verificationcode')" ref="dataPsw" class="psw" v-model="data.code" maxlength="6">
           <p @click="countDown" class="login-sendCode XY-cursorp red-color XY-fz16" :class="{disabled: !this.canClick}">{{content}}</p>
         </div>
         <div class="login-select-trip red-color XY-fz14">
-          <span class="XY-cursorp" v-if="!isCode" @click="isCodes()">Verification code login</span>
-          <span class="XY-cursorp" v-else @click="isCode=!isCode">Password login</span>
-          <span class="XY-cursorp" @click="toReset">Forgot password?</span>
+          <span class="XY-cursorp" v-if="!isCode" @click="isCodes()">{{$t('message.Verificationcodelogin')}}</span>
+          <span class="XY-cursorp" v-else @click="isCode=!isCode">{{$t('message.Passwordlogin')}}</span>
+          <span class="XY-cursorp" @click="toReset">{{$t('message.Forgotpassword')}}</span>
         </div>
-        <button class="login-btn XY-fz16 XY-colf XY-cursorp" @click="login" v-if="!isCode">Log in</button>
-        <button class="login-btn XY-fz16 XY-colf XY-cursorp" @click="codeLogin" v-else>Log in</button>
-        <p class="XY-fz14 XY-center sign-up-trip">Not a member yet?</p>
-        <p class="XY-fz16 XY-center red-color sign-up XY-cursorp" @click="toSignUp">Sign up</p>
+        <button class="login-btn XY-fz16 XY-colf XY-cursorp" @click="login" v-if="!isCode">{{$t('message.Login')}}</button>
+        <button class="login-btn XY-fz16 XY-colf XY-cursorp" @click="codeLogin" v-else>{{$t('message.Login')}}</button>
+        <p class="XY-fz14 XY-center sign-up-trip">{{$t('message.Notamemberyet')}}</p>
+        <p class="XY-fz16 XY-center red-color sign-up XY-cursorp" @click="toSignUp">{{$t('message.Signup')}}</p>
       </div>
   </el-dialog>
+
+  <p v-if="$i18n.locale != language ? onloading() : null"></p>
+
 </div>
 </template>
 
@@ -46,9 +49,10 @@ export default {
   },
   data () {
     return {
+      language: this.$i18n.locale,
       checked: false,
       isCode: false,
-      content: 'Send',
+      content: '',
       totalTime: 60,
       canClick: true,
       showThis: null,
@@ -62,6 +66,10 @@ export default {
     }
   },
   methods: {
+    onloading(){
+      this.language = this.$i18n.locale;
+      this.content = this.$t('message.Send')
+    },
     countDown () {
       if (!this.canClick || this.data.number === '') return false
       let data = {}
@@ -82,21 +90,25 @@ export default {
             this.content = this.totalTime + 's'
             if (this.totalTime < 0) {
               window.clearInterval(this.clock)
-              this.content = 'Send'
+              this.content = this.$t('message.Send')
               this.totalTime = 60
               this.canClick = true
             }
           }, 1000)
         } else {
-          this.$alert('Please confirm whether to register or not', 'Warning', {
-            confirmButtonText: 'Confirm'
-          })
+
+          this.$notify({
+            title: this.$t('message.Warning'),
+            message: this.$t('message.Pleaseconfirmwhethertoregisterornot'),
+            type: 'warning'
+          });
         }
       })
     },
     toReset () {
       this.$store.state.show_login = false
       this.$store.state.show_verify = true
+      this.content = this.$t('message.Send');
     },
     toSignUp () {
       this.$store.state.show_login = false
@@ -123,9 +135,12 @@ export default {
           this.$store.commit('userUpdate', res.data)
           this.$store.state.show_login = false
         } else {
-          this.$alert('Password or email input error', 'Warning', {
-            confirmButtonText: 'Confirm'
-          })
+
+          this.$notify({
+            title: this.$t('message.Warning'),
+            message: this.$t('message.Passwordoremailinputerror'),
+            type: 'warning'
+          });
         }
       })
     },
@@ -151,9 +166,12 @@ export default {
           this.$store.commit('userUpdate', res.data)
           this.$store.state.show_login = false
         } else {
-          this.$alert('Password or email input error', 'Warning', {
-            confirmButtonText: 'Confirm'
-          })
+
+          this.$notify({
+            title: this.$t('message.Warning'),
+            message: this.$t('message.Passwordoremailinputerror'),
+            type: 'warning'
+          });
         }
       })
     },
@@ -165,10 +183,11 @@ export default {
         encrypted_password: ''
       }
       this.$refs.phoneInput.number = ''
+      this.content = this.$t('message.Send');
     },
     cut () {
       window.clearInterval(this.clock)
-      this.content = 'Send'
+      this.content = this.$t('message.Send')
       this.canClick = true
       this.totalTime = 60
     },
@@ -178,7 +197,7 @@ export default {
         number: '',
         encrypted_password: ''
       }
-      this.content = 'Send'
+      this.content = this.$t('message.Send')
       this.canClick = true
       this.totalTime = 60
       window.clearInterval(this.clock)

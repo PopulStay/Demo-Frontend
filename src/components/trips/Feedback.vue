@@ -3,18 +3,18 @@
     <div class="content" v-show="!success">
       <ul class="Feedback">
         <li class="select-wrap">
-          <div class="title">What’s your feedback about?</div>
+          <div class="title">{{$t('message.Whatsyourfeedbackabout')}}</div>
           <el-select v-model="value11" placeholder="Please select one reason">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"  class="Feedback-select">
             </el-option>
           </el-select>
         </li>
         <li>
-          <div class="title">Tell us a little more…</div>
+          <div class="title">{{$t('message.Tellusalittlemore')}}</div>
           <textarea cols="30" rows="10"></textarea>
         </li>
         <li>
-          <div class="title">Add photos</div>
+          <div class="title">{{$t('message.Addphotos')}}</div>
           <el-upload
             class="avatar-uploader"
             action=""
@@ -24,13 +24,14 @@
           </el-upload>
         </li>
       </ul>
-      <div class="r-button button" @click="success = true">Submit</div>
+      <div class="r-button button" @click="success = true">{{$t('message.Submit')}}</div>
     </div>
     <div class="success" v-show="success">
       <i class="icon iconfont icon-success"></i>
-      <h3>Thank you! You’ve successfully submitted.</h3>
-      <div class="r-button button" @click="success = false">Back</div>
+      <h3>{{$t('message.ThankyouYouvesuccessfullysubmitted')}}</h3>
+      <div class="r-button button" @click="success = false">{{$t('message.Back')}}</div>
     </div>
+    <p v-if="$i18n.locale != language ? onloading() : null"></p>
   </div>
 </template>
 
@@ -38,46 +39,89 @@
 export default {
   data () {
     return {
+      language: this.$i18n.locale,
       imageUrl: '',
       success: false,
       options: [{
         value: '1',
-        label: 'Please select'
+        label: this.$t('message.Pleaseselect')
       }, {
         value: '2',
-        label: 'Guest standards'
+        label: this.$t('message.Gueststandards')
       }, {
         value: '3',
-        label: 'Superguest'
+        label: this.$t('message.Superguest')
       }, {
         value: '4',
-        label: 'My account or profile'
+        label: this.$t('message.Myaccountorprofile')
       }, {
         value: '5',
-        label: 'Paying for my trip'
+        label: this.$t('message.Payingformytrip')
       }, {
         value: '6',
-        label: 'Reviews'
+        label: this.$t('message.Reviews')
       }, {
         value: '7',
-        label: 'Booking a trip'
+        label: this.$t('message.Bookingatrip')
       }, {
         value: '8',
-        label: 'Finding a place'
+        label: this.$t('message.Findingaplace')
       }, {
         value: '9',
-        label: 'Pricing'
+        label: this.$t('message.Pricing')
       }, {
         value: '10',
-        label: 'Messaging'
+        label: this.$t('message.Messaging')
       }, {
         value: '11',
-        label: 'Getting help'
+        label: this.$t('message.Gettinghelp')
       }, {
         value: '12',
-        label: 'Other'
+        label: this.$t('message.Other')
       }],
       value11: '1'
+    }
+  },
+  methods: {
+    onloading(){
+      this.language = this.$i18n.locale;
+      this.options = [{
+        value: '1',
+        label: this.$t('message.Pleaseselect')
+      }, {
+        value: '2',
+        label: this.$t('message.Gueststandards')
+      }, {
+        value: '3',
+        label: this.$t('message.Superguest')
+      }, {
+        value: '4',
+        label: this.$t('message.Myaccountorprofile')
+      }, {
+        value: '5',
+        label: this.$t('message.Payingformytrip')
+      }, {
+        value: '6',
+        label: this.$t('message.Reviews')
+      }, {
+        value: '7',
+        label: this.$t('message.Bookingatrip')
+      }, {
+        value: '8',
+        label: this.$t('message.Findingaplace')
+      }, {
+        value: '9',
+        label: this.$t('message.Pricing')
+      }, {
+        value: '10',
+        label: this.$t('message.Messaging')
+      }, {
+        value: '11',
+        label: this.$t('message.Gettinghelp')
+      }, {
+        value: '12',
+        label: this.$t('message.Other')
+      }]
     }
   }
 }

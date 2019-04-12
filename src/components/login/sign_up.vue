@@ -2,67 +2,73 @@
 <div class="sign-up-model-out">
   <el-dialog :visible.sync="$store.state.show_signup" :close-on-click-modal="true" v-loading="loading" @close="close">
       <div class="login-frame-content">
-        <p class="red-color XY-fz30 lineh36" style="margin-bottom:14px;">Sign up</p>
-        <div class="input-text">
-          <input type="text" placeholder="First name"
+        <p class="red-color XY-fz30 lineh36" style="margin-bottom:14px;">{{$t('message.Signup')}}</p>
+        <div class="input-text" v-if="$i18n.locale != 'cn'">
+          <input type="text" :placeholder="$t('message.Firstname')"
             v-model="data.first_name" @blur="bindingVerify('fname', data.first_name)"/>
         </div>
-        <p class="warning" v-show="verify.indexOf('fname') !== -1">Please enter the correct name,The name length is between 3 and 20 bits</p>
-        <!-- <p class="warning" v-show="verify.indexOf('fname') !== -1 && streng === 'length'">The password length is between 3 and 20 bits</p> -->
+        <p class="warning" v-if="$i18n.locale != 'cn'" v-show="verify.indexOf('fname') !== -1">{{$t('message.Pleaseenterthecorrectname')}}</p>
         <div class="input-text">
-          <input type="text" placeholder="Last name" v-model="data.last_name"
+          <input type="text" :placeholder="$t('message.Lastname')" v-model="data.last_name"
           @blur="bindingVerify('lname', data.last_name)">
         </div>
-        <p class="warning" v-show="verify.indexOf('lname') !== -1">Please enter the correct name,The name length is between 3 and 20 bits</p>
+        <p class="warning" v-show="verify.indexOf('lname') !== -1">{{$t('message.Pleaseenterthecorrectname')}}</p>
+
+        <div class="input-text" v-if="$i18n.locale == 'cn'">
+          <input type="text" :placeholder="$t('message.Firstname')"
+                 v-model="data.first_name" @blur="bindingVerify('fname', data.first_name)"/>
+        </div>
+        <p class="warning" v-if="$i18n.locale == 'cn'" v-show="verify.indexOf('fname') !== -1">{{$t('message.Pleaseenterthecorrectname')}}</p>
+
         <div class="input-text">
           <phoneInput v-model="data.email_address" @blur="bindingVerify('email', data.email_address)" ref="phoneInput"></phoneInput>
           <!-- <input type="text" placeholder="Email address / Mobile number" v-model="data.email_address" @blur="bindingVerify('email', data.email_address)"/> -->
         </div>
         <div class="input-text">
-          <input :type="checked ? 'text' : 'password'" placeholder="Password" v-model="data.encrypted_password" @blur="bindingVerify('password', data.encrypted_password)">
+          <input :type="checked ? 'text' : 'password'" :placeholder="$t('message.Password')" v-model="data.encrypted_password" @blur="bindingVerify('password', data.encrypted_password)">
           <div class="XY-right lineb eye" @click="checked=!checked">
             <i class="iconfont icon-view XY-fz24 red-color" v-show="checked"></i>
             <i class="iconfont icon-hide XY-fz24" v-show="!checked"></i>
           </div>
         </div>
-        <p class="warning"  v-show="verify.indexOf('password') !== -1 || streng === 'length'">Please enter your password in the format 6-20 letters, numbers, special symbols</p>
-        <p class="warning" v-show="streng === 'weak'">cryptographic strength: weak</p>
-        <p class="warning" v-show="streng === 'middle'">cryptographic strength: middle</p>
+        <p class="warning"  v-show="verify.indexOf('password') !== -1 || streng === 'length'">{{$t('message.Pleaseenteryourpasswordintheformat')}}</p>
+        <p class="warning" v-show="streng === 'weak'">{{$t('message.cryptographicstrengthweak')}}</p>
+        <p class="warning" v-show="streng === 'middle'">{{$t('message.cryptographicstrengthmiddle')}}</p>
 
         <div class="input-text">
-          <input :type="checkedC ? 'text' : 'password'" placeholder="Confirm password" v-model="data.confirm_password" @blur="confirm">
+          <input :type="checkedC ? 'text' : 'password'" :placeholder="$t('message.Confirmpassword')" v-model="data.confirm_password" @blur="confirm">
           <div class="XY-right lineb eye" @click="checkedC=!checkedC">
             <i class="iconfont icon-view XY-fz24 red-color" v-show="checkedC"></i>
             <i class="iconfont icon-hide XY-fz24" v-show="!checkedC"></i>
           </div>
         </div>
-        <p class="warning" v-show="confirm_password">Please enter the correct password</p>
-        <div class="birthday">
-          <h6>Birth date(Can't be modified)</h6>
-          <p  class="warning"  v-show="birthdate18old">To sign up, you must be 18 or older. Other people won’tsee your birthday.</p>
-          <div class="editProfile-select">
-            <el-select v-model="date.month" placeholder="Month">
-              <el-option v-for="item in list.month" :key="item" :label="item" :value="item"></el-option>
-            </el-select>
-            <el-select v-model="date.day" placeholder="Day">
-              <el-option v-for="item in list.day" :key="item" :label="item" :value="item"></el-option>
-            </el-select>
-            <el-select v-model="date.year" placeholder="Year">
-              <el-option v-for="item in list.year" :key="item" :label="item" :value="item"></el-option>
-            </el-select>
-          </div>
-        </div>
+        <p class="warning" v-show="confirm_password">{{$t('message.Pleaseenterthecorrectpassword')}}</p>
+        <!--<div class="birthday">-->
+          <!--<h6>{{$t('message.BirthdateCantbemodified')}}</h6>-->
+          <!--<p  class="warning"  v-show="birthdate18old">{{$t('message.Tosignupyoumustbe18orolder')}}</p>-->
+          <!--<div class="editProfile-select">-->
+            <!--<el-select v-model="date.month" :placeholder="$t('message.Month')" >-->
+              <!--<el-option v-for="item in list.month" :key="item" :label="item" :value="item"></el-option>-->
+            <!--</el-select>-->
+            <!--<el-select v-model="date.day" :placeholder="$t('message.Day')" >-->
+              <!--<el-option v-for="item in list.day" :key="item" :label="item" :value="item"></el-option>-->
+            <!--</el-select>-->
+            <!--<el-select v-model="date.year" :placeholder="$t('message.Year')" >-->
+              <!--<el-option v-for="item in list.year" :key="item" :label="item" :value="item"></el-option>-->
+            <!--</el-select>-->
+          <!--</div>-->
+        <!--</div>-->
         <div class="sign-up-trip">
-          <span class="XY-fz14 XY-center sign-up-span-gray">By signing up, I agree to PopulStay's </span>
-          <span class="XY-fz14 XY-center red-color sign-up-span-red XY-cursorp" @click="toTerms">Terms of Service<br />,Privacy Policy, Guest Refund Policy</span>
-          <span class="XY-fz14 XY-center sign-up-span-gray">,<br />and </span>
-          <span class="XY-fz14 XY-center red-color sign-up-span-red XY-cursorp" @click="toTerms">Host Guarantee Terms</span>
+          <span class="XY-fz14 XY-center sign-up-span-gray">{{$t('message.BysigningupIagreetoPopulStays')}}</span>
+          <span class="XY-fz14 XY-center red-color sign-up-span-red XY-cursorp" @click="toTerms">{{$t('message.TermsofService')}}<br />{{$t('message.PrivacyPolicyGuestRefundPolicy')}}</span>
+          <span class="XY-fz14 XY-center sign-up-span-gray">,<br />{{$t('message.and')}}</span>
+          <span class="XY-fz14 XY-center red-color sign-up-span-red XY-cursorp" @click="toTerms">{{$t('message.HostGuaranteeTerms')}}</span>
           <span class="XY-fz14 XY-center sign-up-span-gray">.</span>
         </div>
-        <button class="login-btn fz16 XY-colf XY-cursorp" @click="toSignUpS">Sign up</button>
+        <button class="login-btn fz16 XY-colf XY-cursorp" @click="toSignUpS">{{$t('message.Signup')}}</button>
         <div class="sign-up-trip">
-          <span class="XY-fz14 XY-center sign-up-span-b136">Already have an account? </span>
-          <span class="XY-fz14 XY-center red-color sign-up-span-red XY-cursorp" @click="toLogin">Log in</span>
+          <span class="XY-fz14 XY-center sign-up-span-b136">{{$t('message.Alreadyhaveanaccount')}}</span>
+          <span class="XY-fz14 XY-center red-color sign-up-span-red XY-cursorp" @click="toLogin">{{$t('message.Login')}}</span>
         </div>
       </div>
     <!-- </div> -->
@@ -169,7 +175,7 @@ export default {
         this.confirm_password = false
       }
 
-      if(this.verify.length === 0 && this.birthdate18old == false && this.confirm_password == false && this.$store.state.warning == ""){
+      if(this.verify.length === 0 && this.confirm_password == false && this.$store.state.warning == ""){
 
         this.$post(this.userUrl + '/user', {
           action: 'userSignUp',
@@ -179,7 +185,7 @@ export default {
             first_name: data.first_name,
             last_name: data.last_name,
             encrypted_password: sha256(data.encrypted_password),
-            birthdate: birthdate,
+            birthdate: '1990-01-30',
             invited_by: data.invited_by
           }
         }).then((res) => {
@@ -194,24 +200,31 @@ export default {
 
             if (data.email_address.indexOf('@') === -1) {
 
-              this.$alert("The phone number has been registered", 'Warning', {
-                confirmButtonText: 'Confirm'
-              })
+              this.$notify({
+                title: this.$t('message.Warning'),
+                message: this.$t('message.Thephonenumberhasbeenregistered'),
+                type: 'warning'
+              });
 
             } else {
 
-              this.$alert("The email address is already registered", 'Warning', {
-                confirmButtonText: 'Confirm'
-              })
+              this.$notify({
+                title: this.$t('message.Warning'),
+                message: this.$t('message.Theemailaddressisalreadyregistered'),
+                type: 'warning'
+              });
 
             }
 
 
 
           }else {
-            this.$alert(res.msg.message, 'Warning', {
-              confirmButtonText: 'Confirm'
-            })
+
+            this.$notify({
+              title: this.$t('message.Warning'),
+              message: res.msg.message,
+              type: 'warning'
+            });
           }
 
         })

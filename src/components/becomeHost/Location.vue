@@ -1,15 +1,15 @@
 <template>
    <div>
     <div class="becomeHost-header">
-      <div class="title">Basics</div>
-      <h3>Location</h3>
+      <div class="title">{{$t('message.Basics')}}</div>
+      <h3>{{$t('message.Location')}}</h3>
     </div>
     <div class="location">
       <ul>
         <li class="flex-wrap flex-align-center">
-          <div class="title">Country / Region</div>
+          <div class="title">{{$t('message.Country')}} / {{$t('message.Region')}}</div>
           <div>
-            <el-select v-model="$store.state.hostinfo.Countryvalue" @change="getStateList();Statevalue=''">
+            <el-select v-model="$store.state.hostinfo.Countryvalue" @change="getStateList();Statevalue=''"  :placeholder="$t('message.Select')">
               <el-option
                 v-for="(item,index) in Countryoptions"
                 :key="index"
@@ -20,9 +20,9 @@
           </div>
         </li>
         <li class="flex-wrap flex-align-center">
-          <div class="title">State / Province / Region</div>
+          <div class="title">{{$t('message.State')}} / {{$t('message.Province')}} / {{$t('message.Region')}}</div>
           <div>
-            <el-select v-model="$store.state.hostinfo.Statevalue" @change="getCityList();Cityvalue=''">
+            <el-select v-model="$store.state.hostinfo.Statevalue" @change="getCityList();Cityvalue=''" :placeholder="$t('message.Select')">
               <el-option
                 v-for="(item,index) in Stateoptions"
                 :key="index"
@@ -33,7 +33,7 @@
           </div>
         </li>
         <li class="flex-wrap flex-align-center" v-if="$store.state.hostinfo.Statevalue">
-          <div class="title">City</div>
+          <div class="title">{{$t('message.City')}}</div>
           <div>
             <el-select v-model="$store.state.hostinfo.Cityvalue" @change="$store.state.host.citycode = $store.state.hostinfo.Cityvalue">
               <el-option
@@ -46,15 +46,15 @@
           </div>
         </li>
         <li class="flex-wrap flex-align-center">
-          <div class="title">Address</div>
+          <div class="title">{{$t('message.Address')}}</div>
           <div>
-            <el-input placeholder="Street and number, P.O. box, c/o." v-model="$store.state.host.streetLineOne"></el-input>
+            <el-input :placeholder="$t('message.StreetandnumberPObox')" v-model="$store.state.host.streetLineOne"></el-input>
           </div>
         </li>
         <li class="flex-wrap flex-align-center">
           <div class="title"></div>
           <div>
-            <el-input placeholder="Apartment, suite, unit, building, floor, etc." v-model="$store.state.host.streetLineTwo"></el-input>
+            <el-input :placeholder="$t('message.Apartmentsuiteunitbuildingflooretc')" v-model="$store.state.host.streetLineTwo"></el-input>
           </div>
         </li>
         <!--<li class="flex-wrap flex-align-center">-->
@@ -66,7 +66,7 @@
       </ul>
     </div>
 
-     <button class="r-button next" :class="$store.state.host.citycode == '' || $store.state.host.streetLineOne == '' ? 'disable' : null" :disabled="$store.state.host.citycode == '' || $store.state.host.streetLineOne == ''" @click="next">Next</button>
+     <button class="r-button next" :class="$store.state.host.citycode == '' || $store.state.host.streetLineOne == '' ? 'disable' : null" :disabled="$store.state.host.citycode == '' || $store.state.host.streetLineOne == ''" @click="next">{{$t('message.Next')}}</button>
 
    </div>
 </template>

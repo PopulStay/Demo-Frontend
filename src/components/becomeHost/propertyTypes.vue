@@ -2,12 +2,12 @@
   <div>
 
     <div class="becomeHost-header">
-      <div class="title">Basics</div>
-      <h3>Property types</h3>
+      <div class="title">{{$t('message.Basics')}}</div>
+      <h3>{{$t('message.Propertytypes')}}</h3>
     </div>
 
     <div class="propertyTypes">
-      <el-select v-model="$store.state.host.category" placeholder="Please choose your  property type">
+      <el-select v-model="$store.state.host.category" :placeholder="$t('message.Pleasechooseyourpropertytype')">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -20,7 +20,7 @@
     </div>
 
     <div class="propertyTypes">
-      <el-select v-model="placeTypeName" placeholder="Please choose your  property type" @change="placeTypeSelect">
+      <el-select v-model="placeTypeName" :placeholder="$t('message.Pleasechooseyourpropertytype')" @change="placeTypeSelect">
         <el-option
           v-for="item in placeTypesList"
           :key="item.placeTypeId"
@@ -34,7 +34,7 @@
 
     <div class="propertyTypes">
 
-      <el-select v-model="propertyName" placeholder="Please choose your  property type" @change="propertyTypeSelect">
+      <el-select v-model="propertyName" :placeholder="$t('message.Pleasechooseyourpropertytype')" @change="propertyTypeSelect">
         <el-option
           v-for="item in propertyTypesList"
           v-if="placeTypeid == item.placeTypeId"
@@ -48,7 +48,10 @@
 
     </div>
 
-    <button class="r-button next" :class="$store.state.host.propertyTypeId == '' ? 'disable' : null" :disabled="$store.state.host.propertyTypeId == ''" @click="next" >Next</button>
+    <button class="r-button next" :class="$store.state.host.propertyTypeId == '' ? 'disable' : null" :disabled="$store.state.host.propertyTypeId == ''" @click="next" >{{$t('message.Next')}}</button>
+
+    <p v-if="$i18n.locale != language ? onloading() : null"></p>
+
 
   </div>
 </template>
@@ -57,17 +60,18 @@
 export default {
   data () {
     return {
+      language:'',
       options: [{
         value: 'Entire place',
-        label: 'Entire place'
+        label: this.$t('message.Entireplace')
       },
       {
         value: 'Private room',
-        label: 'Private room'
+        label: this.$t('message.Privateroom')
       },
       {
         value: 'Share room',
-        label: 'Share room'
+        label: this.$t('message.Shareroom')
       }],
       value: '',
       propertyTypesList:[],
@@ -94,6 +98,21 @@ export default {
     }
 },
   methods: {
+    onloading(){
+      this.language = this.$i18n.locale;
+      this.options = [{
+          value: 'Entire place',
+          label: this.$t('message.Entireplace')
+        },
+        {
+          value: 'Private room',
+          label: this.$t('message.Privateroom')
+        },
+        {
+          value: 'Share room',
+          label: this.$t('message.Shareroom')
+        }]
+    },
     gettempPlace(id){
       this.$get(this.partialplaceUrl + '/temp/place?tempPlaceId='+id).then((res) => {
         if (res.code === 200) {

@@ -3,64 +3,64 @@
     <e-header></e-header>
     <div class="middle flex-wrap">
       <div class="left">
-        <h2>Become a host</h2>
+        <h2>{{$t('message.Becomeahost')}}</h2>
         <ul>
-          <li class="cursordefault"><b>Basics</b></li>
+          <li class="cursordefault"><b>{{$t('message.Basics')}}</b></li>
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'propertyTypes' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.propertyTypes == 'propertyTypes' ? route('propertyTypes') : null">
-            Property types<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.propertyTypes == 'propertyTypes'"></i>
+            {{$t('message.Propertytypes')}}<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.propertyTypes == 'propertyTypes'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'Rooms' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.Rooms == 'Rooms' ? route('Rooms') : null">
-            Rooms<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Rooms == 'Rooms'"></i>
+            {{$t('message.Rooms')}}<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Rooms == 'Rooms'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'Location' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.Location == 'Location' ? route('Location') : null">
-            Location<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Location == 'Location'"></i>
+            {{$t('message.Location')}}<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Location == 'Location'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'Amenities' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.Amenities == 'Amenities' ? route('Amenities') : null">
-            Amenities<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Amenities == 'Amenities'"></i>
+            {{$t('message.Amenities')}}<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Amenities == 'Amenities'"></i>
           </li>
         </ul>
         <ul>
-          <li class="cursordefault"><b>Space</b></li>
+          <li class="cursordefault"><b>{{$t('message.Space')}}</b></li>
 
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'space' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.space == 'space' ? route('space') : null">
-            About your space<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.space == 'space'"></i>
+            {{$t('message.Aboutyourspace')}}<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.space == 'space'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'Requirements' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.Requirements == 'Requirements' ? route('Requirements') : null">
-            Requirements<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"></i>
+            {{$t('message.Requirements')}}<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Requirements == 'Requirements'"></i>
           </li>
 
         </ul>
         <ul>
-          <li class="cursordefault"><b>Get ready</b></li>
+          <li class="cursordefault"><b>{{$t('message.Getready')}}</b></li>
 
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'Floating' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.Floating == 'Floating' ? route('Floating') : null">
-            Floating price<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Floating == 'Floating'"></i>
+            {{$t('message.Floatingprice')}}<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Floating == 'Floating'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'ServiceFee' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.ServiceFee == 'ServiceFee' ? route('ServiceFee') : null">
-            Service Fee<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.ServiceFee == 'ServiceFee'"></i>
+            {{$t('message.Servicefee')}}<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.ServiceFee == 'ServiceFee'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'reservation' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' && $store.state.becomehostTitle.reservation == 'reservation' ? route('reservation') : null">
-            Receive notification<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.reservation == 'reservation'"></i>
+            {{$t('message.Receivenotification')}}<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.reservation == 'reservation'"></i>
           </li>
 
           <li class="flex-wrap flex-center-between "
               :class="this.$route.name == 'Submit' ? 'active' : ''" @click="$store.state.becomehostTitle.Submit != 'Submit' ? route('Submit') : null">
-            Review & Submit<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Submit == 'Submit'"></i>
+            {{$t('message.Review')}} & {{$t('message.Submit')}}<i class="icon iconfont icon-CHECKMARK active" v-if="$store.state.becomehostTitle.Submit == 'Submit'"></i>
           </li>
 
         </ul>
@@ -132,7 +132,7 @@ export default {
           step: false
         },
         {
-          title: 'Receive notification',
+          title: 'Reservation time',
           url: 'reservation',
           step: false
         },
@@ -147,9 +147,7 @@ export default {
     }
   },
   created () {
-    console.log(this.$store.state.becomehostTitle.status)
-
-    this.$store.state.host.hostId = JSON.parse(localStorage.getItem('user')).user_id
+    this.$store.state.host.hostId = this.$store.state.userInfo.user_id
 
     this.Verify()
   },
@@ -167,7 +165,7 @@ export default {
       let user = this.$store.state.userInfo;
 
       if(user.user_identity_confirmation.document_verified != 'true' && user.user_identity_confirmation.email_verified != 'true' && user.user_identity_confirmation.phone_verified != 'true' ){
-        this.$alert('Please complete the certification', 'Certification', {
+        this.$alert(this.$t('message.Youwillneedtoverify'), this.$t('message.Certification'), {
           confirmButtonText: 'OK',
           showClose:false,
           center: true,
@@ -188,7 +186,6 @@ export default {
             hostinfo:this.$store.state.hostinfo,
             becomehostTitle:this.$store.state.becomehostTitle
           }).then((res) => {
-            console.log(res)
             if (res.code === 200) {
               this.clearhost()
             }
@@ -302,8 +299,7 @@ export default {
 <style lang="scss" scoped>
 $red-color: #F4436C;
 .middle {
-  width: 1500px;
-  margin: 0 auto 300px;
+  margin: 0 200px 300px;
   padding: 90px 0;
   .left {
     flex: 1;
@@ -354,19 +350,18 @@ $red-color: #F4436C;
     }
   }
 }
-@media only screen and (min-width: 1000px) and (max-width: 1500px) {
+@media only screen and (max-width: 1500px) {
   .middle {
-    padding: 90px 30px;
-    width: auto;
+    padding: 90px 0px;
+    margin: 0 100px 300px;
     .right {
       padding-left: 5%;
+      flex: 2;
     }
   }
 }
-@media only screen and (min-width: 800px) and (max-width: 1000px) {
+@media only screen and (max-width: 1000px) {
   .middle {
-    padding: 90px 10px;
-    width: auto;
     .left {
       li {
         flex-wrap: wrap;
@@ -380,8 +375,8 @@ $red-color: #F4436C;
 @media only screen and (max-width: 800px) {
   .middle {
     display: block;
-    padding: 30px 20px;
-    width: auto;
+    margin: 0 20px;
+    padding: 30px 0px;
     .left {
       padding: 20px 0;
       h2 {

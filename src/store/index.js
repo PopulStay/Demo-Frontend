@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import vuex from 'vuex'
+import Cookies from 'js-cookie';
 Vue.use(vuex)
 
 export default new vuex.Store({
@@ -18,7 +19,7 @@ export default new vuex.Store({
     screen: false,
     warningShow: false,
     show_state: '',
-    userInfo: JSON.parse(localStorage.getItem('user')),
+    userInfo: JSON.parse(Cookies.get('user') ? Cookies.get('user') : null),
     resetNumber: '',
     hintText: 'Operation failed, please try again',
     hintShow: false,
@@ -51,6 +52,7 @@ export default new vuex.Store({
         code: '+65'
       }
     ],
+    inputType:'phone',
     introduceState: false,
     host: {
       hostId:'',
@@ -121,6 +123,12 @@ export default new vuex.Store({
     becomehostPlaceID:'',
     becomehosttempPlaceId:'',
     becomehosttempStatus:false,
+    Live_Chat_userid:{
+      user_id:'',
+      first_name:'',
+      last_name:'',
+      image_url:''
+    },
   },
   getters: {
     introduceState: state => state.currentMenus
@@ -128,7 +136,7 @@ export default new vuex.Store({
   mutations: {
     userUpdate (state, value) {
       state.userInfo = value
-      localStorage.setItem('user', JSON.stringify(value))
+      Cookies.set('user', JSON.stringify(value));
     },
     hint (state, value) {
       if (value.text && value.text !== '') state.hintText = value.text

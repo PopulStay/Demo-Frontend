@@ -2,33 +2,33 @@
   <div>
     <e-header></e-header>
     <!-- price.show = false,rating.show = false,guests.show = false,more.show = false -->
-    <div class="middle search">
+    <div class="middle search" v-loading.fullscreen.lock="searchLoading">
       <div class="m-header flex-wrap">
         <div class="item select-time" :class="startTime != '' ? 'redborder' :null">
           <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions">
           </el-date-picker>
           <div class="startTime text" v-if="startTime != ''">
-            <p>{{startTextTime[2]}} {{startTextTime[1]}} {{startTextTime[3]}} </p>
-            <span> {{startTextTime[0]}}</span>
+            <p>{{getMoment(timeStart)}} </p>
+            <span> {{getWeek(timeStart)}}</span>
           </div>
           <div class="startTime text text1" v-if="startTime == ''">
-            <span>Check in</span>
+            <span>{{$t('message.Checkin')}}</span>
           </div>
         </div>
         <div class="item select-time" :class="endTime != '' ? 'redborder' :null">
           <el-date-picker v-model="time" type="daterange" range-separator="" @change="selectTime" :picker-options="pickerOptions"></el-date-picker>
           <div class="endTime text" v-if="endTime != ''">
-            <p>{{endTextTime[2]}} {{endTextTime[1]}} {{endTextTime[3]}}</p>
-            <span>{{endTextTime[0]}}</span>
+            <p>{{getMoment(timeEnd)}}</p>
+            <span>{{getWeek(timeEnd)}}</span>
           </div>
           <div class="endTime text text1" v-if="endTime == ''">
-            <span>Check out</span>
+            <span>{{$t('message.Checkout')}}</span>
           </div>
           <i v-if="endTime != ''" class="el-icon-error clonetime" @click="time='';startTime='';endTime='';search();"></i>
         </div>
 
         <el-popover placement="bottom-start" width="300" trigger="manual" v-model="price.show" popper-class="s-popover">
-          <div slot="reference" class="item" :class="this.price.value[0] != 0 || this.price.value[1] != 5000 ? 'redborder' :null" @click="price.show = !price.show,rating.show = false,guests.show = false,more.show = false">{{price.text === '' ? 'Price per night' : price.text}}</div>
+          <div slot="reference" class="item" :class="this.price.value[0] != 0 || this.price.value[1] != 5000 ? 'redborder' :null" @click="price.show = !price.show,rating.show = false,guests.show = false,more.show = false">{{price.text === '' ? $t('message.Pricepernight') : price.text}}</div>
           <div class="popover">
              <el-slider
               v-model="price.value"
@@ -37,14 +37,14 @@
             </el-slider>
             <div class="price flex-wrap">
               <div class="flex-1" style="margin-right: 10px;">
-                <p>Min</p>
+                <p>{{$t('message.Min')}}</p>
                 <div class="price-text flex-wrap flex-center-between">
                   <span>PPS</span>
                   <span>{{price.value[0]}}</span>
                 </div>
               </div>
               <div class="flex-1" style="margin-left: 10px;">
-                 <p>Max</p>
+                 <p>{{$t('message.Max')}}</p>
                  <div class="price-text flex-wrap flex-center-between">
                   <span>PPS</span>
                   <span>{{price.value[1]}}</span>
@@ -52,14 +52,14 @@
               </div>
             </div>
             <div class="popover-button flex-wrap flex-center-between">
-              <span @click="prices(price,'hide')">Clear</span>
-              <span class="red"  @click="prices(price)">Apply</span>
+              <span @click="prices(price,'hide')">{{$t('message.Clear')}}</span>
+              <span class="red"  @click="prices(price)">{{$t('message.Apply')}}</span>
             </div>
           </div>
         </el-popover>
 
         <el-popover placement="bottom-start" width="300" trigger="manual" v-model="rating.show" popper-class="s-popover">
-          <div slot="reference" class="item" :class="rating.level != 0 ? 'redborder' :null" @click="rating.show = !rating.show,price.show = false,guests.show = more.show = false">{{rating.text === '' ? 'Star rating' : rating.text}}</div>
+          <div slot="reference" class="item" :class="rating.level != 0 ? 'redborder' :null" @click="rating.show = !rating.show,price.show = false,guests.show = more.show = false">{{rating.text === '' ? $t('message.Starrating') : rating.text}}</div>
           <div class="popover">
             <ul class="level flex-wrap flex-center">
               <li class="flex-1" :class="rating.level === 1 ? 'active' : ''" @click="handlevel(1)">1</li>
@@ -70,8 +70,8 @@
               <li class="flex-1" :class="rating.level === 5 ? 'active' : ''" @click="handlevel(5)">5</li>
             </ul>
             <div class="popover-button flex-wrap flex-center-between">
-              <span @click="ratings('','hide')">Clear</span>
-              <span class="red" @click="ratings(rating)">Apply</span>
+              <span @click="ratings('','hide')">{{$t('message.Clear')}}</span>
+              <span class="red" @click="ratings(rating)">{{$t('message.Apply')}}</span>
             </div>
           </div>
         </el-popover>
@@ -83,42 +83,42 @@
           <div class="popover">
             <ul class="rooms guests search-guests">
               <li class="flex-wrap flex-center-between">
-                <span class="r-title">Adults</span>
+                <span class="r-title">{{$t('message.Adults')}}</span>
                 <el-input-number v-model="guests.adults" :min="1" :max="16"></el-input-number>
               </li>
               <li class="flex-wrap flex-center-between">
                 <span class="r-title">
-                  Children
-                  <p>Ages 2-12</p>
+                  {{$t('message.Children')}}
+                  <p>{{$t('message.Ages212')}}</p>
                 </span>
                 <el-input-number v-model="guests.children" :min="0" :max="16"></el-input-number>
               </li>
               <li class="flex-wrap flex-center-between">
-                <span class="r-title">Infants
-                  <p>Under 2</p>
+                <span class="r-title">{{$t('message.Infants')}}
+                  <p>{{$t('message.Under2')}}</p>
                 </span>
                 <el-input-number v-model="guests.infants" :min="0" :max="10"></el-input-number>
               </li>
             </ul>
             <div class="popover-button flex-wrap flex-center-between">
-              <span @click="guestss(guests, 'hide')">Clear</span>
-              <span class="red" @click="guestss(guests)">Apply</span>
+              <span @click="guestss(guests, 'hide')">{{$t('message.Clear')}}</span>
+              <span class="red" @click="guestss(guests)">{{$t('message.Apply')}}</span>
             </div>
           </div>
         </el-popover>
 
         <el-popover placement="bottom-end" width="675" trigger="manual" v-model="more.show" popper-class="s-popover s-select">
-          <div slot="reference" class="item filter" :class="this.more.home.length != 0 || this.more.beds != 0 || this.more.bedrooms != 0 || this.more.bathrooms != 0 || this.more.Amenities.length != 0 || this.more.safeAmenities.length != 0 || this.more.spaceids.length != 0 ? 'redborder' :null" @click="more.show = !more.show,guests.show = false,rating.show = false,price.show = false">More filters</div>
+          <div slot="reference" class="item filter" :class="this.more.home.length != 0 || this.more.beds != 0 || this.more.bedrooms != 0 || this.more.bathrooms != 0 || this.more.Amenities.length != 0 || this.more.safeAmenities.length != 0 || this.more.spaceids.length != 0 ? 'redborder' :null" @click="more.show = !more.show,guests.show = false,rating.show = false,price.show = false">{{$t('message.Morefilters')}}</div>
           <div class="popover filters">
             <div class="item flex-wrap">
-              <div class="title">Home type</div>
+              <div class="title">{{$t('message.Hometype')}}</div>
               <div class="content">
                 <el-checkbox-group v-model="more.home" @change="changeTap">
                   <!-- more.home.length !== 0 ? more.home = [more.home[more.home.length - 1]] : '' -->
                 <ul class="flex-wrap flex-wrap" style="width: 80%">
-                  <li><el-checkbox label="0">Entire place</el-checkbox></li>
-                  <li><el-checkbox label="1">Private room</el-checkbox></li>
-                  <li><el-checkbox label="2">Share room</el-checkbox></li>
+                  <li><el-checkbox label="0">{{$t('message.Entireplace')}}</el-checkbox></li>
+                  <li><el-checkbox label="1">{{$t('message.Privateroom')}}</el-checkbox></li>
+                  <li><el-checkbox label="2">{{$t('message.Shareroom')}}</el-checkbox></li>
                 </ul>
                 </el-checkbox-group>
               </div>
@@ -142,25 +142,25 @@
               </div>
             </div> -->
             <div class="item flex-wrap" style="margin-bottom: 8px">
-              <div class="title flex-wrap flex-align-center">Beds</div>
+              <div class="title flex-wrap flex-align-center">{{$t('message.Beds')}}</div>
               <div class="content rooms" style="padding-left: 20px;">
                 <el-input-number v-model="more.beds" :min="0" :max="10"></el-input-number>
               </div>
             </div>
             <div class="item flex-wrap" style="margin-bottom: 8px">
-              <div class="title flex-wrap flex-align-center">Bedrooms</div>
+              <div class="title flex-wrap flex-align-center">{{$t('message.Bedrooms')}}</div>
               <div class="content rooms" style="padding-left: 20px;">
                 <el-input-number v-model="more.bedrooms" :min="0" :max="10"></el-input-number>
               </div>
             </div>
             <div class="item flex-wrap">
-              <div class="title flex-wrap flex-align-center">Bathrooms</div>
+              <div class="title flex-wrap flex-align-center">{{$t('message.Bathrooms')}}</div>
               <div class="content rooms" style="padding-left: 20px;">
                 <el-input-number v-model="more.bathrooms" :min="0" :max="10"></el-input-number>
               </div>
             </div>
             <div class="item flex-wrap">
-              <div class="title">Amenities</div>
+              <div class="title">{{$t('message.Amenities')}}</div>
               <div class="content flex-wrap amenities">
                 <ul class="flex-1">
                   <el-checkbox-group v-model="more.Amenities" style="top:200px !important;" @change="changeAment">
@@ -187,7 +187,7 @@
               </div>
             </div>
             <div class="item flex-wrap">
-              <div class="title">safeAmenity</div>
+              <div class="title">{{$t('message.SafeAmenity')}}</div>
               <div class="content flex-wrap amenities">
                 <ul class="flex-1">
                   <el-checkbox-group v-model="more.safeAmenities" style="top:200px !important;" @change="changeSafeAment">
@@ -197,7 +197,7 @@
               </div>
             </div>
             <div class="item flex-wrap">
-              <div class="title">spaceI</div>
+              <div class="title">{{$t('message.Spaces')}}</div>
               <div class="content flex-wrap amenities">
                 <ul class="flex-1">
                   <el-checkbox-group v-model="more.spaceids" style="top:200px !important;" @change="changeSpace">
@@ -207,16 +207,16 @@
               </div>
             </div>
             <div class="popover-button flex-wrap flex-center-between">
-              <span @click="moreFilters(more, 'hide') ">Clear</span>
-              <span class="red" @click="moreFilters(more)">Apply</span>
+              <span @click="moreFilters(more, 'hide') ">{{$t('message.Clear')}}</span>
+              <span class="red" @click="moreFilters(more)">{{$t('message.Apply')}}</span>
             </div>
           </div>
         </el-popover>
       </div>
-      <div class="m-content flex-wrap" v-if="isList === true">
+      <div class="m-content flex-wrap" v-if="isList != true">
         <div class="left">
 
-          <div class="listitem left"  v-for="(item, index) in HouseList">
+          <div class="listitem left"  v-for="(item, index) in HouseList" @mouseover="HouseItem(item)" @mouseout="activeLAT = 0; activeLNG = 0">
             <House-Item :key="index" :houselist="item"></House-Item>
           </div>
 
@@ -244,14 +244,14 @@
               <!--</li>-->
             <!--</ul>-->
         <!--</div>-->
-        <div class="right flex-1">
+        <div class="right flex-1" :class="AmapFixed ? 'isFixed' : null" id="Amap">
           <el-amap vid="amapDemo" :zoom="zoom" :center="center" class="amap">
-            <el-amap-marker v-for="(item, index) in HouseList" :key="index"
+            <el-amap-marker v-for="(item, index) in HouseList" :key="index" :class="activeLAT == item.lat || activeLNG == item.lng ? 'activeZindex' : null"
             :position="[item.lng, item.lat]"
             :clickable="true"
             animation="AMAP_ANIMATION_DROP">
               <el-popover placement="top" width="230" trigger="click" popper-class="map-popover">
-                <div slot="reference" class="amap-overlay-text-container">
+                <div slot="reference" class="amap-overlay-text-container" :class="activeLAT == item.lat || activeLNG == item.lng ? 'active' : null">
                   <div>PPS {{item.prices.length !== 0 ? item.prices[0].bestPrice : ''}} </div>
                 </div>
                 <div class="map" @click="toListing(item.placeId)">
@@ -272,8 +272,8 @@
         </div>
       </div>
       <div class="m-content nodata" v-else>
-        <p class="nodata-title">no result</p>
-        <p class="nodata-content">To see more results, try adjusting your search criteria. You can change the check-in date and delete the filter criteria.</p>
+        <p class="nodata-title">{{$t('message.noresult')}}</p>
+        <p class="nodata-content">{{$t('message.Toseemoreresults')}}</p>
         <!-- <button class="nodata-btn" @click="clear()">Delete all filter conditions</button> -->
       </div>
     </div>
@@ -287,6 +287,7 @@ import footer from '../common/footer'
 import formatdata from '../../utils/formatdata.js'
 import HouseItem from '@/components/common/HouseItem';
 import Cookies from 'js-cookie';
+var moment = require('moment')
 
 export default {
   components: {
@@ -297,9 +298,11 @@ export default {
   data () {
     return {
       list: [],
+      searchLoading:true,
       HouseList: [],
       listName: [],
       time: '',
+      cityCode:"",
       startTextTime: [],
       endTextTime: [],
       isList: true,
@@ -347,31 +350,54 @@ export default {
       pageSize:9,
       pageTotal:0,
       startTime:'',
-      endTime:''
+      endTime:'',
+      activeLAT:"",
+      activeLNG:"",
+      AmapFixed:false,
     }
   },
   created () {
-    let data = JSON.parse(Cookies.get('search'))
-    if(JSON.parse(data.time)[0] != ''){
+    if(Cookies.get('search')){
+      let data = JSON.parse(Cookies.get('search'))
 
-      this.startTextTime = JSON.parse(data.time)[0]
-      this.endTextTime = JSON.parse(data.time)[1]
-      this.startTime = data.startTime
-      this.endTime = data.endTime
+      if(data.time){
+        if(JSON.parse(data.time)[0] != ''){
+          this.timeStart = JSON.parse(data.time)[0]
+          this.timeEnd = JSON.parse(data.time)[1]
+          this.startTime = data.startTime
+          this.endTime = data.endTime
+        }
+      }
+      if(data.guests){
+        let guests = JSON.parse(data.guests)
+        this.guests.adults = guests.adults
+        this.guests.children = guests.children
+        this.guests.infants = guests.infants
+      }
+
+      this.cityCode = data.cityCode
 
     }
-    let guests = JSON.parse(data.guests)
-    this.guests.adults = guests.adults
-    this.guests.children = guests.children
-    this.guests.infants = guests.infants
-    this.cityCode = data.cityCode
+
+
     // 搜索请求
     this.search()
     this.getAmenityids()
     this.getSafe_amenities()
     this.getSpaces()
   },
+  mounted () {
+    window.addEventListener('scroll', this.handleScroll) // 滚动监听
+  },
+  destroyed () {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
   methods: {
+    handleScroll () {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      let offsetTop = document.querySelector('#Amap').offsetTop
+      this.AmapFixed = scrollTop > (offsetTop - 100)
+    },
     changeTap (e) {
       if (this.more.home.length !== 0) {
         this.more.home = [this.more.home[this.more.home.length - 1]]
@@ -404,8 +430,8 @@ export default {
     selectTime (e) {
       this.timeStart = e[0]
       this.timeEnd = e[1]
-      this.startTextTime = String(this.timeStart).split(' ')
-      this.endTextTime = String(this.timeEnd).split(' ')
+      // this.startTextTime = String(this.timeStart).split(' ')
+      // this.endTextTime = String(this.timeEnd).split(' ')
       this.startTime = formatdata.timestampToTime(Date.parse(this.timeStart))
       this.endTime = formatdata.timestampToTime(Date.parse(this.timeEnd))
       this.search()
@@ -413,25 +439,9 @@ export default {
     handlevel (val) {
       this.rating.level = val
     },
-    // hideTheShow () {
-    //   let guests = this.guests.show
-    //   let price = this.price.show
-    //   let rating = this.rating.show
-    //   let more = this.more.show
-    //   console.log('sss')
-    //   if (guests || price || rating || more) {
-    //     this.guests.show = false
-    //     this.price.show = false
-    //     this.rating.show = false
-    //     this.more.show = false
-    //   }
-    // },
-    ClearFilter () {
-
-    },
     // 搜索请求
     search () {
-      this.isList = false
+      this.searchLoading = true
 
       var url = "?pageNo="+this.pageNo+"&pageSize="+this.pageSize;
 
@@ -492,26 +502,27 @@ export default {
       }
 
       this.$get(this.placeUrl + '/places'+url).then((res) => {
+        this.searchLoading = false
+
         if (res.code === 200) {
 
-          res.data.dataList.forEach((val, key) => {
-            if (val.review.length === 0) {
-              val.review = 5
-            } else if (val.review.length === 1) {
-              val.review = val.review[0]
-            } else {
-              val.review = 5
-            }
-          })
-
-          this.HouseList = res.data.dataList;
-          this.center = [res.data.dataList[0].lng, res.data.dataList[0].lat]
-          this.pageTotal = res.data.count
-
-          if (res.data.dataList.length > 0) {
+          if (res.data.count == 0) {
             this.isList = true
           } else {
             this.isList = false
+            res.data.dataList.forEach((val, key) => {
+              if (val.review.length === 0) {
+                val.review = 5
+              } else if (val.review.length === 1) {
+                val.review = val.review[0]
+              } else {
+                val.review = 5
+              }
+            })
+
+            this.HouseList = res.data.dataList;
+            this.center = [res.data.dataList[0].lng, res.data.dataList[0].lat]
+            this.pageTotal = res.data.count
           }
 
         }
@@ -593,11 +604,8 @@ export default {
     },
     toListing (id) {
       this.$router.push({path: 'listing/lstHome', query: {id: id}})
-      console.log(id)
     },
     getAmenityids () {
-      // let formdata = {
-      // }
       this.$get(this.placeUrl + '/place/amenities').then((res) => {
         if (res.code === 200) {
           this.amenitiesList = res.data.dataList
@@ -605,15 +613,11 @@ export default {
       })
     },
     getSafe_amenities () {
-      // let formdata = {
-      // }
       this.$get(this.placeUrl + '/place/safe_amenities').then((res) => {
         this.safeAmenitiesList = res.data.dataList
       })
     },
     getSpaces () {
-      // let formdata = {
-      // }
       this.$get(this.placeUrl + '/place/spaces').then((res) => {
         this.spaceids = res.data.dataList
       })
@@ -648,6 +652,24 @@ export default {
     handleCurrentChange(val) {
       this.pageNo = val;
       this.search()
+    },
+    HouseItem(item){
+      this.activeLAT = item.lat
+      this.activeLNG = item.lng
+    },
+    getMoment(time){
+      if(this.$i18n.locale == 'cn'){
+        return moment(time).locale("zh-cn").format('LL')
+      }else{
+        return moment(time).locale("en-au").format('DD MMM YYYY')
+      }
+    },
+    getWeek(time){
+      if(this.$i18n.locale == 'cn'){
+        return moment(time).locale("zh-cn").format('dddd')
+      }else{
+        return moment(time).locale("en-au").format('dddd')
+      }
     }
   }
 }
@@ -659,8 +681,8 @@ $red-color: #F4436C;
   border: 1px solid $red-color !important;
 }
 .middle {
-  width: 1500px;
-  margin: 0 auto;
+  min-height: 500px;
+  margin: 0 200px;
   // z-index: 10;
   // position: relative;
   .m-header {
@@ -718,15 +740,19 @@ $red-color: #F4436C;
   }
   .nodata{
     border-top: 1px solid #eee;
+
     .nodata-title{
       font-size: 30px;
       margin-top: 20px;
+      color: $red-color;
     }
+
     .nodata-content{
       padding: 5px 0 20px 0;
       max-width: 350px;
       box-sizing: border-box;
     }
+
     .nodata-btn{
       background: #fff;
       border: 1px solid #E6E7E8;
@@ -741,21 +767,50 @@ $red-color: #F4436C;
       margin-bottom: 20px;
       cursor: pointer;
     }
+
   }
   .left {
-    flex: 1.5;
+    width: 60%;
+    margin-left: -10px;
 
     .listitem{
       width:33.33%;
       display: inline-block;
       vertical-align: top;
       margin: 20px 0;
+      .content{
+        margin: 0 10px 10px;
+      }
+
+      @media only screen and (max-width: 1400px) {
+        width:50%;
+      }
+
+      @media only screen and (max-width: 1200px) {
+        width:33.33%;
+      }
+
+      @media only screen and (max-width: 900px) {
+        width:50%;
+      }
+
+      @media only screen and (max-width: 640px) {
+        width:100%;
+        margin: 0 0 20px;
+      }
     }
+
   }
   .right {
-    max-height: 900px;
+    width: 30%;
     padding-top: 20px;
-    box-sizing: border-box
+    box-sizing: border-box;
+
+  }
+  .isFixed{
+    position: fixed;
+    right: 200px;
+    top:100px;
   }
 }
 .popover {
@@ -846,12 +901,19 @@ $red-color: #F4436C;
 }
 @media only screen and (max-width: 1500px) {
   .middle {
-    width: auto;
-    padding: 0 30px
+    margin: 0 100px;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  .middle{
+    .flex-wrap.m-content{
+      display: block;
+    }
   }
 }
 @media only screen and (max-width: 1000px) {
   .middle {
+
     .m-header {
 
       flex-wrap: wrap;
@@ -863,8 +925,9 @@ $red-color: #F4436C;
 }
 @media only screen and (max-width: 760px) {
   .middle {
-    padding: 0 10px;
-   .m-content {
+    margin: 0 20px;
+
+    .m-content {
      display: block;
      .right {
        width: 100%;
@@ -897,8 +960,14 @@ $red-color: #F4436C;
 </style>
 
 <style lang="scss">
+  .el-vue-amap-container,
+  .el-vue-amap-container .el-vue-amap{
+    min-height: 490px;
+    max-height: 900px;
+  }
 .el-pagination{
   text-align: center;
+  margin: 30px 0;
 }
 .select-time .el-input__inner {
   height: 46px;
@@ -930,16 +999,27 @@ $red-color: #F4436C;
     display: block;
     margin-left:20px;
   }
+  .el-pagination.is-background .btn-next, .el-pagination.is-background .btn-prev, .el-pagination.is-background .el-pager li{
+    min-width: 25px;
+  }
 }
 .amap-overlay-text-container {
   border-radius: 8px;
   padding: 5px 8px;
   font-family: Roboto-Regular;
-  background: #F4436C !important;
+  background: #fff;
   font-size: 16px;
-  color: white;
+  color: #f4436c;
   box-shadow: 0 2px 4px 0 var(--color-map-price-marker-shadow, rgba(0,0,0,0.05)) !important;
   position: relative;
+
+  &.active{
+    background: #f4436c !important;
+    color: white;
+  }
+}
+.activeZindex{
+  z-index: 9999!important;
 }
 .map-popover {
   padding: 0;

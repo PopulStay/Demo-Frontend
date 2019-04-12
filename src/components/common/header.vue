@@ -10,44 +10,45 @@
               <i class="icon iconfont icon-location3dingwei3"></i>
               <span>{{item.fullAddress}}</span>
             </li>
-            <li v-show="!searchList.length"><span>There is no data</span></li>
+            <li v-show="!searchList.length"><span>{{$t('message.Thereisnodata')}}</span></li>
             <!-- <li class="flex-wrap flex-align-center"><i class="icon iconfont icon-185038homehousestreamline"></i><span>Homes in Tokyo, Japan</span></li>
             <li class="flex-wrap flex-align-center"><i class="icon iconfont icon-location3dingwei3"></i><span>Tokyo Station, Tokyo</span></li>
             <li class="flex-wrap flex-align-center"><i class="icon iconfont icon-location3dingwei3"></i><span>TokyoShinjuku-ku</span></li> -->
           </ul>
           <div class="input-wrap flex-wrap flex-align-center" v-show="searchBarFixed" slot="reference" offset="20">
             <i class="icon iconfont icon-search"></i>
-            <input type="text" autocomplete="off" placeholder="Enter a destination or keyword" @input="input" v-model="searchValue">
+            <input type="text" autocomplete="off"  :placeholder="$t('message.Enteradestinationorkeyword')" @input="input" v-model="searchValue">
           </div>
         </el-popover>
       </div>
       <!-- 未登录导航 -->
       <ul class="flex-wrap flex-align-center flex-1 flex-content-end" v-if="userData == null" :class="{ 'block' : show }" >
-        <li class="nav-item"><router-link to="/becomeHost/propertyTypes">Become a host</router-link></li>
-        <li class="nav-item"><router-link to="/trips/tripsList">Trips</router-link></li>
-        <li class="nav-item"><router-link to="/trips/messages">Messages</router-link></li>
-        <li class="nav-item"><router-link to="/trips/walletHome">Wallet</router-link></li>
-        <li class="red"><a href="javascript:void(0)" @click="$store.state.show_signup = true">Sign up</a></li>
-        <li class="red"><a href="javascript:void(0)" @click="$store.state.show_login = true">Log in</a></li>
+        <li class="nav-item"><router-link to="/becomeHost/propertyTypes">{{$t('message.Starthosting')}}</router-link></li>
+        <li class="nav-item"><router-link to="/trips/tripsList">{{$t('message.Trips')}}</router-link></li>
+        <!--<li class="nav-item"><router-link to="/trips/messages">{{$t('message.Messages')}}</router-link></li>-->
+        <li class="nav-item"><router-link to="/trips/walletHome">{{$t('message.Wallet')}}</router-link></li>
+        <li class="red"><a href="javascript:void(0)" @click="$store.state.show_signup = true">{{$t('message.Signup')}}</a></li>
+        <li class="red"><a href="javascript:void(0)" @click="$store.state.show_login = true">{{$t('message.Login')}}</a></li>
       </ul>
       <!-- 登录后导航 -->
       <ul class="flex-wrap flex-align-center flex-1 flex-content-end" v-else :class="{ 'block' : show }" >
-        <li class="nav-item"><router-link to="/becomeHost/propertyTypes">Start hosting</router-link></li>
-        <li class="nav-item"><router-link to="/trips/tripsList">Trips</router-link></li>
-        <li class="nav-item"><router-link to="/trips/messages">Messages</router-link></li>
-        <li class="nav-item"><router-link to="/trips/walletHome">Wallet</router-link></li>
+        <li class="nav-item"><router-link to="/becomeHost/propertyTypes">{{$t('message.Starthosting')}}</router-link></li>
+        <li class="nav-item"><router-link to="/trips/tripsList">{{$t('message.Trips')}}</router-link></li>
+        <!--<li class="nav-item"><router-link to="/trips/messages">{{$t('message.Messages')}}</router-link></li>-->
+        <li class="nav-item"><router-link to="/trips/walletHome">{{$t('message.Wallet')}}</router-link></li>
         <li class="photo">
           <el-popover placement="bottom-end" width="150" trigger="click" popper-class="photo_popper" :offset="20">
             <ul class="photo_popper_item">
-              <li class="active"><router-link to='/trips/editProfile'>Edit profile</router-link></li>
-              <li><router-link to='/trips/security'>Security</router-link></li>
-              <li @click="logout">Log out</li>
+              <li class="active"><router-link to='/trips/editProfile'>{{$t('message.Editprofile')}}</router-link></li>
+              <li><router-link to='/trips/security'>{{$t('message.Security')}}</router-link></li>
+              <li @click="logout">{{$t('message.Logout')}}</li>
             </ul>
             <div class="img-wrap" slot="reference">
               <span class="img" :style="{backgroundImage:'url(' + userData.image_url + ')'}" ></span>
             </div>
           </el-popover>
         </li>
+        <li>{{ $i18n.locale != 'cn' ? userData.first_name + ' ' + userData.last_name : userData.last_name + userData.first_name}}</li>
       </ul>
 
       <i class="icon iconfont icon-daohang" @click="navShow"></i>
@@ -59,26 +60,26 @@
       </div>
       <!-- 未登录导航 -->
       <ul v-if="userData == null">
-        <li @click="show = false"><router-link to="/becomeHost/propertyTypes">Become a host</router-link></li>
-        <li @click="show = false"><router-link to="/trips/tripsList">Trips</router-link></li>
-        <li @click="show = false"><router-link to="/trips/messages">Messages</router-link></li>
-        <li @click="show = false"><router-link to="/trips/create">Wallet</router-link></li>
-        <li @click="show = false" class="red"><a href="javascript:void(0)" @click="$store.state.show_signup = true">Sign up</a></li>
-        <li @click="show = false" class="red"><a href="javascript:void(0)" @click="$store.state.show_login = true">Log in</a></li>
+        <li @click="show = false"><router-link to="/becomeHost/propertyTypes">{{$t('message.Starthosting')}}</router-link></li>
+        <li @click="show = false"><router-link to="/trips/tripsList">{{$t('message.Trips')}}</router-link></li>
+        <!--<li @click="show = false"><router-link to="/trips/messages">{{$t('message.Messages')}}</router-link></li>-->
+        <li @click="show = false"><router-link to="/trips/create">{{$t('message.Wallet')}}</router-link></li>
+        <li @click="show = false" class="red"><a href="javascript:void(0)" @click="$store.state.show_signup = true">{{$t('message.Signup')}}</a></li>
+        <li @click="show = false" class="red"><a href="javascript:void(0)" @click="$store.state.show_login = true">{{$t('message.Login')}}</a></li>
       </ul>
       <ul class="phoneNav_nav" v-else>
         <li @click="show = false">
           <span class="img" :style="{backgroundImage:'url(' + userData.image_url + ')'}" ></span>
         </li>
-        <li @click="show = false"><router-link to="/becomeHost/propertyTypes">Start hosting</router-link></li>
-        <li @click="show = false"><router-link to="/trips/tripsList">Trips</router-link></li>
-        <li @click="show = false"><router-link to="/trips/messages">Messages</router-link></li>
-        <li @click="show = false"><router-link to="/trips/create">Wallet</router-link></li>
+        <li @click="show = false"><router-link to="/becomeHost/propertyTypes">{{$t('message.Starthosting')}}</router-link></li>
+        <li @click="show = false"><router-link to="/trips/tripsList">{{$t('message.Trips')}}</router-link></li>
+        <!--<li @click="show = false"><router-link to="/trips/messages">{{$t('message.Messages')}}</router-link></li>-->
+        <li @click="show = false"><router-link to="/trips/create">{{$t('message.Wallet')}}</router-link></li>
       </ul>
       <ul v-if="userData !== null">
-        <li class="active" @click="show = false"><router-link to='/trips/editProfile'>Edit profile</router-link></li>
-        <li @click="show = false">Security</li>
-        <li @click="logout">Log out</li>
+        <li class="active" @click="show = false"><router-link to='/trips/editProfile'>{{$t('message.Editprofile')}}</router-link></li>
+        <li @click="show = false">{{$t('message.Security')}}</li>
+        <li @click="logout">{{$t('message.Logout')}}</li>
       </ul>
     </div>
     <!-- 响应式全屏导航-->
@@ -102,6 +103,7 @@ import verify from '../login/verify'
 import newpsw from '../login/newpsw'
 import reset from '../login/reset_succ'
 import resetPassword from '../login/resetPassword'
+import Cookies from 'js-cookie';
 export default {
   name: 'naver',
   props: {
@@ -133,8 +135,26 @@ export default {
   mounted () {
     this.userData = this.$store.state.userInfo
     window.addEventListener('scroll', this.handleScroll) // 滚动监听
+    if(this.$store.state.userInfo){
+      this.getUser(this.$store.state.userInfo.user_id)
+    }
   },
   methods: {
+    getUser(userId){
+
+      this.$post(this.userUrl + '/user', {
+        action: 'getUserInfo',
+        data: {
+          user_id:userId
+        }
+      }).then((res) => {
+        if (res.msg.code === 200) {
+          this.$store.commit('userUpdate', res.data)
+        }
+      })
+
+
+    },
     navShow () {
       this.show = !this.show
     },
@@ -149,14 +169,7 @@ export default {
         this.searchValue = ""
         this.searchListShow = false
       }
-      // var Before_scollH = 0
-      // var differH = scrollTop - Before_scollH;
-      //   if (differH == 0) {
-      //       return false;
-      //   }
-      //   var scollType = differH > 0 ? 'down' : 'up';
-      //   Before_scollH = After_scollH;
-      //   if(scollType == 'down')
+
     },
     // 输入框输入事件
     input (val) {
@@ -171,6 +184,10 @@ export default {
     selectSeach (val) {
       this.searchValue = val.fullAddress
       this.searchListShow = false
+
+      let search = {"cityCode": val.code}
+      Cookies.set('search', JSON.stringify(search));
+      this.$router.push('/search')
     },
     // 登录
     login () {
@@ -179,9 +196,9 @@ export default {
     // 退出
     logout () {
       this.show = false
-      this.$confirm('Are you sure to exit?', 'Warning', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel'
+      this.$confirm(this.$t('message.Areyousuretoexit'), this.$t('message.Warning'), {
+        confirmButtonText: this.$t('message.Confirm'),
+        cancelButtonText: this.$t('message.Cancel')
       }).then(() => {
         this.$store.commit('userUpdate', null)
         this.userData = null
@@ -404,9 +421,8 @@ header {
     }
   }
 }
-@media only screen and (min-width:800px) and (max-width: 1200px) {
+@media only screen and (min-width:940px) and (max-width: 1200px) {
   header {
-    padding: 0 10px;
     .input-wrap {
       width: 300px
     }
@@ -415,12 +431,12 @@ header {
     }
   }
 }
-@media only screen  and (max-width: 800px) {
+@media only screen  and (max-width: 940px) {
   .inpput_keyList {
     width: 300px
   }
   header {
-    padding: 0 10px;
+    padding: 0 20px;
     position: relative;
     .input-wrap {
       width: 300px

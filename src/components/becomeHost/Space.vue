@@ -1,25 +1,25 @@
 <template>
    <div>
     <div class="becomeHost-header">
-      <div class="title">Space</div>
-      <h3>About your space</h3>
+      <div class="title">{{$t('message.Space')}}</div>
+      <h3>{{$t('message.Aboutyourspace')}}</h3>
     </div>
     <div class="Space">
       <ul>
         <li class="flex-wrap flex-align-center">
-          <div class="title">Title</div>
+          <div class="title">{{$t('message.Title')}}</div>
           <div>
-            <el-input v-model="$store.state.host.placeName" placeholder="E.g. Lorem ipsum dolor sit amet consectetur adipiscing"></el-input>
+            <el-input v-model="$store.state.host.placeName" :placeholder="$t('message.EgfreshNordicstylehomestay')"></el-input>
           </div>
         </li>
         <li class="flex-wrap">
-          <div class="title padding-top">Description</div>
+          <div class="title padding-top">{{$t('message.Description')}}</div>
           <div>
-            <textarea cols="30" rows="10" v-model="$store.state.host.description" placeholder="Pellentesque odio mi venenatis at volutpat fringilla pharetra vitae"></textarea>
+            <textarea cols="30" rows="10" v-model="$store.state.host.description" :placeholder="$t('message.Theroomoftheexquisitegirlisdownstairs')"></textarea>
           </div>
         </li>
         <li class="flex-wrap">
-          <div class="title padding-top">Photos</div>
+          <div class="title padding-top">{{$t('message.Photos')}}</div>
           <div class="photos-wrap">
 
             <ul class="picturesList">
@@ -57,7 +57,7 @@
               class="picturesShow"
               center>
                 <img :src="bigPictureUrl" alt="">
-                <el-button @click="picturesShow = false">Close</el-button>
+                <el-button @click="picturesShow = false">{{$t('message.Close')}}</el-button>
               </span>
             </el-dialog>
 
@@ -66,7 +66,7 @@
       </ul>
     </div>
 
-     <button class="r-button next" :class="$store.state.host.placeName == '' || $store.state.host.description == '' || $store.state.host.pictures.length == 0 ? 'disable' : null" :disabled="$store.state.host.placeName == '' || $store.state.host.description == '' || $store.state.host.pictures.length == 0" @click="next" >Next</button>
+     <button class="r-button next" :class="$store.state.host.placeName == '' || $store.state.host.description == '' || $store.state.host.pictures.length == 0 ? 'disable' : null" :disabled="$store.state.host.placeName == '' || $store.state.host.description == '' || $store.state.host.pictures.length == 0" @click="next" >{{$t('message.Next')}}</button>
 
    </div>
 </template>
@@ -129,9 +129,12 @@ export default {
     },
     handleAvatarError (errs, file, fileList) {
       this.loading = false
-      this.$alert('Please confirm whether the picture has been updated', 'Warning', {
-        confirmButtonText: 'Confirm'
-      })
+
+      this.$notify({
+        title: this.$t('message.Warning'),
+        message: this.$t('message.Pleaseconfirmwhetherthepicturehasbeenupdated'),
+        type: 'warning'
+      });
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);

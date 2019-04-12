@@ -1,55 +1,62 @@
 <template>
   <div class="wrap">
-    <p class="top-h2">Edit profile</p>
+    <p class="top-h2">{{$t('message.Editprofile')}}</p>
     <div class="header">
       <span class="header_Img" v-if="user.image_url" :style="{backgroundImage:'url(' + user.image_url + ')'}" @click="uploadShow = true"></span>
       <span class="icon iconfont icon-touxiang1" @click="uploadShow = true" v-else></span>
-      <p>Upload a photo</p>
+      <p>{{$t('message.Uploadaphoto')}}</p>
     </div>
     <ul class="editProfile">
-      <li class="flex-wrap flex-align-center">
-        <div class="title">First name</div>
+      <li class="flex-wrap flex-align-center"  v-if="$i18n.locale != 'cn'">
+        <div class="title">{{$t('message.Firstname')}}</div>
         <div>
-           <el-input v-model="informationData.first_name" placeholder="Lorem" @blur="bindingVerify('fname', informationData.first_name)"></el-input>
-           <p class="warning" v-show="verify.indexOf('fname') !== -1">Please enter the correct name,The name length is between 3 and 20 bits</p>
+          <el-input v-model="informationData.first_name" :placeholder="$t('message.Firstname')" @blur="bindingVerify('fname', informationData.first_name)"></el-input>
+          <p class="warning" v-show="verify.indexOf('fname') !== -1">{{$t('message.Pleaseenterthecorrectname')}}</p>
         </div>
       </li>
       <li class="flex-wrap flex-align-center">
-        <div class="title">Last name</div>
+        <div class="title">{{$t('message.Lastname')}}</div>
         <div>
-          <el-input v-model="informationData.last_name" placeholder="Ipsum" @blur="bindingVerify('lname', informationData.last_name)"></el-input>
-          <p class="warning" v-show="verify.indexOf('lname') !== -1">Please enter the correct name,The name length is between 3 and 20 bits</p>
+          <el-input v-model="informationData.last_name" :placeholder="$t('message.Lastname')" @blur="bindingVerify('lname', informationData.last_name)"></el-input>
+          <p class="warning" v-show="verify.indexOf('lname') !== -1">{{$t('message.Pleaseenterthecorrectname')}}</p>
+        </div>
+      </li>
+      <li class="flex-wrap flex-align-center"  v-if="$i18n.locale == 'cn'">
+        <div class="title">{{$t('message.Firstname')}}</div>
+        <div>
+          <el-input v-model="informationData.first_name" :placeholder="$t('message.Firstname')" @blur="bindingVerify('fname', informationData.first_name)"></el-input>
+          <p class="warning" v-show="verify.indexOf('fname') !== -1">{{$t('message.Pleaseenterthecorrectname')}}</p>
         </div>
       </li>
       <li class="flex-wrap flex-align-center">
-        <div class="title">Gender</div>
+        <div class="title">{{$t('message.Gender')}}</div>
         <div class="editProfile-select">
-          <el-select v-model="informationData.gender" placeholder="Male">
+          <el-select v-model="informationData.gender" :placeholder="$t('message.Male')">
             <el-option key="0" label="Male" value="M"></el-option>
             <el-option key="1" label="Female" value="F"></el-option>
           </el-select>
         </div>
       </li>
+      <!--<li class="flex-wrap flex-align-center">-->
+        <!--<div class="title">{{$t('message.Birthdate')}}</div>-->
+        <!--&lt;!&ndash; <div class="editProfile-select Birth">-->
+          <!--<el-select v-model="date.month" placeholder="Month">-->
+          <!--</el-select>-->
+          <!--<el-select v-model="date.day" placeholder="Day">-->
+          <!--</el-select>-->
+          <!--<el-select v-model="date.year" placeholder="Year">-->
+          <!--</el-select>-->
+        <!--</div> &ndash;&gt;-->
+        <!--<div class="Birth">{{date.day + '/' + date.month + '/' + date.year}}</div>-->
+      <!--</li>-->
       <li class="flex-wrap flex-align-center">
-        <div class="title">Birth date</div>
-        <!-- <div class="editProfile-select Birth">
-          <el-select v-model="date.month" placeholder="Month">
-          </el-select>
-          <el-select v-model="date.day" placeholder="Day">
-          </el-select>
-          <el-select v-model="date.year" placeholder="Year">
-          </el-select>
-        </div> -->
-        <div class="Birth">{{date.day + '/' + date.month + '/' + date.year}}</div>
-      </li>
-      <li class="flex-wrap flex-align-center">
-        <div class="title">City</div>
+        <div class="title">{{$t('message.City')}}</div>
         <div>
-          <el-input placeholder="e.g. Tokyo, Japan" v-model="informationData.city"></el-input>
+          <el-input :placeholder="$t('message.egTokyoJapan')" v-model="informationData.city"></el-input>
         </div>
       </li>
       <li class="flex-wrap flex-align-center">
-        <div class="title">Occupation</div>
+        <div class="title">{{$t('message.Occupation')}}</div>
         <div>
           <el-input v-model="informationData.occupation"></el-input>
         </div>
@@ -65,15 +72,15 @@
         </div>
       </li> -->
       <li class="flex-wrap flex-align-center">
-        <div class="title">Self Description</div>
+        <div class="title">{{$t('message.SelfDescription')}}</div>
         <div>
-          <el-input type="textarea" v-model="informationData.self_description" placeholder="Self Description"></el-input>
+          <el-input type="textarea" v-model="informationData.self_description" :placeholder="$t('message.SelfDescription')"></el-input>
         </div>
       </li>
     </ul>
-    <div class="r-button save" @click="save">Save</div>
+    <div class="r-button save" @click="save">{{$t('message.Save')}}</div>
     <el-dialog :visible.sync="uploadShow" width="440px" class="uploadWrap">
-      <h2>Set your profile photo</h2>
+      <h2>{{$t('message.Setyourprofilephoto')}}</h2>
       <el-upload class="avatar-uploader" :show-file-list="false"
         accept="image/jpeg, image/png"
         action="https://testapi.image.populstay.com/image?dir=populstay_placeimage"
@@ -85,9 +92,9 @@
           <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar"> -->
           <i v-else class="icon iconfont icon-touxiang1"></i>
       </el-upload>
-      <p class="red">Upload a photo</p>
-      <p>from your computer</p>
-      <div class="r-button button" @click="uploadPhoto">Save</div>
+      <p class="red">{{$t('message.Uploadaphoto')}}</p>
+      <p>{{$t('message.fromyourcomputer')}}</p>
+      <div class="r-button button" @click="uploadPhoto">{{$t('message.Save')}}</div>
     </el-dialog>
     <e-hint></e-hint>
   </div>
@@ -102,7 +109,7 @@ export default {
   },
   data () {
     return {
-      gender: 'Male',
+      gender: this.$t('message.Male'),
       liveChat: true,
       uploadShow: false,
       warningShow: false,
@@ -170,9 +177,11 @@ export default {
     },
     handleAvatarError (errs, file, fileList) {
       this.loading = false
-      this.$alert('Please confirm whether the picture has been updated', 'Warning', {
-        confirmButtonText: 'Confirm'
-      })
+      this.$notify({
+        title: this.$t('message.Warning'),
+        message: this.$t('message.Pleaseconfirmwhetherthepicturehasbeenupdated'),
+        type: 'warning'
+      });
     },
     // 图片上传时
     handleAvatarProgress (event, file, fileList) {
@@ -194,25 +203,34 @@ export default {
             this.uploadShow = false
 
             this.$notify({
-              title: 'success',
-              message: 'Your profile picture has been saved successfully.',
-              type: 'success'
+              message: this.$t('message.Yourprofilepicturehasbeensavedsuccessfully'),
+              showClose:false,
+              type: 'success',
+              onClick(){
+                this.close()
+              }
             });
 
           } else {
 
             this.$notify({
-              title: 'warning',
-              message: 'Operation failed, please try later.',
-              type: 'warning'
+              message: this.$t('message.Operationfailedpleasetrylater'),
+              showClose:false,
+              type: 'warning',
+              onClick(){
+                this.close()
+              }
             });
 
           }
         })
       } else {
-        this.$alert('Please confirm whether the picture has been updated', 'Warning', {
-          confirmButtonText: 'Confirm'
-        })
+        this.$notify({
+          title: this.$t('message.Warning'),
+          message: this.$t('message.Pleaseconfirmwhetherthepicturehasbeenupdated'),
+          type: 'warning'
+        });
+
       }
     },
     // 保存
@@ -236,14 +254,29 @@ export default {
           this.user.occupation = data.occupation
           this.$store.commit('userUpdate', this.user)
           this.$notify({
-            title: 'success',
-            message: 'Operation is successful',
-            type: 'success'
+            message: this.$t('message.Operationissuccessful'),
+            showClose:false,
+            type: 'success',
+            onClick(){
+              this.close()
+            }
           });
         } else {
-          this.$store.commit('hint', {show: false})
+
+          this.$notify({
+            message: this.$t('message.Operationfailedpleasetrylater'),
+            showClose:false,
+            type: 'success',
+            onClick(){
+              this.close()
+            }
+          });
+
         }
       })
+    },
+    close(){
+      this.$notify.close()
     },
     // 失焦验证
     bindingVerify (type, val) {
@@ -387,16 +420,22 @@ $red-color: #F4436C;
 }
 @media only screen and (max-width: 1100px) {
   .editProfile {
+    padding: 0 20px;
     li {
       display: block;
       .title {
         margin-bottom: 3px;
+        display: inline-block;
       }
+    }
+    .Birth{
+      display: inline-block;
     }
   }
 }
 @media only screen and (max-width: 500px) {
   .editProfile {
+
     li {
     .editProfile-select {
       div {

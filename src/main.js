@@ -8,21 +8,20 @@ import router from './router'
 import locale from 'element-ui/lib/locale/lang/en'
 import store from './store'
 import axios from './axios'
-// import axios from 'axios'
 import AMap from 'vue-amap'
 import VueJsonp from 'vue-jsonp'
 import VueClipboard from 'vue-clipboard2'
 import md5 from 'js-md5';
 import VueDND from 'awe-dnd'
-import VueSocketio from 'vue-socket.io';
+import i18n from './i18n/i18n';
 
-Vue.use(VueSocketio, 'http://socketserver.com:1923');
+
 Vue.use(VueDND)
 Vue.use(VueClipboard)
 Vue.use(AMap)
 Vue.use(VueJsonp);
 Vue.prototype.$md5 = md5;
-  
+
 // 初始化vue-amap
 AMap.initAMapApiLoader({
   // 高德的key
@@ -33,15 +32,15 @@ AMap.initAMapApiLoader({
 })
 
 Vue.use(ElementUI, { locale })
-
 Vue.config.productionTip = false
 
 // 路由拦截器
 router.beforeEach((to, from, next) => {
-  let userList = ['propertyTypes', 'tripsList', 'messages', 'walletHome','lstDetail']
+  let userList = ['propertyTypes', 'tripsList', 'messages', 'walletHome','lstDetail','hosts']
 
   if(store.state.userInfo == null){
     if (userList.indexOf(to.name) !== -1) {
+      router.push('/')
       store.state.show_login = true
     } else {
       next()
@@ -59,6 +58,7 @@ new Vue({
   store,
   router,
   axios,
+  i18n,
   components: { App },
   template: '<App/>'
 })

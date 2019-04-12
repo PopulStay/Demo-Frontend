@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading.fullscreen.lock="guestsLoading">
     <ul class="tabList flex-wrap flex-wrap-wrap">
       <li v-for="(item, index) in guestsTabList" :key="index" :class="guestsTabTitle == item ? 'active' : ''" @click="guestsTabClick(item, index)">{{item}}</li>
     </ul>
@@ -15,23 +15,23 @@
             <div>
               <!-- <p class="title">{{item.title1}}</p>
               <p class="title">{{item.title2}}</p> -->
-              <p class="id">Booking ID: {{item.booking_id}}</p>
+              <p class="id">{{$t('message.Booking')}} ID: {{item.booking_id}}</p>
             </div>
             <div class="bottom flex-wrap flex-content-between">
-              <span class="time">{{item.start_time}} - {{item.end_time}} {{item.cha_time}}</span>
+              <span class="time">{{getMoment(item.start_time)}} - {{getMoment(item.end_time)}} {{item.cha_time}}</span>
               <span class="num">{{item.price}} {{item.currency}}</span>
             </div>
           </div>
-          <div class="list-operation flex-wrap" :class="item.status == 'Pending' ? 'flex-column-center flex-wrap' : ''">
+          <div class="list-operation flex-wrap" :class="item.status == $t('message.Pending') ? 'flex-column-center flex-wrap' : ''">
             <div>
             </div>
-            <div class="OrderButton"><router-link :to="{path:'/trips/guests_details',query: {guestsitem:item,gueststitle:item.status}}">View details</router-link></div>
+            <div class="OrderButton"><router-link :to="{path:'/trips/guests_details',query: {guestsitem:item,gueststitle:item.status}}">{{$t('message.Viewdetails')}}</router-link></div>
           </div>
         </div>
       </li>
     </ul>
     <div class="no-data" v-if="islist == false">
-      No data
+      {{$t('message.Nodata')}}
     </div>
     <!-- 待定结账弹窗  -->
     <el-dialog  :visible.sync="checkoutShow" width="25%" class="checkoutWrap">
@@ -41,19 +41,19 @@
        <div class="input-wrap">
         <input type="text" placeholder="Payment password">
       </div>
-      <div class="button" @click="next">Confirm and pay</div>
+      <div class="button" @click="next">{{$t('message.Confirmandpay')}}</div>
     </el-dialog>
     <!-- 扫码付款弹窗  -->
     <el-dialog  :visible.sync="cancelShow" width="22%" class="cancelWrap">
       <div class="text-wrap">
-        <p>Your balance is not enough.</p>
-        <p>Please use the Token wallet to scan the</p>
-        <p>QR code to make a payment.</p>
+        <p>{{$t('message.Yourbalanceisnotenough.')}}</p>
+        <p>{{$t('message.PleaseusetheTokenwallettoscanthe')}}</p>
+        <p>{{$t('message.QRcodetomakeapayment')}}</p>
       </div>
       <div class="asset">
         <img src="../../../assets/images/trips/Asset.svg" alt="">
       </div>
-      <div class="button" @click="cancelShow = false">Cancel</div>
+      <div class="button" @click="cancelShow = false">{{$t('message.Cancel')}}</div>
     </el-dialog>
 
     <!-- 评价  -->
@@ -62,22 +62,22 @@
         <div class="c-left">
           <img src="../../../assets/images/trips/checked-in.png" alt="">
           <p></p>
-          <span>Booking ID: {{PaymentHostID}}</span>
+          <span>{{$t('message.Booking')}} ID: {{PaymentHostID}}</span>
         </div>
         <div class="c-right">
           <div class="Boxrate">
-            <p>score</p>
+            <p>{{$t('message.score')}}</p>
             <el-rate v-model="Review.score"></el-rate>
           </div>
 
           <div class="Description">
-            <p>Description</p>
+            <p>{{$t('message.Description')}}</p>
             <textarea v-model="Review.Description"></textarea>
           </div>
 
 
           <div class="Submit flex-wrap">
-            <div class="button r-button" @click="SubmitReview">Submit</div>
+            <div class="button r-button" @click="SubmitReview">{{$t('message.Submit')}}</div>
           </div>
         </div>
       </div>
@@ -91,6 +91,9 @@
       layout="prev, pager, next"
       :total="totalPage">
     </el-pagination>
+
+    <p v-if="$i18n.locale != language ? onloading() : null"></p>
+
   </div>
 </template>
 
@@ -100,8 +103,10 @@
   export default {
     data () {
       return {
-        guestsTabTitle: 'All',
-        guestsTabList: ['All', 'Completed'],
+        language: this.$i18n.locale,
+        guestsTabTitle: this.$t('message.All'),
+        guestsTabList: [this.$t('message.All'), this.$t('message.Completed')],
+        guestsLoading:true,
         guestsList: [],
         islist: true,
         list: [],
@@ -122,31 +127,36 @@
       this.user = this.$store.state.userInfo;
 
       this.list = this.dataList
-      let title = this.$route.query.guestsitem
-      if (title) this.guestsTabTitle = title
-      else this.guestsTabTitle = 'All'
+      this.guestsTabTitle = this.$t('message.All')
 
       this.getguestsList()
     },
     methods: {
+      onloading(){
+        this.language = this.$i18n.locale;
+        this.guestsTabList = [this.$t('message.All'), this.$t('message.Completed')];
+        this.guestsTabTitle = this.$t('message.All');
+        this.getguestsList()
+      },
       getguestsList () {
+        this.guestsLoading = true
 
         var status = '';
 
         switch (this.guestsTabTitle) {
-          case 'Pending':
+          case this.$t('message.Pending'):
             status = 'pending_for_payment'
             break
-          case 'Upcoming':
+          case this.$t('message.Upcoming'):
             status = 'pending_for_checking'
             break
-          case 'Checked-in':
+          case this.$t('message.Checkedin'):
             status = 'checked_in'
             break
-          case 'Completed':
+          case this.$t('message.Completed'):
             status = 'completed'
             break
-          case 'Cancelled':
+          case this.$t('message.Cancelled'):
             status = 'cancelled'
             break
           default:
@@ -163,39 +173,38 @@
             status:status
           }
         }).then((res) => {
+          this.guestsLoading = false
           res.data.booking_list.length > 0 ? this.islist = true : this.islist = false;
 
           for (let i in res.data.booking_list) {
 
             switch (res.data.booking_list[i].status) {
               case 'pending_for_payment':
-                res.data.booking_list[i].status = 'Pending'
+                res.data.booking_list[i].status = this.$t('message.Pending')
                 break
               case 'pending_for_checking':
-                res.data.booking_list[i].status = 'Upcoming'
+                res.data.booking_list[i].status = this.$t('message.Upcoming')
                 break
               case 'checked_in':
-                res.data.booking_list[i].status = 'Checked-in'
+                res.data.booking_list[i].status = this.$t('message.Checkedin')
                 break
               case 'completed':
-                res.data.booking_list[i].status = 'Completed'
+                res.data.booking_list[i].status = this.$t('message.Completed')
                 break
               case 'cancelled ':
-                res.data.booking_list[i].status = 'Cancelled'
+                res.data.booking_list[i].status = this.$t('message.Cancelled')
                 break
               case 'cancelled':
-                res.data.booking_list[i].status = 'Cancelled'
+                res.data.booking_list[i].status = this.$t('message.Cancelled')
                 break
               default:
                 res.data.booking_list[i].status = ''
                 break
 
             }
-            res.data.booking_list[i].start_time = moment(res.data.booking_list[i].start_time).format('DD MMM YYYY')
-            res.data.booking_list[i].end_time = moment(res.data.booking_list[i].end_time).format('DD MMM YYYY')
             let m1 = moment(res.data.booking_list[i].start_time)
             let m2 = moment(res.data.booking_list[i].end_time)
-            res.data.booking_list[i].cha_time = m2.diff(m1, 'day') + 'night'
+            res.data.booking_list[i].cha_time = m2.diff(m1, 'day') + this.$t('message.night')
 
             this.list = res.data.booking_list
             this.guestsList = res.data.booking_list
@@ -206,6 +215,13 @@
           this.totalPage = res.data.total;
 
         })
+      },
+      getMoment(time){
+        if(this.$i18n.locale == 'cn'){
+          return moment(time).locale("zh-cn").format('LL')
+        }else{
+          return moment(time).locale("en-au").format('DD MMM YYYY')
+        }
       },
       guestsTabClick (value, index) {
         this.guestsTabTitle = value
@@ -234,7 +250,7 @@
             this.$message({
               customClass:"centermessage",
               showClose: true,
-              message: 'Comment successful',
+              message: this.$t('message.Commentsuccessful'),
               type: 'success',
             });
             this.ReviewShow = false
@@ -243,7 +259,7 @@
             this.$message({
               customClass:"centermessage",
               showClose: true,
-              message: 'The order has been reviewed',
+              message: this.$t('message.Theorderhasbeenreviewed'),
               type: 'success',
             });
             this.ReviewShow = false

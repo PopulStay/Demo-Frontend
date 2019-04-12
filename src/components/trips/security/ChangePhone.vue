@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="wrap">
-      <div class="wrap-header">{{$route.query.type}} phone number</div>
+      <div class="wrap-header">{{$t('message.Phonenumber')}}</div>
       <div class="content">
         <div class="step-content" v-if="step === 1">
           <div class="step-input step-input2">
@@ -19,17 +19,17 @@
                 </ul>
               </div>
             </el-popover>
-            <input type="text" ref="input" v-model="data.phone_number" placeholder="Phone Number" class="input">
+            <input type="text" ref="input" v-model="data.phone_number" :placeholder="$t('message.Phonenumber')" class="input">
           </div>
           <div class="step-input step-input2">
-            <el-input type="password" placeholder="Password" v-model="data.encrypted_password"></el-input>
+            <el-input type="password" :placeholder="$t('message.Password')" v-model="data.encrypted_password"></el-input>
           </div>
-          <div class="r-button button" @click="next">Next</div>
+          <div class="r-button button" @click="next">{{$t('message.Next')}}</div>
         </div>
         <div class="step-content3" v-if="step === 2">
           <i class="icon iconfont icon-success"></i>
-          <p>Your phone number has been successfully changed.</p>
-          <div class="r-button button"><router-link to="security">Back</router-link></div>
+          <p>{{$t('message.Yourphonenumberhasbeensuccessfullychanged')}}</p>
+          <div class="r-button button"><router-link to="security">{{$t('message.Back')}}</router-link></div>
         </div>
       </div>
     </div>
@@ -63,8 +63,8 @@
               this.Verifie()
             }else{
               this.$notify({
-                title: 'warning',
-                message: 'Please input the correct phone number',
+                title: this.$t('message.Warning'),
+                message: this.$t('message.Pleaseinputthecorrectphonenumber'),
                 type: 'warning'
               });
             }
@@ -88,7 +88,6 @@
             }
           }
         }).then((res) => {
-          console.log(res)
           if (res.msg.code === 200) {
             this.step = this.step + 1
             let user = this.$store.state.userInfo
@@ -96,20 +95,20 @@
             this.$store.commit('userUpdate', user)
           } else if(res.msg.code === 951){
             this.$notify({
-              title: 'warning',
-              message: 'This phone number has been registered',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Thisphonenumberhasbeenregistered'),
               type: 'warning'
             });
           } else if(res.msg.code === 952) {
             this.$notify({
-              title: 'warning',
-              message: 'Your password is entered incorrectly',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Yourpasswordisenteredincorrectly'),
               type: 'warning'
             });
           }else{
             this.$notify({
-              title: 'warning',
-              message: 'Operation failed, please try again later.',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Operationfailedpleasetrylater'),
               type: 'warning'
             });
           }

@@ -1,21 +1,21 @@
 <template>
   <div>
     <div class="wrap">
-      <div class="wrap-header">Change email address</div>
+      <div class="wrap-header">{{$t('message.Emailaddress')}}</div>
       <div class="content">
         <div class="step-content" v-if="step === 1">
           <div class="step-input step-input2">
-            <el-input placeholder="Email address" v-model="data.email_address"></el-input>
+            <el-input :placeholder="$t('message.Emailaddress')" v-model="data.email_address"></el-input>
           </div>
           <div class="step-input step-input2">
-            <el-input type="password" placeholder="Password" v-model="data.encrypted_password"></el-input>
+            <el-input type="password" :placeholder="$t('message.Password')" v-model="data.encrypted_password"></el-input>
           </div>
-          <div class="r-button button" @click="next">Next</div>
+          <div class="r-button button" @click="next">{{$t('message.Next')}}</div>
         </div>
         <div class="step-content3" v-if="step === 2">
           <i class="icon iconfont icon-success"></i>
-          <p>Your email address has been successfully changed.</p>
-          <div class="r-button button"><router-link to="security">Back</router-link></div>
+          <p>{{$t('message.Youremailaddresshasbeensuccessfullychanged')}}</p>
+          <div class="r-button button"><router-link to="security">{{$t('message.Back')}}</router-link></div>
         </div>
       </div>
     </div>
@@ -55,32 +55,31 @@ export default {
               this.step = this.step + 1
               let user = this.$store.state.userInfo
               user.email_address = this.data.email_address
-              user.user_identity_confirmation.email_verified = "true"
               this.$store.commit('userUpdate', user)
             }else if(res.msg.code === 951){
               this.$notify({
-                title: 'warning',
-                message: 'This email address has been registered',
+                title: this.$t('message.Warning'),
+                message: this.$t('message.Thisemailaddresshasbeenregistered'),
                 type: 'warning'
               });
             }else if(res.msg.code === 952){
               this.$notify({
-                title: 'warning',
-                message: 'Your password is entered incorrectly',
+                title: this.$t('message.Warning'),
+                message: this.$t('message.Yourpasswordisenteredincorrectly'),
                 type: 'warning'
               });
             }else {
               this.$notify({
-                title: 'warning',
-                message: 'Operation failed, please try again later.',
+                title: this.$t('message.Warning'),
+                message: this.$t('message.Operationfailedpleasetrylater'),
                 type: 'warning'
               });
             }
           })
         }else{
           this.$notify({
-            title: 'warning',
-            message: 'Please input the correct email address',
+            title: this.$t('message.Warning'),
+            message: this.$t('message.Pleaseinputthecorrectemailaddress'),
             type: 'warning'
           });
         }

@@ -1,14 +1,14 @@
 <template>
-  <div class="wallet-home" v-if="walletList!==''">
-    <button @click="toCreate">Create</button>
+  <div class="wallet-home" v-if="walletList!==''"  v-loading.fullscreen.lock="walletLoading">
+    <!--<button @click="toCreate">Create</button>-->
     <!-- <button class="imp" @click="toImport">Import</button> -->
     <div>
         <div class="wallet-list" v-for='(item,index) in walletList' :key="index">
             <div class="wallet-wrap-top flex-wrap flex-align-center" :class="item.primary===1?'flex-center-between':'flex-content-end'">
-                <div class="top-left" v-if="item.primary===1">Default wallet</div>
+                <div class="top-left" v-if="item.primary===1">{{$t('message.Defaultwallet')}}</div>
                 <div class="top-right">
-                  <span @click="toWalletDetail(index)">Edit</span>
-                  <span v-if="item.primary!==1" @click="setDefault($event)" :name="item.name" :id="item.user_wallet_id">Set as Default</span>
+                  <span @click="toWalletDetail(index)">{{$t('message.Edit')}}</span>
+                  <span v-if="item.primary!==1" @click="setDefault($event)" :name="item.name" :id="item.user_wallet_id">{{$t('message.SetasDefault')}}</span>
                 </div>
             </div>
           <div class="wallet-wrap-down flex-wrap flex-center-between">
@@ -20,10 +20,9 @@
           </div>
           <div class="wallet-wrap-down flex-wrap flex-center-between">
             <div class="down-left">{{item.address}}</div>
-            <button @click="towalletTransfer(index)">Transfer</button>
+            <button @click="towalletTransfer(index)">{{$t('message.Transfer')}}</button>
           </div>
         </div>
-      <h6 class="loading" v-if="loading">Loading<i class="el-icon-loading"></i></h6>
     </div>
   </div>
 </template>
@@ -35,7 +34,7 @@ export default {
     return {
       tripsTabTitle: 'All',
       walletList: {},
-      loading:false
+      walletLoading:true
     }
   },
   created () {
@@ -44,13 +43,14 @@ export default {
   methods: {
     getUserWallets () {
       this.loading = true
-      let user = JSON.parse(localStorage.getItem('user'))
+      let user = this.$store.state.userInfo
       this.$post(this.userUrl + '/user', {
         action: 'getUserPPSBalance',
         data: {
           user_id: user.user_id
         }
       }).then((res) => {
+        this.walletLoading = false
         if (res.msg.code === 200) {
           this.loading = false
           if (res.data.user_wallets.length === 0) {
@@ -76,7 +76,7 @@ export default {
       })
     },
     setDefault (event) {
-      let user = JSON.parse(localStorage.getItem('user'))
+      let user = this.$store.state.userInfo
       this.$post(this.userUrl + '/user', {
         action: 'updateUserWallet',
         data: {
@@ -89,7 +89,6 @@ export default {
         if (res.msg.code === 200) {
           this.getUserWallets()
         }
-        // console.log(res)
       })
     },
     toCreate () {
@@ -120,7 +119,6 @@ export default {
   font-size: 16px;
   color: #4a4a4a;
   letter-spacing: 1px;
-  max-width: 820px;
   min-width: 300px;
   button {
     border: none;

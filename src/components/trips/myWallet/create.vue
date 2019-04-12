@@ -1,32 +1,32 @@
 <template>
   <div class="my-wallet-create">
       <div class="top-text">
-          <p>Create wallet</p>
+          <p>{{$t('message.Createwallet')}}</p>
       </div>
       <div class="main-input-box">
         <div class="main-input-div">
-          <p>Wallet name</p>
+          <p>{{$t('message.Walletname')}}</p>
           <input type="text" v-model="name"/>
         </div>
         <div class="main-input-div">
-          <p>Password</p>
+          <p>{{$t('message.Paymentpassword')}}</p>
           <input type="password" v-model="psw"/>
         </div>
         <div class="main-input-div">
-          <p>Confirm Password</p>
+          <p>{{$t('message.ConfirmPaymentpassword')}}</p>
           <input type="password" v-model="repsw"/>
         </div>
         <div class="main-input-div">
-          <p>Password Hint(Optional)</p>
+          <p>{{$t('message.PasswordHint')}} {{$t('message.Optional')}}</p>
           <input type="text" v-model="psw_pro"/>
         </div>
         <ul class="XY-fz14">
-          <li>Password stength is critical to guard your wallet</li>
-          <li>We can’t recover the password, please backup cautiously</li>
+          <li>{{$t('message.Passwordstengthiscriticaltoguardyourwallet')}}</li>
+          <li>{{$t('message.Wecantrecoverthepasswordpleasebackupcautiously')}}</li>
         </ul>
-        <p class="foot-p XY-fz14">I agree to <em style="">Terms of Service </em>and<em> Privacy Policy</em>.</p>
-        <button class="back-btn" @click="$router.go(-1);">Back</button>
-        <button class="create-btn" @click="toCreate">Create wallet</button>
+        <p class="foot-p XY-fz14">{{$t('message.Iagreeto')}}<em style="">{{$t('message.TermsofService')}}</em>{{$t('message.and')}}<em>{{$t('message.PrivacyPolicy')}}</em>.</p>
+        <!--<button class="back-btn" @click="$router.go(-1);">Back</button>-->
+        <button class="create-btn" @click="toCreate">{{$t('message.Createwallet')}}</button>
       </div>
   </div>
 </template>
@@ -48,9 +48,9 @@ export default {
   },
   methods: {
     toCreate () {
-      let user = JSON.parse(localStorage.getItem('user'))
+      let user = this.$store.state.userInfo
 
-      if (this.name != "" && this.psw != "" && this.psw === this.repsw && this.psw_pro != "") {
+      if (this.name != "" && this.psw != "" && this.psw === this.repsw) {
 
         this.$post(this.userUrl + '/user', {
           action: 'createUserWallet',
@@ -61,7 +61,6 @@ export default {
             password_prompt: this.repsw
           }
         }).then((res) => {
-          console.log(res)
           if (res.msg.code === 200) {
             this.$router.replace('walletHome')
           }
@@ -70,8 +69,8 @@ export default {
       }else{
 
         this.$notify({
-          title: 'warning',
-          message: 'Please confirm user information.',
+          title: this.$t('message.Warning'),
+          message: this.$t('message.Pleaseconfirmuserinformation'),
           type: 'warning'
         });
       }
@@ -156,7 +155,6 @@ $red-color: #F4436C;
     .create-btn{
       width: 200px;
       height: 50px;
-      margin-left: 15px;
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%">
     <div class="flex-wrap flex-center wrap">
-      <el-popover placement="bottom-start" width="300" trigger="manual" v-model="show" popper-class="state-popover" v-if="type !== 'email'">
+      <el-popover placement="bottom-start" width="300" trigger="manual" v-model="show" popper-class="state-popover" v-if="$store.state.inputType !== 'email'">
         <div slot="reference" class="num flex-wrap flex-center-between" @click="show = !show">
           <p>{{first}}</p>
           <i class="icon iconfont" :class="show ? 'icon-arrow-up' : 'icon-54'"></i>
@@ -17,18 +17,18 @@
       </el-popover>
       <div class="input_warp">
         <i class="icon iconfont"
-          :class="type === 'email' ? 'icon-shouji' : 'icon-youxiang'"
+          :class="$store.state.inputType === 'email' ? 'icon-shouji' : 'icon-youxiang'"
           @blur="blur"
-          @click="type === 'email' ? type = 'phone' : type = 'email'; number = ''; $emit('cut')">
+          @click="$store.state.inputType === 'email' ? $store.state.inputType = 'phone' : $store.state.inputType = 'email'; number = ''; $emit('cut'); $store.state.warning = ''">
         </i>
         <input type="text" ref="input" v-model="number"
           @input="$emit('input', $event.target.value)"
           @blur="blur"
-          :placeholder="type === 'email' ? 'Email address' : 'Phone Number'">
+          :placeholder="$store.state.inputType === 'email' ? $t('message.Emailaddress') : $t('message.Phonenumber')">
       </div>
     </div>
-    <p class="warning" v-show="$store.state.warning === 'email'">Please enter the correct email</p>
-    <p class="warning" v-show="$store.state.warning === 'phone'">Please enter the correct phone number</p>
+    <p class="warning" v-show="$store.state.warning === 'email'">{{$t('message.Pleaseenterthecorrectemail')}}</p>
+    <p class="warning" v-show="$store.state.warning === 'phone'">{{$t('message.Pleaseenterthecorrectphonenumber')}}</p>
   </div>
 </template>
 
@@ -37,7 +37,6 @@ import utils from '../../utils/utils.js'
 export default {
   props: {
     value: {
-      type: String,
       default: ''
     }
   },
@@ -46,7 +45,6 @@ export default {
       show: false,
       first: '+86',
       nation: this.$store.state.nation,
-      type: 'email',
       number: '',
       warning: ''
     }
@@ -54,14 +52,12 @@ export default {
   methods: {
     blur () {
       this.$emit('blur')
-      if (this.type === 'email') {
+      if (this.$store.state.inputType === 'email') {
         utils.checkEmail(this.number) ? this.$store.state.warning = 'email' : this.$store.state.warning = ''
       } else {
         if (this.first == '+86') {
-          console.log("中国")
           utils.checkTel(this.number) ? this.$store.state.warning = 'phone' : this.$store.state.warning = ''
         } else {
-          console.log("外国")
           this.$store.state.warning = ''
         }
       }

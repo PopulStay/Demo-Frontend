@@ -11,10 +11,10 @@
     </div>
 
     <div class="content" v-show="winshow">
-      <ul class="guest">
+      <ul class="guest" v-for="item in message_list">
         <li>
           <div class="img" :style="{backgroundImage:(img ? 'url(' + img +')' :'url('+img+')')}"></div>
-          <p>Hello</p>
+          <p>{{item.text}}</p>
         </li>
       </ul>
 
@@ -24,16 +24,15 @@
           <div class="img" :style="{backgroundImage:(img ? 'url(' + img +')' :'url('+img+')')}"></div>
         </li>
       </ul>
-
       <div class="botton" v-show="winshow">
-        <input type="text" placeholder="Type a message…">
+        <input type="text" placeholder="Type a message…" v-model="inputtext" >
         <div>
           <span>
             <i class="iconfont icon-tupian1"></i>
             <i class="iconfont icon-emoji"></i>
             <i class="iconfont icon-attachment"></i>
           </span>
-          <span>
+          <span @click="clickButton">
             <i class="iconfont icon-send1"></i>
           </span>
         </div>
@@ -43,15 +42,49 @@
 </template>
 
 <script>
+  import socketio from 'socket.io-client';
+  var socket ;
+
   export default {
     data () {
       return {
         winshow:true,
+        message_list:[],
+        inputtext:'',
+        userid:"",
         img:"https://media.licdn.com/dms/image/C5103AQE3kKwomhMDSg/profile-displayphoto-shrink_200_200/0?e=1548288000&v=beta&t=OetmBAW99xkc0QmCjzYJMu8XicRP-DZ4uRCWLWutQYY"
       }
     },
     created(){
-
+      socket = socketio('http://192.168.0.115:3000', {query: {user_id: this.userid}});
+      socket.on("chat message", (data)=>{
+        console.log(data)
+      })
+      if(this.$store.state.Live_Chat_userid != ""){
+        this.getUserMessageList()
+      }
+    },
+    methods: {
+      clickButton(){
+        socket.emit('chat message', {
+          to_user_id: this.$store.state.Live_Chat_userid,
+          text: this.inputtext
+        })
+      },
+      getUserMessageList(){
+        this.$post(this.userUrl + '/user', {
+          action:'getUserMessageList',
+          data:{
+            user_id:this.$store.state.userInfo.user_id,
+            contact_id:this.$store.state.Live_Chat_userid
+          },
+        }).then((res) => {
+          console.log(res)
+          if(res.msg.code == 200){
+            this.message_list = res.data.message_list
+          }
+        })
+      }
     }
   }
 </script>

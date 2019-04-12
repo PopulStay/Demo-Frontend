@@ -15,7 +15,7 @@ import tripsDetails from '@/components/trips/myTrips/trips_details'
 import guestsDetails from '@/components/trips/guests/guests_details'
 import Addphone from '@/components/trips/security/Addphone'
 import ChangePhone from '@/components/trips/security/ChangePhone'
-import VerifyEmail from '@/components/trips/security/VerifyEmail'
+import ChangeEmail from '@/components/trips/security/ChangeEmail'
 import VerifyPhone from '@/components/trips/security/VerifyPhone'
 import VerifyIdentity from '@/components/trips/security/VerifyIdentity'
 import Feedback from '@/components/trips/Feedback'
@@ -100,9 +100,9 @@ export default new Router({
           component: ChangePhone
         },
         {
-          path: 'VerifyEmail',
-          name: 'VerifyEmail',
-          component: VerifyEmail
+          path: 'ChangeEmail',
+          name: 'ChangeEmail',
+          component: ChangeEmail
         },
         {
           path: 'VerifyIdentity',

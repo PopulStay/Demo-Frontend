@@ -1,29 +1,27 @@
 <template>
   <div>
     <div class="wrap security-wrap">
-      <div class="wrap-header">Reset password</div>
+      <div class="wrap-header">{{$t('message.Resetpassword')}}</div>
       <div class="content password">
         <div class="item-input">
-           <el-input placeholder="Old password" type="password" v-model="password.old"></el-input>
+           <el-input :placeholder="$t('message.Oldpassword')" type="password" v-model="password.old"></el-input>
         </div>
         <div class="item-input">
-          <el-input  type="password" placeholder="New password" v-model="password.new" @blur="blurPassword"></el-input>
-          <p class="warning-password" v-show="passwordStrength === 'length'">The password length is between 6 and 20 bits</p>
-          <p class="warning-password" v-show="passwordStrength === 'weak'">cryptographic strength: weak</p>
-          <p class="warning-password" v-show="passwordStrength === 'middle'">cryptographic strength: middle</p>
+          <el-input  type="password" :placeholder="$t('message.Newpassword')" v-model="password.new" @blur="blurPassword"></el-input>
+          <p class="warning-password" v-show="passwordStrength">{{$t('message.Pleaseenteryourpasswordintheformat')}}</p>
         </div>
         <div class="flex-wrap flex-center-between flex-wrap-wrap">
           <div>
-            <el-input type="password" placeholder="Confirm new password" v-model="password.confirmNew" @blur="confirm"></el-input>
-            <p class="warning-password" v-show="confirm_password">Please enter the correct password</p>
+            <el-input type="password" :placeholder="$t('message.Confirmnewpassword')" v-model="password.confirmNew" @blur="confirm"></el-input>
+            <p class="warning-password" v-show="confirm_password">{{$t('message.Pleaseenterthecorrectpassword')}}</p>
           </div>
-          <div class="r-button button" @click="changePassword">Save</div>
+          <div class="r-button button" @click="changePassword">{{$t('message.Save')}}</div>
         </div>
       </div>
     </div>
 
     <div class="wrap">
-      <div class="wrap-header">Phone number</div>
+      <div class="wrap-header">{{$t('message.Phonenumber')}}</div>
       <div class="content">
         <!-- <div class="content-wrap phone" v-if="phoneStep === 'addphone'">
           <h5>Add a phone number</h5>
@@ -66,18 +64,18 @@
             <div class="red">Text me instead</div>
           </div>
         </div> -->
-        <p class="text" v-if="user.phone_number == '' || user.phone_number == null ">No phone number entered<br>We’ll send you booking requests, reminders, and other notifications.</p>
-        <p class="text red" v-if="user.phone_number == '' || user.phone_number == null"><router-link :to="{path:'ChangePhone', query: {type: 'Add'}}">Add a phone number</router-link></p>
+        <p class="text" v-if="user.phone_number == '' || user.phone_number == null ">{{$t('message.Nophonenumberentered')}}<br>{{$t('message.Wellsendyoubookingrequestsremindersandothernotifications')}}</p>
+        <p class="text red" v-if="user.phone_number == '' || user.phone_number == null"><router-link :to="{path:'ChangePhone', query: {type: 'Add'}}">{{$t('message.Addaphonenumber')}}</router-link></p>
         <ul class="phone-list phone" v-else>
           <li class="flex-wrap flex-center-between">
             <div class="info flex-wrap flex-align-center">
               <span class="number flex-2">{{ user.phone_number.substr(0,6) + "****" + user.phone_number.substr(user.phone_number.length-4) }}</span>
               <!--<span class="red flex-1" @click="Remove = true; RemoveType = 1">Remove</span>-->
-              <span class="red flex-1"><router-link :to="{path:'ChangePhone', query: {type: 'Change'}}">Change</router-link></span>
+              <span class="red flex-1"><router-link :to="{path:'ChangePhone'}">{{$t('message.Change')}}</router-link></span>
             </div>
             <div class="r-button button" :class="user.user_identity_confirmation.phone_verified === 'true' ? 'verfied' : ''">
-              <div v-show="user.user_identity_confirmation.phone_verified === 'true'">Verified</div>
-              <div v-show="user.user_identity_confirmation.phone_verified != 'true'" @click="email_phone_Verify('phone')">verification</div>
+              <div v-show="user.user_identity_confirmation.phone_verified === 'true'">{{$t('message.Verified')}}</div>
+              <div v-show="user.user_identity_confirmation.phone_verified != 'true'" @click="email_phone_Verify('phone')">{{$t('message.verification')}}</div>
               <!-- <router-link :to="{path:'ChangePhone'}" v-else>Change</router-link> -->
             </div>
           </li>
@@ -86,20 +84,20 @@
     </div>
 
     <div class="wrap">
-      <div class="wrap-header">Email address</div>
+      <div class="wrap-header">{{$t('message.Emailaddress')}}</div>
       <div class="content password">
-        <p class="text" v-if="user.email_address == '' || user.email_address == null ">No Email address entered<br>We’ll send you booking requests, reminders, and other notifications.</p>
-        <p class="text red" v-if="user.email_address == '' || user.email_address == null"><router-link  :to="{path:'VerifyEmail', query: {type: 'add'}}">Add a Email address</router-link></p>
+        <p class="text" v-if="user.email_address == '' || user.email_address == null ">{{$t('message.NoEmailaddressentered')}}<br>{{$t('message.Wellsendyoubookingrequestsremindersandothernotifications')}}</p>
+        <p class="text red" v-if="user.email_address == '' || user.email_address == null"><router-link  :to="{path:'ChangeEmail'}">{{$t('message.AddaEmailaddress')}}</router-link></p>
         <div class="flex-wrap flex-center-between flex-wrap-wrap" v-else>
           <div class="email-wrap flex-wrap flex-align-center">
            <p class="text flex-2">{{user.email_address}}</p>
             <!--<span class="red flex-1" @click="Remove = true; RemoveType = 2">Remove</span>-->
             <!--<span class="red flex-1"><router-link :to="{path:'ChangePhone'}">Change</router-link></span>-->
-             <span class="red flex-1"><router-link :to="{path:'VerifyEmail', query: {type: 'email'}}">Change</router-link></span>
+             <span class="red flex-1"><router-link :to="{path:'ChangeEmail'}">{{$t('message.Change')}}</router-link></span>
           </div>
           <div class="r-button button" :class="user.user_identity_confirmation.email_verified == 'true' ? 'verfied' : ''">
-            <div v-show="user.user_identity_confirmation.email_verified == 'true'">Verified</div>
-            <div v-show="user.user_identity_confirmation.email_verified != 'true'" @click="email_phone_Verify('email')">verification</div>
+            <div v-show="user.user_identity_confirmation.email_verified == 'true'">{{$t('message.Verified')}}</div>
+            <div v-show="user.user_identity_confirmation.email_verified != 'true'" @click="email_phone_Verify('email')">{{$t('message.verification')}}</div>
             <!-- <router-link :to="{path:'ChangePhone'}">Change</router-link> -->
           </div>
         </div>
@@ -109,51 +107,51 @@
     <!--验证手机/邮箱-->
     <el-dialog :visible.sync="showVerify" width="25%" class="checkoutWrap" :close-on-click-modal="true">
       <div class="verify-code">
-        Verification code has <br/> Please check your {{email_phone_show ? 'email address' : 'phone' }}
+        {{$t('message.Verificationcodehas')}} <br/> {{$t('message.Pleasecheckyour')}}{{email_phone_show ? $t('message.Emailaddress') : $t('message.Phone') }}
       </div>
       <div class="input-wrap">
-        <input type="text" placeholder="Please enter verification code" v-model="verificationCode">
+        <input type="text" :placeholder="$t('message.Confirmnewpassword')" v-model="verificationCode">
       </div>
       <div class="flex-wrap flex-center-between">
-        <div class="button" @click="showVerify = false">Cancel</div>
-        <div class="button" @click="ConfirmVerify">Confirm</div>
+        <div class="button" @click="showVerify = false">{{$t('message.Cancel')}}</div>
+        <div class="button" @click="ConfirmVerify">{{$t('message.Confirm')}}</div>
       </div>
     </el-dialog>
 
     <!--删除手机/邮箱-->
     <el-dialog :visible.sync="Remove" width="25%" class="checkoutWrap" :close-on-click-modal="true">
       <div class="verify-code">
-        Please enter your password
+        {{$t('message.Pleaseenteryourpassword')}}
       </div>
       <div class="input-wrap">
-        <input type="password" placeholder="Password" v-model="UserPassword">
+        <input type="password" :placeholder="$t('message.Password')" v-model="UserPassword">
       </div>
       <div class="flex-wrap flex-center-between">
-        <div class="button" @click="Remove = false">Cancel</div>
-        <div class="button" @click="RemoveInfo">Confirm</div>
+        <div class="button" @click="Remove = false">{{$t('message.Cancel')}}</div>
+        <div class="button" @click="RemoveInfo">{{$t('message.Confirm')}}</div>
       </div>
     </el-dialog>
 
     <div class="wrap">
-      <div class="wrap-header">Identity Card / Passport / Driver’s license</div>
+      <div class="wrap-header">{{$t('message.IdentityCardPassportDriverslicense')}}</div>
       <div class="content password">
         <div class="flex-wrap flex-center-between flex-wrap-wrap" v-if="this.$store.state.userInfo.user_identity_confirmation.document_verified === 'true'">
-          <p class="text">Your ID has been verified.</p>
-          <div class="r-button button verfied">verified</div>
+          <p class="text">{{$t('message.YourIDhasbeenverified')}}</p>
+          <div class="r-button button verfied">{{$t('message.Verified')}}</div>
         </div>
         <div class="flex-wrap flex-center-between flex-wrap-wrap" v-if="this.$store.state.userInfo.user_identity_confirmation.document_verified === 'pending'">
-          <p class="text">We're still reviewing your ID.</p>
-          <div class="r-button button verfied" style="cursor: initial;">Waiting</div>
+          <p class="text">{{$t('message.WerestillreviewingyourID')}}</p>
+          <div class="r-button button verfied" style="cursor: initial;">{{$t('message.Waiting')}}</div>
         </div>
         <div class="flex-wrap flex-center-between flex-wrap-wrap" v-if="this.$store.state.userInfo.user_identity_confirmation.document_verified === 'false'">
-           <p class="text">You’ll need to provide identification before you book.</p>
-           <div class="r-button button"><router-link to="VerifyIdentity">Verify</router-link></div>
+           <p class="text">{{$t('message.Youllneedtoprovideidentificationbeforeyoubook')}}</p>
+           <div class="r-button button"><router-link to="VerifyIdentity">{{$t('message.Verify')}}</router-link></div>
         </div>
       </div>
     </div>
 
     <div class="warning" v-if="warningShow">
-      <p>Your password has been reset. <i class="icon iconfont icon-aui-icon-close" @click="warningShow = false"></i></p>
+      <p>{{$t('message.Yourpasswordhasbeenreset')}} <i class="icon iconfont icon-aui-icon-close" @click="warningShow = false"></i></p>
     </div>
   </div>
 </template>
@@ -174,7 +172,7 @@ export default {
         new: '',
         confirmNew: ''
       },
-      passwordStrength: '',
+      passwordStrength: false,
       confirm_password: false,
       nation: this.$store.state.nation,
       phone: {
@@ -212,8 +210,8 @@ export default {
             confirmNew: ''
           }
           this.$notify({
-            title: 'success',
-            message: 'Operation is successful',
+            title: this.$t('message.Success'),
+            message: this.$t('message.Operationissuccessful'),
             type: 'success'
           });
         } else {
@@ -223,8 +221,8 @@ export default {
             confirmNew: ''
           }
           this.$notify({
-            title: 'warning',
-            message: 'Operation failed, please try later',
+            title: this.$t('message.Warning'),
+            message: this.$t('message.Operationfailedpleasetrylater'),
             type: 'warning'
           });
         }
@@ -232,8 +230,7 @@ export default {
     },
     // 密码失焦判断
     blurPassword () {
-      let passwordStrength = utils.checkPasswordStrength(this.password.new)
-      passwordStrength ? this.passwordStrength = passwordStrength : this.passwordStrength = ''
+        utils.checkPassword(this.password.new) ? this.passwordStrength = true : this.passwordStrength = false
     },
     confirm () {
       if (this.password.confirmNew !== this.password.new) {
@@ -277,15 +274,20 @@ export default {
           }
 
           this.$store.commit('userUpdate', user)
-          this.$message({
-            message: 'Operation is successful',
-            type: 'success'
-          })
+
+          this.$notify({
+            title: this.$t('message.Success'),
+            message: this.$t('message.Operationissuccessful'),
+            type: 'warning'
+          });
 
         } else if(res.msg.code === 952) {
-          this.$alert('Your password is entered incorrectly', 'Warning', {
-            confirmButtonText: 'Confirm'
-          })
+
+          this.$notify({
+            title: this.$t('message.Warning'),
+            message: this.$t('message.Yourpasswordisenteredincorrectly'),
+            type: 'warning'
+          });
         }
       })
 
@@ -305,8 +307,8 @@ export default {
             this.showVerify = true
           }else{
             this.$notify({
-              title: 'warning',
-              message: 'Operation failed, please try again later.',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Operationfailedpleasetrylater'),
               type: 'warning'
             });
           }
@@ -322,13 +324,12 @@ export default {
             send_method : "phone"
           }
         }).then((res) => {
-          console.log(res)
           if (res.msg.code === 200) {
             this.showVerify = true
           }else{
             this.$notify({
-              title: 'warning',
-              message: 'Operation failed, please try again later.',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Operationfailedpleasetrylater'),
               type: 'warning'
             });
           }
@@ -354,21 +355,21 @@ export default {
             user.user_identity_confirmation.email_verified = "true"
             this.$store.commit('userUpdate', user)
             this.$notify({
-              title: 'success',
-              message: 'Operation is successful',
+              title: this.$t('message.Success'),
+              message: this.$t('message.Operationissuccessful'),
               type: 'success'
             });
             this.verificationCode = '';
           }else if(res.msg.code === 952){
             this.$notify({
-              title: 'warning',
-              message: 'incorrect verification code',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.incorrectverificationcode'),
               type: 'warning'
             });
           }else{
             this.$notify({
-              title: 'warning',
-              message: 'Operation failed, please try again later.',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Operationfailedpleasetrylater'),
               type: 'warning'
             });
           }
@@ -389,21 +390,21 @@ export default {
             user.user_identity_confirmation.phone_verified = "true"
             this.$store.commit('userUpdate', user)
             this.$notify({
-              title: 'success',
-              message: 'Operation is successful',
+              title: this.$t('message.Success'),
+              message: this.$t('message.Operationissuccessful'),
               type: 'success'
             });
             this.verificationCode = '';
           }else if(res.msg.code === 952){
             this.$notify({
-              title: 'warning',
-              message: 'incorrect verification code',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.incorrectverificationcode'),
               type: 'warning'
             });
           }else{
             this.$notify({
-              title: 'warning',
-              message: 'Operation failed, please try again later.',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Operationfailedpleasetrylater'),
               type: 'warning'
             });
           }

@@ -1,18 +1,18 @@
 <template>
   <div class="wallet-detail">
-    <button @click="toCreate">Create</button>
+    <!--<button @click="toCreate">Create</button>-->
     <div>
         <div class="wallet-list">
             <div class="wallet-wrap-top flex-wrap flex-center-between">
-              <div class="top-left">Transfer</div>
+              <div class="top-left">{{$t('message.Transfer')}}</div>
             </div>
           <div class="wallet-wrap-down flex-wrap flex-center-between">
             <div class="flex-wrap flex-column-center">
               <p>PPS</p>
-              <input type="number" class="down-left" placeholder="Amount" v-model="Amount" value="walletList.name"/>
+              <input type="number" class="down-left" :placeholder="$t('message.Amount')" v-model="Amount" value="walletList.name"/>
             </div>
             <div class="down-right">
-              <span>Balance</span>
+              <span>{{$t('message.Balance')}}</span>
               <span class="pps-price">{{walletList.balance}}</span>
               <span class="pps-pps">PPS</span>
             </div>
@@ -20,24 +20,24 @@
 
           <div class="wallet-wrap-down flex-wrap flex-center-between">
             <div class="flex-wrap flex-column-center">
-              <p>TO</p>
-              <input class="down-left" placeholder="Pleade enter PPS address" v-model="TOaddress" value="walletList.name"/>
-              <span class="warning"  v-show="Wallettype">Please enter the correct wallet address</span>
+              <p>{{$t('message.TO')}}</p>
+              <input class="down-left" :placeholder="$t('message.PleadeenterPPSaddress')" v-model="TOaddress" value="walletList.name"/>
+              <span class="warning"  v-show="Wallettype">{{$t('message.Pleaseenterthecorrectwalletaddress')}}</span>
             </div>
           </div>
 
             <div class="choose-btn">
-              <button class="back-btn" @click="$router.go(-1);">Back</button>
-              <button class="create-btn" @click="dialogTransfer">Confirm</button>
+              <button class="back-btn" @click="$router.go(-1);">{{$t('message.Back')}}</button>
+              <button class="create-btn" @click="dialogTransfer">{{$t('message.Confirm')}}</button>
             </div>
         </div>
     </div>
     <el-dialog
       :visible.sync="dialogTransfershow" class="checkoutWrap">
       <div class="input-wrap">
-        <input type="password" placeholder="Payment password" v-model="userPassword">
+        <input type="password" :placeholder="$t('message.Paymentpassword')" v-model="userPassword">
       </div>
-      <div class="button" @click="toTransfer">Confirm and pay</div>
+      <div class="button" @click="toTransfer">{{$t('message.Confirmandpay')}}</div>
     </el-dialog>
   </div>
 </template>
@@ -65,8 +65,9 @@
       if(this.Amount != "" || this.TOaddress != ""){
         if(this.walletList.balance < this.Amount){
 
-          this.$message({
-            message: 'Insufficient balance',
+          this.$notify({
+            title: this.$t('message.Warning'),
+            message: this.$t('message.Insufficientbalance'),
             type: 'warning'
           });
 
@@ -94,19 +95,23 @@
         }
       }).then((res) => {
         if (res.msg.code === 200) {
-          this.$message({
-            message: 'Successful transfer',
-            type: 'success'
+
+          this.$notify({
+            title: this.$t('message.Success'),
+            message: this.$t('message.Successfultransfer'),
+            type: 'warning'
           });
           this.dialogTransfer = false;
         } else {
           var message = 0;
           if(res.msg.code == 952){
-              message = "The password is incorrect"
+              message = this.$t('message.Thepasswordisincorrect')
           }
-          this.$alert(message, 'Warning', {
-            confirmButtonText: 'Confirm'
-          })
+          this.$notify({
+            title: this.$t('message.Success'),
+            message: message,
+            type: 'warning'
+          });
         }
       })
 

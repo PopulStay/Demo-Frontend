@@ -2,25 +2,27 @@
 <div class="verify-model-out">
   <el-dialog :visible.sync="$store.state.show_verify" :close-on-click-modal="true"  @close="close">
     <div class="login-frame-content">
-      <p class="red-color XY-fz30 lineh36" style="margin-bottom:14px;">Verify your identity</p>
+      <p class="red-color XY-fz30 lineh36" style="margin-bottom:14px;">{{$t('message.Resetpassword')}}</p>
       <div class="input-text">
         <phoneInput v-model="number" ref="phoneInput"></phoneInput>
       </div>
       <div class="input-text">
-        <input type="text" placeholder="Verification code" class="psw" v-model="code" maxlength="6">
+        <input type="text" :placeholder="$t('message.Verificationcode')" class="psw" v-model="code" maxlength="6">
         <p @click="countDown" class="login-sendCode XY-cursorp red-color XY-fz16" :class="{disabled: !this.canClick}">{{content}}</p>
       </div>
       <div class="input-text">
-        <input type="password" placeholder="Password" class="psw" v-model="newpsw" @blur="blurPassword"/>
+        <input type="password" :placeholder="$t('message.Password')" class="psw" v-model="newpsw" @blur="blurPassword"/>
       </div>
-      <p class="warning-password" v-show="passwordStrength">Please enter your password in the format 6-20 letters, numbers, special symbols</p>
-      <button class="login-btn XY-fz16 XY-colf XY-cursorp" @click="toNewpsw">Next</button>
+      <p class="warning-password" v-show="passwordStrength">{{$t('message.Pleaseenteryourpasswordintheformat')}}</p>
+      <button class="login-btn XY-fz16 XY-colf XY-cursorp" @click="toNewpsw">{{$t('message.Next')}}</button>
       <div class="flex-wrap flex-center verify-Next XY-cursorp" @click="toLogin">
         <i class="iconfont icon-54 red-color"></i>
-        <span class="red-color XY-fz16">Back to Log in</span>
+        <span class="red-color XY-fz16">{{$t('message.BacktoLogin')}}</span>
       </div>
     </div>
   </el-dialog>
+  <p v-if="$i18n.locale != language ? onloading() : null"></p>
+
 </div>
 </template>
 
@@ -34,11 +36,12 @@ export default {
   },
   data () {
     return {
+      language: this.$i18n.locale,
       psw: '',
       code: '',
       checked: false,
       isCode: false,
-      content: 'Send',
+      content: this.$t('message.Send'),
       totalTime: 60,
       canClick: true,
       showThis: null,
@@ -49,42 +52,50 @@ export default {
     }
   },
   methods: {
+    onloading(){
+      this.language = this.$i18n.locale;
+      this.content = this.$t('message.Send')
+    },
     countDown () {
 
-      let data = {}
-      if (this.number.indexOf('@') === -1) {
-        data = {phone_number: this.$refs.phoneInput.first + this.number, send_method: 'phone'}
-      } else {
-        data = {email_address: this.number, send_method: 'email'}
+      if(this.$store.state.warning == ""){
+        let data = {}
+        if (this.number.indexOf('@') === -1) {
+          data = {phone_number: this.$refs.phoneInput.first + this.number, send_method: 'phone'}
+        } else {
+          data = {email_address: this.number, send_method: 'email'}
+        }
+
+        if (this.canClick && this.$store.state.warning==""){
+          this.$post(this.userUrl + '/user', {
+            action: 'sendUserUpdatePasswordVerificationCode',
+            data: data
+          }).then((res) => {
+            if (res.msg.code === 200) {
+              this.canClick = false
+              this.content = this.totalTime + 's'
+              console.log(this.content)
+              this.clock = window.setInterval(() => {
+                this.totalTime--
+                this.content = this.totalTime + 's'
+                if (this.totalTime < 0) {
+                  window.clearInterval(this.clock)
+                  this.content = this.$t('message.Send')
+                  this.totalTime = 60
+                  this.canClick = true
+                }
+              }, 1000)
+            } else {
+              this.$notify({
+                title: this.$t('message.Warning'),
+                message: this.$t('message.Operationfailedpleasetrylater'),
+                type: 'warning'
+              });
+            }
+          })
+        }
       }
 
-      if (this.canClick && this.$store.state.warning==""){
-        this.$post(this.userUrl + '/user', {
-          action: 'sendUserUpdatePasswordVerificationCode',
-          data: data
-        }).then((res) => {
-          if (res.msg.code === 200) {
-            this.canClick = false
-            this.content = this.totalTime + 's'
-            this.clock = window.setInterval(() => {
-              this.totalTime--
-              this.content = this.totalTime + 's'
-              if (this.totalTime < 0) {
-                window.clearInterval(this.clock)
-                this.content = 'Send'
-                this.totalTime = 60
-                this.canClick = true
-              }
-            }, 1000)
-          } else {
-            this.$notify({
-              title: 'warning',
-              message: 'Operation failed, please try later.',
-              type: 'warning'
-            });
-          }
-        })
-      }
 
     },
     toLogin () {
@@ -108,9 +119,12 @@ export default {
             this.$store.state.show_verify = false
             this.$store.state.show_resetcuss = true
           } else {
-            this.$alert('Operation failed, please try later', 'Warning', {
-              confirmButtonText: 'Confirm'
-            })
+
+            this.$notify({
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Operationfailedpleasetrylater'),
+              type: 'warning'
+            });
           }
         })
       }else{
@@ -122,20 +136,19 @@ export default {
             new_encrypted_password: sha256(this.newpsw)
           }
         }).then((res) => {
-          console.log(res)
           if (res.msg.code === 200) {
             this.$store.state.show_verify = false
             this.$store.state.show_resetcuss = true
           } else if(res.msg.code === 952){
             this.$notify({
-              title: 'warning',
-              message: 'Account or password entered incorrectly.',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.incorrectverificationcode'),
               type: 'warning'
             });
           } else {
             this.$notify({
-              title: 'warning',
-              message: 'Operation failed, please try later.',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Operationfailedpleasetrylater'),
               type: 'warning'
             });
           }
@@ -151,7 +164,8 @@ export default {
       this.newpsw = ''
       this.code = ''
       this.$refs.phoneInput.number = ''
-      this.content = 'Send'
+      this.content = this.$t('message.Send')
+      this.totalTime = 60
       window.clearInterval(this.clock)
       this.canClick = true
     }

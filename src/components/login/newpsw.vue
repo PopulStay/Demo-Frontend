@@ -43,9 +43,12 @@ export default {
           this.$store.state.show_newpsw = false
           this.$store.state.show_resetcuss = true
         } else {
-          this.$alert('Operation failed, please try later', 'Warning', {
-            confirmButtonText: 'Confirm'
-          })
+
+          this.$notify({
+            title: this.$t('message.Warning'),
+            message: this.$t('message.Operationfailedpleasetrylater'),
+            type: 'warning'
+          });
         }
       })
     },

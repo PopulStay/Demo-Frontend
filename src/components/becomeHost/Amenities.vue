@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="becomeHost-header">
-      <div class="title">Basics</div>
-      <h3>Amenities</h3>
+      <div class="title">{{$t('message.Basics')}}</div>
+      <h3>{{$t('message.Amenities')}}</h3>
     </div>
 
     <div class="amenities flex-wrap">
@@ -14,7 +14,7 @@
     </div>
 
     <div class="safeAmenities">
-      <h3>Safe Amenities</h3>
+      <h3>{{$t('message.SafeAmenities')}}</h3>
       <ul>
         <el-checkbox-group v-model="$store.state.hostinfo.safeAmenitiesArr"  @change="changesafeAment">
           <li v-for="(item, index) in SafeAmenities" :key="item.safeAmenityId"><el-checkbox :label="item.safeAmenityId">{{item.safeAmenity}}</el-checkbox></li>
@@ -23,7 +23,7 @@
     </div>
 
     <div class="spaces">
-      <h3>Spaces</h3>
+      <h3>{{$t('message.Spaces')}}</h3>
       <ul>
         <el-checkbox-group v-model="$store.state.hostinfo.SpacesArr"  @change="changeSpaces">
           <li v-for="(item, index) in Spaces" :key="item.spaceId"><el-checkbox :label="item.spaceId">{{item.space}}</el-checkbox></li>
@@ -31,7 +31,7 @@
       </ul>
     </div>
 
-    <button class="r-button next" @click="next">Next</button>
+    <button class="r-button next" @click="next">{{$t('message.Next')}}</button>
 
   </div>
 </template>

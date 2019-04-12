@@ -5,34 +5,33 @@
     </ul>
     <div class="wrap">
       <div class="header flex-wrap flex-content-between">
-        <p class="h3">{{this.$route.query.gueststitle}}</p>
+        <p class="h3">{{$route.query.gueststitle}}</p>
         <!--<p class="time">Booked on 25 October, 2018</p>-->
       </div>
       <div class="content flex-wrap">
         <div class="flex-1 c-left">
-          <img :src="place_data.picture ? place_data.picture[0].originalUrl : '../../../assets/images/trips/checked-in.png'" alt="" @click="toListing($route.query.tripsitem.place_id)">
+          <img :src="place_data.picture ? place_data.picture[0].originalUrl : '../../../assets/images/trips/checked-in.png'" alt="" @click="toListing($route.query.guestsitem.place_id)">
         </div>
         <div class="c-right">
           <!--<h3>Lorem ipsum dolor sit amet consectetur adipiscing elit</h3>-->
           <ul>
             <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Booking ID</div>
-              <div class="text flex-2 flex-wrap">{{this.$route.query.guestsitem.booking_id}}</div>
+              <div class="title flex-1">{{$t('message.Booking')}} ID</div>
+              <div class="text flex-2 flex-wrap">{{$route.query.guestsitem.booking_id}}</div>
             </li>
             <li class="flex-wrap">
               <div class="title flex-1">
-                <p class="check">Check-in</p>
-                <p class="check">Check-out</p>
+                <p class="check">{{$t('message.Checkin')}}</p>
               </div>
               <div class="text flex-2">
-                <p class="check">{{this.$route.query.guestsitem.start_time}} {{this.$route.query.guestsitem.available_checkin_time_from}}:00 - {{this.$route.query.guestsitem.available_checkin_time_to}}:00</p>
-                <p class="check">{{this.$route.query.guestsitem.end_time}} {{this.$route.query.guestsitem.check_out_time}}:00</p>
-                <p class="check">{{(new Date(this.$route.query.guestsitem.end_time) - new Date(this.$route.query.guestsitem.start_time)) / 1000 / 60 / 60 / 24}} night</p>
+                <p class="check">{{getMoment($route.query.guestsitem.start_time)}} {{$route.query.guestsitem.available_checkin_time_from}}:00 - {{$route.query.guestsitem.available_checkin_time_to}}:00</p>
+                <p class="check">{{getMoment($route.query.guestsitem.end_time)}} {{$route.query.guestsitem.check_out_time}}:00</p>
+                <p class="check">{{(new Date($route.query.guestsitem.end_time) - new Date($route.query.guestsitem.start_time)) / 1000 / 60 / 60 / 24}} {{$t('message.night')}}</p>
               </div>
             </li>
             <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Contact details</div>
-              <div class="text flex-2 flex-wrap">{{this.user.email_address}}</div>
+              <div class="title flex-1">{{$t('message.Contactdetails')}}</div>
+              <div class="text flex-2 flex-wrap">{{user.email_address}}</div>
             </li>
             <!--<li class="flex-wrap flex-align-center">-->
               <!--<div class="title flex-1">Host name</div>-->
@@ -47,7 +46,7 @@
               <!--<div class="text flex-2 flex-wrap">2 adults</div>-->
             <!--</li>-->
             <li class="flex-wrap flex-align-center">
-              <div class="title flex-1">Payment details</div>
+              <div class="title flex-1">{{$t('message.Paymentdetails')}}</div>
               <!--<div class="text flex-2 flex-wrap">-->
                 <!--<span class="flex-2">{{parseInt(this.$route.query.guestsitem.cha_time)}} night</span>-->
                 <!--<span class="flex-1">{{this.$route.query.guestsitem.currency}}</span>-->
@@ -58,34 +57,34 @@
               <div class="title flex-1"></div>
               <div class="text last-li flex-2">
                 <p class="flex-wrap">
-                  <span class="flex-2">Cleaning fee</span>
-                  <span class="flex-1">{{this.$route.query.guestsitem.currency}}</span>
-                  <span class="flex-1">0</span>
+                  <span class="flex-2">{{$t('message.Cleaningfee')}}</span>
+                  <span class="flex-1">{{$route.query.guestsitem.currency}}</span>
+                  <span class="flex-1">{{$route.query.guestsitem.cleanup_service_fee}}</span>
                 </p>
                 <p class="flex-wrap">
-                  <span class="flex-2">Service fee</span>
-                  <span class="flex-1">{{this.$route.query.guestsitem.currency}}</span>
-                  <span class="flex-1">{{this.$route.query.guestsitem.cleanup_service_fee}}</span>
+                  <span class="flex-2">{{$t('message.Servicefee')}}</span>
+                  <span class="flex-1">{{$route.query.guestsitem.currency}}</span>
+                  <span class="flex-1">{{($route.query.guestsitem.total_price - $route.query.guestsitem.price).toFixed(2)}}</span>
                 </p>
                 <p class="flex-wrap">
-                  <span class="flex-2 red">Total</span>
-                  <span class="flex-1 red">{{this.$route.query.guestsitem.currency}}</span>
-                  <span class="flex-1 red">{{this.$route.query.guestsitem.total_price}}</span>
+                  <span class="flex-2 red">{{$t('message.Total')}}</span>
+                  <span class="flex-1 red">{{$route.query.guestsitem.currency}}</span>
+                  <span class="flex-1 red">{{$route.query.guestsitem.total_price}}</span>
                 </p>
               </div>
             </li>
           </ul>
           <div class="button-wrap flex-wrap">
-            <div class="button r-button" @click="$router.go(-1)">Back</div>
+            <div class="button r-button" @click="$router.go(-1)">{{$t('message.Back')}}</div>
           </div>
         </div>
       </div>
 
       <!-- 待定取消弹窗  -->
       <el-dialog  :visible.sync="pendingShow" width="500px" class="pendingWrap">
-        <h3>Cancel my booking</h3>
-        <p>Please let us know the reason why you</p>
-        <p>wish to cancel your booking.</p>
+        <h3>{{$t('message.Cancelmybooking')}}</h3>
+        <p>{{$t('message.Pleaseletusknowthereasonwhyyou')}}</p>
+        <p>{{$t('message.wishtocancelyourbooking')}}</p>
         <div class="select-wrap">
           <el-select v-model="value11" placeholder="Please select one reason" style="width:100% !important;">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"  class="pendingWrap-select">
@@ -94,9 +93,12 @@
             </el-option>
           </el-select>
         </div>
-        <div class="r-button button" @click="submit">Submit</div>
+        <div class="r-button button" @click="submit">{{$t('message.Submit')}}</div>
       </el-dialog>
     </div>
+
+    <p v-if="$i18n.locale != language ? onloading() : null"></p>
+
   </div>
 </template>
 
@@ -107,9 +109,10 @@
 export default {
   data () {
     return {
+      language: this.$i18n.locale,
       pendingShow: false,
       value11: '',
-      guestsTabList: ['All', 'Cancelled'],
+      guestsTabList: [this.$t('message.All'), this.$t('message.Completed')],
       options: [{
         value: '1',
         label: 'Please select one reason'
@@ -131,7 +134,6 @@ export default {
     }
   },
   beforeMount () {
-    console.log(this.$route.query.guestsitem)
 
     if(this.$route.query.guestsitem.place_id){
       this.getplace(this.$route.query.guestsitem.place_id)
@@ -144,6 +146,10 @@ export default {
     this.user = this.$store.state.userInfo;
   },
   methods: {
+    onloading(){
+      this.language = this.$i18n.locale;
+      this.guestsTabList = [this.$t('message.All'), this.$t('message.Completed')];
+    },
     cancel () {
       this.pendingShow = true
     },
@@ -171,14 +177,21 @@ export default {
             this.place_data = res.data
           }else{
             this.$notify({
-              title: 'warning',
-              message: 'The house has been deleted.',
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Thehousehasbeendeleted'),
               type: 'warning'
             });
             this.$router.push('/trips/guests')
           }
         }
       })
+    },
+    getMoment(time){
+      if(this.$i18n.locale == 'cn'){
+        return moment(time).locale("zh-cn").format('LL')
+      }else{
+        return moment(time).locale("en-au").format('DD MMM YYYY')
+      }
     },
     toListing (placeId) {
       this.$router.push({path: '/listing/lstHome', query: {id: placeId}})

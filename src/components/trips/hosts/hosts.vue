@@ -1,18 +1,20 @@
 <template>
-  <div>
+  <div v-loading.fullscreen.lock="hostsLoading">
     <ul class="tabList flex-wrap">
       <li v-for="(item, index) in hostsTabList" :key="index" :class="hostsTabTitle == item ? 'active' : ''" @click="tripsTabClick(item, index)">{{item}}</li>
     </ul>
-    <ul class="list" v-if="hostsTabTitle == 'Published'">
+    <ul class="list" v-if="hostsTabTitle == $t('message.Published')">
       <li v-for="(item, index) in dataList" :key="index">
 
         <div class="imgWrap" :style="{backgroundImage:(item.picture[0] ? 'url(' + item.picture[0].smallPictureUrl +')' :'url('+Placechart+')')}">
         <!--<div class="imgWrap" :style="{backgroundImage: 'url(' + item.picture[0].smallPictureUrl +')'}">-->
-          <div class="hover" v-if="hostsTabTitle == 'Published'">
+          <div class="hover" v-if="hostsTabTitle == $t('message.Published')">
             <div slot="reference" class="modification">
               <ul class="popover-content">
-                <li class="red"  @click="hostsPlaceEdit(item.placeId,item.tempPlaceId)">Edit</li>
-                <li @click="hostsPublishedDelete(item.placeId,item.tempPlaceId)">Delete</li>
+                <li v-if="item.tempPlaceId" @click="hostsPlaceEdit(item.placeId,item.tempPlaceId)">{{$t('message.Edit')}}</li>
+                <li @click="hostsPublishedDelete(item.placeId,item.tempPlaceId)">{{$t('message.Delete')}}</li>
+                <li @click="ImportCalendarShow = true; ImportCalendarplaceId = item.placeId">{{$t('message.Importcalendar')}}</li>
+                <li @click="ExportCalendar(item.placeId)">{{$t('message.Exportcalendar')}}</li>
               </ul>
               <i class="icon iconfont icon-xiugai"></i>
             </div>
@@ -20,34 +22,52 @@
         </div>
 
         <p class="text" @click="toListing(item.placeId)">{{ item.placeName}}</p>
-        <p class="number" @click="toListing(item.placeId)">{{ item.prices[0].bestPrice }} {{ item.prices[0].currency }} per night</p>
+        <p class="number" @click="toListing(item.placeId)">{{$t('message.pernightcn')}} {{ item.prices[0].bestPrice }} {{ item.prices[0].currency }} {{$t('message.pernighten')}}</p>
       </li>
-      <div v-if="!dataList.length" class="no-data">No data</div>
+      <div v-if="!dataList.length" class="no-data">{{$t('message.Nodata')}}</div>
     </ul>
 
 
-    <ul class="list" v-if="hostsTabTitle == 'Drafts'">
+    <ul class="list" v-if="hostsTabTitle == $t('message.Drafts')">
       <li v-for="(item, index) in DraftsList" :key="index" v-if="!item.becomehostTitle.status">
         <div class="imgWrap" :style="{backgroundImage:(item.host.pictures[0] ? 'url(' + item.host.pictures[0].smallPictureUrl +')' :'url('+Placechart+')')}">
-          <div class="hover" v-if="hostsTabTitle == 'Drafts'">
+          <div class="hover" v-if="hostsTabTitle == $t('message.Drafts')">
               <div slot="reference" class="modification">
                 <ul class="popover-content">
-                  <li class="red"  @click="hostsEdit(item.tempPlaceId)">Edit</li>
-                  <li @click="hostsDraftsDelete(item.tempPlaceId)">Delete</li>
+                  <li class="red"  @click="hostsEdit(item.tempPlaceId)">{{$t('message.Edit')}}</li>
+                  <li @click="hostsDraftsDelete(item.tempPlaceId)">{{$t('message.Delete')}}</li>
                 </ul>
                 <i class="icon iconfont icon-xiugai"></i>
               </div>
           </div>
         </div>
         <p class="text" v-if="item.host.placeName">{{ item.host.placeName }}</p>
-        <p class="text" v-else>No title has been set yet</p>
+        <p class="text" v-else>{{$t('message.Notitlehasbeensetyet')}}</p>
 
-        <p class="number" v-if="item.host.prices[0].bestPrice">{{item.host.prices[0].bestPrice}} {{item.host.prices[0].currency}} per night</p>
-        <p class="number" v-else>No price set yet</p>
+        <p class="number" v-if="item.host.prices[0].bestPrice">{{$t('message.pernightcn')}} {{item.host.prices[0].bestPrice}} {{item.host.prices[0].currency}} {{$t('message.pernighten')}}</p>
+        <p class="number" v-else>{{$t('message.Nopricesetyet')}}</p>
 
       </li>
-      <div v-if="!DraftsListshow" class="no-data">No data</div>
+      <div v-if="!DraftsListshow" class="no-data">{{$t('message.Nodata')}}</div>
     </ul>
+
+
+    <el-dialog
+      title="Import calendar"
+      :visible.sync="ImportCalendarShow"
+      class="checkoutWrap"
+      center>
+      <div class="content">
+        <p>{{$t('message.CalendarName')}}</p>
+        <input type="text" v-model="calendarName">
+        <p>{{$t('message.CalendarUrl')}}</p>
+        <input type="text" v-model="calendarUrl">
+      </div>
+      <div class="btn">
+        <el-button class="Confirm" @click=" ImportCalendar()">{{$t('message.Confirm')}}</el-button>
+        <el-button @click="ImportCalendarShow = false">{{$t('message.Cancel')}}</el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
@@ -58,14 +78,20 @@ import list1 from '../../../assets/images/index/list-1.jpg'
 export default {
   data () {
     return {
-      hostsTabList: ['Published', 'Drafts'],
-      hostsTabTitle: 'Published',
+      language: this.$i18n.locale,
+      hostsTabList: [this.$t('message.Published'), this.$t('message.Drafts')],
+      hostsTabTitle: this.$t('message.Published'),
+      hostsLoading:true,
       dataList: [],
       DraftsList: [],
       user:'',
       placeName: [],
       Placechart:list1,
-      DraftsListshow:false
+      calendarName:'',
+      calendarUrl:'',
+      DraftsListshow:false,
+      ImportCalendarShow:false,
+      ImportCalendarplaceId:""
     }
   },
   created () {
@@ -73,38 +99,42 @@ export default {
 
     let title = this.$route.query.title
     if (title) this.hostsTabTitle = title
-    else this.hostsTabTitle = 'Published'
+    else this.hostsTabTitle = this.$t('message.Published')
     this.getHostsList()
   },
   methods: {
+    onloading(){
+      this.language = this.$i18n.locale;
+      this.hostsTabList = [this.$t('message.Published'), this.$t('message.Drafts')]
+      this.hostsTabTitle = this.$t('message.Published')
+      this.getHostsList()
+    },
     getHostsList () {
-      if(this.hostsTabTitle == 'Published'){
+      if(this.hostsTabTitle == this.$t('message.Published')){
         this.hostsPublished()
       }else{
         this.hostsDrafts()
       }
-
     },
     hostsPublished(){
+      this.hostsLoading = true
       this.$get(this.placeUrl + '/places', {
         hostId: this.user.user_id
       }).then((res) => {
+        this.hostsLoading = false
         if(res.code == 200){
           res.data.dataList.forEach((val, key) => {
-            if(val.placeName){
-              this.translation(val.placeName)
-            }else{
-              this.translation("暂未设置")
-            }
           })
           this.dataList = res.data.dataList
         }
       })
     },
     hostsDrafts(){
+      this.hostsLoading = true
       this.$get(this.partialplaceUrl + '/temp/places', {
         userId: this.user.user_id
       }).then((res) => {
+        this.hostsLoading = false
         if(res.code == 200){
           this.DraftsList = res.data
 
@@ -122,25 +152,6 @@ export default {
       this.placeName = []
       this.getHostsList()
     },
-    translation(obj){
-      let placeName = this.placeName;
-      this.$jsonp(this.youdaoUrl+'/api',
-        {
-          q: obj,
-          appKey: this.$store.state.appKey,
-          salt: this.$store.state.salt,
-          from: '',
-          to: 'en',
-          sign:this.$md5(this.$store.state.appKey+obj+this.$store.state.salt+this.$store.state.secret_key)
-        }
-      ).then(json => {
-        return json.translation[0]
-        placeName.push(json.translation[0])
-        this.placeName = placeName
-      }).catch(err => {
-        console.log(err)
-      })
-    },
     toListing (placeId) {
       this.$router.push({path: '/listing/lstHome', query: {id: placeId}})
     },
@@ -149,19 +160,18 @@ export default {
       this.$router.push('/becomeHost/propertyTypes')
     },
     hostsDraftsDelete(tempPlaceId){
-      this.$confirm('This action will permanently delete the listing, Whether to continue?', 'prompt', {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
+      this.$confirm(this.$t('message.ThisactionwillpermanentlydeletethelistingWhethertocontinue'), this.$t('message.prompt'), {
+        confirmButtonText: this.$t('message.OK'),
+        cancelButtonText: this.$t('message.Cancel'),
         type: 'warning'
       }).then(() => {
         this.$delete(this.partialplaceUrl + '/temp/place', {
           tempPlaceId: tempPlaceId
         }).then((res) => {
-          console.log(res)
           if(res.code == 200){
             this.$message({
               type: 'success',
-              message: 'successfully deleted!'
+              message: this.$t('message.successfullydeleted')
             });
             this.hostsDrafts()
           }
@@ -169,7 +179,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: 'Undelete'
+          message: this.$t('message.Undelete')
         });
       });
     },
@@ -180,9 +190,9 @@ export default {
     },
     hostsPublishedDelete(placeId,tempPlaceId){
       let deltempPlaceId = tempPlaceId;
-      this.$confirm('This action will permanently delete the listing, Whether to continue?', 'prompt', {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
+      this.$confirm(this.$t('message.ThisactionwillpermanentlydeletethelistingWhethertocontinue'), this.$t('message.prompt'), {
+        confirmButtonText: this.$t('message.OK'),
+        cancelButtonText: this.$t('message.Cancel'),
         type: 'warning'
       }).then(() => {
         this.$delete(this.placeUrl + '/place', {
@@ -190,8 +200,8 @@ export default {
         }).then((res) => {
           if(res.code == 200){
             this.$notify({
-              title: 'success',
-              message: 'Operation is successful',
+              title: this.$t('message.Success'),
+              message: this.$t('message.Operationissuccessful'),
               type: 'success'
             });
             this.hostsPublished()
@@ -202,15 +212,51 @@ export default {
                 this.hostsDrafts()
               }
             })
-
           }
         })
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: 'Undelete'
+          message: this.$t('message.Undelete')
         });
       });
+    },
+    ImportCalendar(){
+      if(this.calendarName != "" && this.calendarUrl != ""){
+        this.$post('http://testapi.calendar.populstay.com' + '/api/v1/extcalendars', {
+          calendarName: this.calendarName,
+          calendarUrl: this.calendarUrl,
+          placeId: this.ImportCalendarplaceId
+        }).then((res) => {
+          console.log(res)
+        })
+      }
+
+    },
+    ExportCalendar(placeId){
+      this.$get('http://testapi.calendar.populstay.com' + '/api/v1/calendars/'+placeId).then((res) => {
+
+        this.$confirm(res.calendarUrl, this.$t('message.Exportcalendar'), {
+          confirmButtonText: this.$t('message.Confirm'),
+          showCancelButton:false,
+          center: true
+        })
+
+      }).catch((err) => {
+        if(err.response.data.status == 404){
+          this.$notify({
+            message: this.$t('message.Operationfailedpleasetrylater'),
+            showClose:false,
+            type: 'warning',
+            onClick(){
+              this.close()
+            }
+          });
+        }
+      })
+    },
+    close(){
+      this.$notify.close()
     }
   }
 }
@@ -319,8 +365,8 @@ $red-color: #F4436C;
   right: 0px;
   top: 37px;
   z-index: 1;
-  width: 70px;
-  padding: 0 20px;
+  width: 120px;
+  padding: 0 10px;
   background: white;
   border-radius: 3px;
   display: none;
@@ -332,7 +378,10 @@ $red-color: #F4436C;
     height: 20px;
     cursor: pointer;
     width: auto;
-    margin: 20px 0 ;
+    margin: 10px 0 ;
+    &:hover{
+      color: $red-color;
+    }
   }
 
   .red {
@@ -341,13 +390,49 @@ $red-color: #F4436C;
   }
 
 }
+.checkoutWrap{
+  div.content{
+    p{
+      font-size: 16px;
+      font-family: Roboto-Regular;
+    }
+    input{
+      width: 100%;
+      border: 1px solid #e6e7e8;
+      height: 40px;
+      margin: 10px 0 20px;
+    }
+  }
+  div.btn{
+    display: flex;
+    justify-content: space-between;
+
+    button{
+      &.Confirm{
+        background: $red-color;
+        color: white;
+        &:hover{
+          color: white;
+          border: 1px solid $red-color;
+        }
+      }
+      &:hover{
+        color: $red-color;
+        border: 1px solid $red-color;
+      }
+    }
+  }
+}
 
 @media only screen  and (max-width: 900px) {
   .list {
     li {
       width: 100%;
-      height: auto;
+      height:auto;
       margin: 20px 0;
+      .imgWrap{
+        height: 240px;
+      }
     }
   }
 }

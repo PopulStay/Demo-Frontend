@@ -1,9 +1,9 @@
 <template>
   <div class="content flex-wrap flex-center">
       <i class="icon iconfont icon-success"></i>
-      <h3>Thank you! You’ve successfully submitted your property.</h3>
+      <h3>{{$t('message.ThankyouYouvesuccessfullysubmittedyourproperty')}}</h3>
       <div class="flex-wrap button-wrap">
-        <div class="r-button button" @click="success">View my property</div>
+        <div class="r-button button" @click="success">{{$t('message.Viewmyproperty')}}</div>
 
         <!--<div class="r-button button">-->
           <!--<router-link to="/trips/editProfile">Edit submission</router-link>-->
@@ -97,8 +97,6 @@
     },
     beforeDestroy(){
       this.clearhost()
-
-      console.log(this.$store.state)
     }
   }
 </script>

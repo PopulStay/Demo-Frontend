@@ -1,30 +1,30 @@
 <template>
   <div>
     <div class="becomeHost-header">
-      <div class="title">Space</div>
-      <h3>Review our policies before you submit</h3>
+      <div class="title">{{$t('message.Space')}}</div>
+      <h3>{{$t('message.Reviewourpoliciesbeforeyousubmit')}}</h3>
     </div>
     <div class="submit">
-      <p class="text">PopulStay will review the version you’re about to submit, so make sure you’re happy with it.<br>You can still go back and fine-tune your descriptions at any time.</p>
+      <p class="text">{{$t('message.PopulStaywillreviewtheversionyoureabout')}}</p>
       <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sodales enim ac justo vehicula faucibus. Quisque rutrum enim quis risus bibendum viverra. Pellentesque pellentesque odio lorem, a vulputate leo varius in. Curabitur ligula diam, aliquet a gravida mollis, sollicitudin id urna. Cras egestas urna dignissim dolor aliquet, id pellentesque erat bibendum. Quisque pellentesque erat ultricies, sollicitudin ex eget, rhoncus dui. Maecenas et euismod eros. Sed id sem gravida, luctus est sit amet, volutpat quam. Mauris semper malesuada quam ac molestie. Mauris aliquam scelerisque mauris. Duis ac pretium diam, quis pulvinar sapien. Sed tincidunt, erat vitae vulputate tincidunt, massa sapien semper urna, ac sollicitudin leo ipsum vitae lacus.</p>
       <ul>
-        <h5>By submitting, I confirm the following is true:</h5>
+        <h5>{{$t('message.BysubmittingIconfirmthefollowingistrue')}}</h5>
         <li>
-          <el-checkbox v-model="confirm1" @change="submitOK"> My experience complies with local laws.</el-checkbox>
+          <el-checkbox v-model="confirm1" @change="submitOK">{{$t('message.Myexperiencecomplieswithlocallaws')}}</el-checkbox>
           <p>Learn more about other laws (like business licensing) that may apply.</p>
         </li>
         <li>
-          <el-checkbox v-model="confirm2" @change="submitOK">I agree to the PopulStay Experiences Additional Terms of Service and Guest Refund Policy.</el-checkbox>
+          <el-checkbox v-model="confirm2" @change="submitOK">{{$t('message.IagreetothePopulStayExperiencesAdditional')}}</el-checkbox>
         </li>
         <li>
-          <el-checkbox v-model="confirm3" @change="submitOK">I confirm that my descriptions and photos are my own, and accurately reflect my experience.</el-checkbox>
+          <el-checkbox v-model="confirm3" @change="submitOK">{{$t('message.Iconfirmthatmydescriptionsandphotosaremyown')}}</el-checkbox>
         </li>
       </ul>
     </div>
 
     <button class="r-button next"
             :class="!confirmOK  ? 'disable' : null"
-            :disabled="!confirmOK" @click="next">Next</button>
+            :disabled="!confirmOK" @click="next">{{$t('message.Next')}}</button>
   </div>
 </template>
 <script>
@@ -83,8 +83,8 @@
                       this.postarrangements(res.data)
                     }else{
                       this.$notify({
-                        title: 'warning',
-                        message: 'Operation failed, please try later.',
+                        title: this.$t('message.Warning'),
+                        message: this.$t('message.Operationfailedpleasetrylater'),
                         type: 'warning'
                       });
                     }
@@ -93,8 +93,8 @@
 
               }else{
                 this.$notify({
-                  title: 'warning',
-                  message: 'Operation failed, please try later.',
+                  title: this.$t('message.Warning'),
+                  message: this.$t('message.Operationfailedpleasetrylater'),
                   type: 'warning'
                 });
               }
@@ -103,8 +103,8 @@
 
         }else{
           this.$notify({
-            title: 'warning',
-            message: 'Please complete the information.',
+            title: this.$t('message.Warning'),
+            message: this.$t('message.Pleasecompletetheinformation'),
             type: 'warning'
           });
         }
@@ -146,7 +146,6 @@
         this.$delete(this.partialplaceUrl + '/temp/place', {
           tempPlaceId: tempPlaceId
         }).then((res) => {
-          console.log(res)
           if(res.code != 200){
 
           }

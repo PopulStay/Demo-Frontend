@@ -1,14 +1,14 @@
 <template>
   <div>
      <div class="becomeHost-header">
-      <div class="title">Get ready</div>
-      <h3>Receive notification</h3>
+      <div class="title">{{$t('message.Getready')}}</div>
+      <h3>{{$t('message.ReservationTime')}}</h3>
     </div>
     <div class="reservation">
       <ul>
         <li>
-          <p class="label">Available Checkin Time From</p>
-          <el-select v-model="$store.state.host.availableCheckinTimeFrom">
+          <p class="label">{{$t('message.AvailableCheckinTimeFrom')}}</p>
+          <el-select v-model="$store.state.host.availableCheckinTimeFrom" :placeholder="$t('message.Select')">
             <el-option
               v-for="item in 24"
               :key="item"
@@ -18,8 +18,8 @@
           </el-select>
         </li>
         <li>
-          <p class="label">Available Checkin Time To</p>
-          <el-select v-model="$store.state.host.availableCheckinTimeTo" @change="$store.state.host.checkOutTime = ''">
+          <p class="label">{{$t('message.AvailableCheckinTimeTo')}}</p>
+          <el-select v-model="$store.state.host.availableCheckinTimeTo" @change="$store.state.host.checkOutTime = ''" :placeholder="$t('message.Select')">
             <el-option
               v-for="item in 24"
               :key="item"
@@ -29,8 +29,8 @@
           </el-select>
         </li>
         <li>
-          <p class="label">Check Out Time</p>
-          <el-select v-model="$store.state.host.checkOutTime">
+          <p class="label">{{$t('message.CheckOutTime')}}</p>
+          <el-select v-model="$store.state.host.checkOutTime" :placeholder="$t('message.Select')">
             <el-option
               v-for="item in 24"
               v-show="item < $store.state.host.availableCheckinTimeTo"
@@ -41,8 +41,8 @@
           </el-select>
         </li>
         <li>
-          <p class="label">Need Notice Day</p>
-          <el-select v-model="$store.state.hostinfo.needNoticeDay" @change="needNoticeDayFUN">
+          <p class="label">{{$t('message.NeedReserveDay')}}</p>
+          <el-select v-model="$store.state.hostinfo.needNoticeDay" @change="needNoticeDayFUN" :placeholder="$t('message.Select')">
             <el-option
               v-for="item in needNoticeDayoptions"
               :key="item.value"
@@ -52,8 +52,8 @@
           </el-select>
         </li>
         <li>
-          <p class="label">Need Notice Before Time</p>
-          <el-select v-model="$store.state.host.needNoticeBeforeTime">
+          <p class="label">{{$t('message.NeedReserveBeforeTime')}}</p>
+          <el-select v-model="$store.state.host.needNoticeBeforeTime" :placeholder="$t('message.Select')">
             <el-option
               v-for="item in 24"
               v-if="item > 5 "
@@ -77,7 +77,7 @@
                     $store.state.host.needNoticeBeforeTime == '' ||
                     $store.state.host.availableCheckinTimeFrom == '' ||
                     $store.state.host.availableCheckinTimeTo == ''"
-            @click="next" >Next</button>
+            @click="next" >{{$t('message.Next')}}</button>
 
 
   </div>
@@ -90,23 +90,23 @@ export default {
       needNoticeDayoptions: [
         {
           value: '0',
-          label: 'today'
+          label: this.$t('message.today')
         },
         {
           value: '1',
-          label: '1 day'
+          label: '1' + this.$t('message.day')
         },
         {
           value: '2',
-          label: '2 day'
+          label: '2' + this.$t('message.day')
         },
         {
           value: '3',
-          label: '3 day'
+          label: '3' + this.$t('message.day')
         },
         {
           value: '7',
-          label: '7 day'
+          label: '7' + this.$t('message.day')
         }
       ],
       needNoticeDay:''
