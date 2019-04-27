@@ -4,12 +4,12 @@
     <div class="succ-div">
       <div class="XY-center">
         <i class="iconfont icon-success XY-fz60"></i>
-        <p class="RobotoM center XY-fz20 red-color succ-p-set">You’re all set!</p>
+        <p class="RobotoM center XY-fz20 red-color succ-p-set">{{$t('message.Youreallset')}}</p>
       </div>
       <!--<p class="XY-fz16 XY-center success-trip">Cras id risus blandit, aliquet sapien quis sodales lectus curabitur rutrum viverra dapibus.  </p>-->
       <div class="sup-btn">
-        <button class="XY-fz16 XY-cursorp" @click="hideModel"><router-link to="/">Start exploring</router-link></button>
-        <button class="XY-fz16 XY-cursorp" @click="hideModel"><router-link to="/trips/editProfile">Edit profile</router-link></button>
+        <button class="XY-fz16 XY-cursorp" @click="hideModel"><router-link to="/">{{$t('message.Startexploring')}}</router-link></button>
+        <button class="XY-fz16 XY-cursorp" @click="hideModel"><router-link to="/trips/editProfile">{{$t('message.Editprofile')}}</router-link></button>
       </div>
     </div>
     <!-- </div> -->
@@ -54,7 +54,7 @@ $red-color: #f4436c;
     padding:0;
   }
   .el-dialog{
-    width: 33%;
+    width: 100%;
     margin-top: 0 !important;
     min-width: 300px;
     max-width: 500px;

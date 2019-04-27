@@ -40,6 +40,7 @@ const cn = {
     BirthdateCantbemodified:"要注册，您必须年满18岁。 其他人不会看到您的生日。",
     Tosignupyoumustbe18orolder:"出生日期（不能修改）",
     BysigningupIagreetoPopulStays:"通过注册，我同意PopulStay的",
+    TermsofServiceA:"服务条款",
     TermsofService:"服务条款，",
     PrivacyPolicyGuestRefundPolicy:"隐私政策，客人退款政策",
     and:"和",
@@ -61,11 +62,13 @@ const cn = {
     incorrectverificationcode:"验证码不正确。",
     Yourpasswordhasbeenreset:"您的密码已重置。",
     Youcanlogintoyouraccountusingyournewpassword:"您可以使用新密码登录帐户。",
+    Youreallset:"你准备好了！",
     Startexploring:"开始探索",
     BacktoSignup:"返回注册",
     Terms1:"PopulStay潮箱平台是一个在线商务平台，能使注册用户（“会员”）和某些提供服务的第三方（会员和提供服务的第三方为“服务提供者”，他们提供的服务为“服务提供者的服务”）在PopulStay潮箱平台上发布服务提供者的服务（“服务项目”），并直接与寻求预订服务提供者的服务的会员（使用服务提供者的服务的会员为“服务接受者”）直接沟通和交易。服务提供者的服务可能包括出租使用度假屋或其他房产（“居住设施”）、各类一日或多日活动（“体验”）、参与特殊活动或进入特殊地点（“活动”）及各种其他与旅行相关或无关的服务。",
     Terms2:"作为PopulStay潮箱平台提供方，PopulStay潮箱不拥有、创建、出售、转售、提供、控制、管理、出租、交付或供应任何服务项目或服务提供者的服务，PopulStay潮箱也不是欧盟第2015/2302法律指令所定义的旅行套餐的组织者或零售商。仅服务提供者对其服务项目和服务负责。会员进行或接受预订时彼此间直接订立合同。PopulStay潮箱现在和将来均不是会员间合同关系的当事人或其他参与者，也不是房地产中介或保险商。PopulStay潮箱不以任何形式作为任何会员的代理，支付条款中所列除外。",
     Terms3:"尽管我们可能会为解决争议提供便利，但PopulStay潮箱不控制下述内容，也不就其提供保证：（i）任何服务项目或服务提供者的服务的存在、质量、安全性、适当性或合法性，（ii）任何服务项目描述、评级、评价或其他会员内容（定义见下）的真实性和准确性，及（iii）任何会员或第三方的履行或行为。PopulStay潮箱不为任何会员、服务项目或服务提供者的服务背书。凡提及会员“已核实”（或类似语言）之处，仅表示该会员已完成相关核实或认定程序，不表示其他。任何该等描述均不是PopulStay潮箱对任何会员的背书、认证或担保，包括会员的身份或背景或会员是否可信、安全或合适。在决定是否在居住设施停留、是否参加体验或活动或使用其他服务提供者的服务、是否接受来自服务接受者的预订申请或在线或当面与其他会员交流和互动时，您务必勤勉尽责和注意。已核实图片（定义见下）仅用于以图片形式再现服务项目在拍摄时的状态，因此并非PopulStay潮箱对任何服务提供者或服务项目的背书。",
+
 
     // home
     Thereisnodata:"没有数据",
@@ -202,7 +205,7 @@ const cn = {
     Save:"保存",
     Setyourprofilephoto:"设置您的个人资料照片",
     fromyourcomputer:"从您的电脑",
-    Pleaseconfirmwhetherthepicturehasbeenupdated:"图片大小限制1M以内，请确认图片是否更新。",
+    Pleaseconfirmwhetherthepicturehasbeenupdated:"图片大小限制1M以内，请确认图片格式是否为PNG和JPG。",
     Yourprofilepicturehasbeensavedsuccessfully:"您的个人资料照片已成功保存",
 
     // Security

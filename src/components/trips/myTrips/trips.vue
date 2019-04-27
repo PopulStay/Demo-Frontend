@@ -412,7 +412,7 @@
           }).then((res) => {
             if(res.msg.code == 952){
               this.$notify({
-                message: this.$t('message.Incorrect password'),
+                message: this.$t('message.Incorrectpassword'),
                 showClose:false,
                 type: 'warning',
                 onClick(){
@@ -421,7 +421,21 @@
               });
             }
 
+            if(res.msg.code == 954){
+
+              this.$notify({
+                message: this.$t('message.Thebalanceisinsufficientandtheoperationfailed'),
+                showClose:false,
+                type: 'warning',
+                onClick(){
+                  this.close()
+                }
+              });
+              this.PaymentShow = false;
+            }
+
             if(res.msg.code == 500){
+
               this.$notify({
                 message: this.$t('message.Operationfailedpleasetrylater'),
                 showClose:false,

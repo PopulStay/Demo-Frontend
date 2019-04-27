@@ -51,7 +51,7 @@ import win from '../livechat/win';
       }
     },
     created() {
-      this.$i18n.locale = localStorage.populstayLang == undefined ? 'en' : localStorage.populstayLang
+      this.$i18n.locale = localStorage.populstayLang == undefined ? 'cn' : localStorage.populstayLang
     },
     methods: {
       language(type){

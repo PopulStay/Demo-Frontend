@@ -38,7 +38,7 @@
               <li>
                 <el-upload
                   class="avatar-uploader"
-                  action="https://testapi.image.populstay.com/image?dir=populstay_placeimage"
+                  :action="action"
                   name="img"
                   :on-success="handleAvatarSuccess"
                   :show-file-list="false"
@@ -52,7 +52,7 @@
               <li>
                 <el-upload
                   class="avatar-uploader"
-                  action="https://testapi.image.populstay.com/image?dir=populstay_placeimage"
+                  :action="action"
                   name="img"
                   :on-success="handleAvatarSuccess2"
                   :show-file-list="false"
@@ -72,7 +72,7 @@
               <li>
                 <el-upload
                   class="avatar-uploader"
-                  action=""
+                  :action="action"
                   :show-file-list="false">
                   <img v-if="imageUrl" :src="imageUrl" class="avatar">
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -122,6 +122,7 @@ export default {
   },
   data () {
     return {
+      action:'http://testapi.image.populstay.com/image?dir=populstay_user',
       states: 'United States',
       frontImageUrl: '',
       handImageUrl: '',
@@ -146,8 +147,13 @@ export default {
     },
     // 图片上传
     handleAvatarSuccess (res, file) {
-      this.frontImageUrl = res.data.bigUrl
-      this.loading = false
+      if(res.data){
+        this.frontImageUrl = res.data.bigUrl
+        this.loading = false
+      }else{
+        this.handleAvatarError()
+      }
+
     },
     handleAvatarError (errs, file, fileList) {
       this.loading = false
@@ -162,8 +168,13 @@ export default {
       this.loading = true
     },
     handleAvatarSuccess2 (res, file) {
-      this.handImageUrl = res.data.bigUrl
-      this.loading2 = false
+      if(res.data){
+        this.handImageUrl = res.data.bigUrl
+        this.loading2 = false
+      }else{
+        this.handleAvatarError2()
+      }
+
     },
     handleAvatarError2 (errs, file, fileList) {
       this.loading2 = false

@@ -201,6 +201,7 @@ export default {
       this.canClick = true
       this.totalTime = 60
       window.clearInterval(this.clock)
+      this.$refs.phoneInput.first = '+86'
       this.$refs.phoneInput.number = ''
     }
   }

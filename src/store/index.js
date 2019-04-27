@@ -15,6 +15,7 @@ export default new vuex.Store({
     show_reset: false,
     show_enterpsw: false,
     show_exportpkey: false,
+    show_PhoneEmail: false,
     warning:'',
     screen: false,
     warningShow: false,
@@ -26,32 +27,6 @@ export default new vuex.Store({
     appKey:'4f8f22b581b589a3',
     salt:"13753068898",
     secret_key:'ZeTmYSw4chp1VWfTldWtiVjSx2JTEoYh',
-    nation: [
-      {
-        name: 'United States',
-        code: '+1'
-      },
-      {
-        name: 'China',
-        code: '+86'
-      },
-      {
-        name: 'Japan',
-        code: '+81'
-      },
-      {
-        name: 'United Kingdom',
-        code: '+44'
-      },
-      {
-        name: 'France',
-        code: '+33'
-      },
-      {
-        name: 'Singapore',
-        code: '+65'
-      }
-    ],
     inputType:'phone',
     introduceState: false,
     host: {

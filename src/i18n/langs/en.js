@@ -40,6 +40,7 @@ const en = {
     BirthdateCantbemodified:"Birth date(Can't be modified)",
     Tosignupyoumustbe18orolder:"To sign up, you must be 18 or older. Other people won’tsee your birthday.",
     BysigningupIagreetoPopulStays:"By signing up, I agree to PopulStay's",
+    TermsofServiceA:"Terms of Service",
     TermsofService:"Terms of Service, ",
     PrivacyPolicyGuestRefundPolicy:"Privacy Policy, Guest Refund Policy",
     and:"and",
@@ -61,6 +62,7 @@ const en = {
     incorrectverificationcode:"incorrect verification code.",
     Yourpasswordhasbeenreset:"Your password has been reset.",
     Youcanlogintoyouraccountusingyournewpassword:"You can log in to your account using your new password. ",
+    Youreallset:"You’re all set!",
     Startexploring:"Start exploring",
     BacktoSignup:"Back to Sign up",
     Terms1:"The PopulStay Tidebox Platform is an online commerce platform that enables registered users (\"Members\") and certain third parties (members and third parties providing services) to be \"service providers\" who provide services Service\") publishes the service provider's services (\"services\") on the PopulStay platform and directly contacts the members who seek to subscribe to the service provider's services (the service provider's services are members of the service recipient) \") Direct communication and trading. Service providers may include rental of vacation homes or other properties (\"residential facilities\"), various day or multi-day events (\"experience\"), participation in special events or special locations (\"activities\") and various Other travel-related or unrelated services.",
@@ -202,7 +204,7 @@ const en = {
     Save:"Save",
     Setyourprofilephoto:"Set your profile photo",
     fromyourcomputer:"from your computer",
-    Pleaseconfirmwhetherthepicturehasbeenupdated:"Image size is limited to 1M. Please confirm if the image is updated.",
+    Pleaseconfirmwhetherthepicturehasbeenupdated:"The image size is limited to 1M. Please confirm whether the image format is PNG and JPG.",
     Yourprofilepicturehasbeensavedsuccessfully:"Your profile picture has been saved successfully",
 
     // Security

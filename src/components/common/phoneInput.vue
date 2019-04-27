@@ -1,25 +1,39 @@
 <template>
   <div style="width: 100%">
     <div class="flex-wrap flex-center wrap">
-      <el-popover placement="bottom-start" width="300" trigger="manual" v-model="show" popper-class="state-popover" v-if="$store.state.inputType !== 'email'">
-        <div slot="reference" class="num flex-wrap flex-center-between" @click="show = !show">
+      <!--<el-popover placement="bottom-start" width="300" trigger="manual" v-model="show" popper-class="state-popover" v-if="$store.state.inputType !== 'email'">-->
+        <!--<div slot="reference" class="num flex-wrap flex-center-between" @click="show = !show">-->
+          <!--<p>{{first}}</p>-->
+          <!--<i class="icon iconfont" :class="show ? 'icon-arrow-up' : 'icon-54'"></i>-->
+        <!--</div>-->
+        <!--<div class="popover">-->
+          <!--<ul>-->
+            <!--<li v-for="(item, index) in nation" :key="index" @click="firstbtn(index)">-->
+              <!--{{item.name}}-->
+              <!--<i>{{item}}</i>-->
+            <!--</li>-->
+          <!--</ul>-->
+        <!--</div>-->
+      <!--</el-popover>-->
+
+      <div class="numbox" v-if="$store.state.inputType !== 'email'" >
+        <div class="num" @click="show = !show">
           <p>{{first}}</p>
           <i class="icon iconfont" :class="show ? 'icon-arrow-up' : 'icon-54'"></i>
         </div>
-        <div class="popover">
-          <ul>
-            <li v-for="(item, index) in nation" :key="index" @click="first = item.code; show = false; $store.state.warning = ''">
-              {{item.name}}
-              <i>{{'(' + item.code + ')'}}</i>
-            </li>
-          </ul>
-        </div>
-      </el-popover>
+        <ul class="select" v-if="show">
+          <li v-for="(item, index) in nation" :key="index" @click="firstbtn(index)">
+            {{item.name}}
+            <i>{{item}}</i>
+          </li>
+        </ul>
+      </div>
+
       <div class="input_warp">
         <i class="icon iconfont"
           :class="$store.state.inputType === 'email' ? 'icon-shouji' : 'icon-youxiang'"
           @blur="blur"
-          @click="$store.state.inputType === 'email' ? $store.state.inputType = 'phone' : $store.state.inputType = 'email'; number = ''; $emit('cut'); $store.state.warning = ''">
+          @click="$store.state.inputType === 'email' ? $store.state.inputType = 'phone' : $store.state.inputType = 'email'; number = ''; $emit('cut'); $store.state.warning = '' ; show = false">
         </i>
         <input type="text" ref="input" v-model="number"
           @input="$emit('input', $event.target.value)"
@@ -29,27 +43,36 @@
     </div>
     <p class="warning" v-show="$store.state.warning === 'email'">{{$t('message.Pleaseenterthecorrectemail')}}</p>
     <p class="warning" v-show="$store.state.warning === 'phone'">{{$t('message.Pleaseenterthecorrectphonenumber')}}</p>
+
+    <p v-if="show_signup != $store.state.show_signup ? onloading() : null"></p>
+
   </div>
 </template>
 
 <script>
-import utils from '../../utils/utils.js'
+  import utils from '../../utils/utils.js'
+  import areanoList from '../../utils/areanoList.js'
 export default {
-  props: {
-    value: {
-      default: ''
-    }
-  },
+  props:['showHide'],
   data () {
     return {
+      show_signup:this.$store.state.show_signup,
       show: false,
       first: '+86',
-      nation: this.$store.state.nation,
+      nation: areanoList._areanoList,
       number: '',
       warning: ''
     }
   },
   methods: {
+    onloading(){
+      this.show = false
+    },
+    firstbtn(idx){
+      this.first = areanoList.areanoList[idx];
+      this.show = false;
+      this.$store.state.warning = ''
+    },
     blur () {
       this.$emit('blur')
       if (this.$store.state.inputType === 'email') {
@@ -76,13 +99,38 @@ span {
   flex: 1;
   margin-right: 10px;
 }
+.numbox{
+  position: relative;
+
+}
 .num {
   border-right: 1px solid #e6e7e8;
-  min-height: 40px;
   cursor: pointer;
   box-sizing: border-box;
   padding: 0 15px 0 10px;
   font-size: 16px;
+  margin-right: 10px;
+  p{
+    display: inline-block;
+  }
+  i{
+    margin-left: 10px;
+  }
+}
+.select{
+  min-width: 330px;
+  max-width: 440px;
+  padding:20px 10px;
+  position: absolute;
+  left: 0px;
+  height: 230px;
+  overflow: auto;
+  background: white;
+  z-index: 999;
+  border: 1px solid #8c939d;
+  li{
+    height: 30px;
+  }
 }
 .input_warp {
   flex: 4;
@@ -128,6 +176,10 @@ input {
 </style>
 
 <style>
+  .el-popover{
+    height: 200px;
+    overflow: auto;
+  }
 .state-popover {
   padding: 10px 20px;
 }

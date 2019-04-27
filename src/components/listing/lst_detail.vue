@@ -481,10 +481,23 @@ export default {
             });
 
           }
-          if(res.msg.code == 500){
+          if(res.msg.code == 954){
 
             this.$notify({
               message: this.$t('message.Thebalanceisinsufficientandtheoperationfailed'),
+              showClose:false,
+              type: 'warning',
+              onClick(){
+                this.close()
+              }
+            });
+
+          }
+
+          if(res.msg.code == 500){
+
+            this.$notify({
+              message: this.$t('message.Operationfailedpleasetrylater'),
               showClose:false,
               type: 'warning',
               onClick(){

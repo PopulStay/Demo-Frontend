@@ -119,8 +119,9 @@ $red-color: #F4436C;
       }
       input{
         border: none;
-        width: 50%;
+        width: 100%;
         height: 20px;
+        background: #E6E7E8;
       }
     }
     ul{

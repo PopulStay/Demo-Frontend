@@ -2,7 +2,7 @@
 <div class="sign-up-model-out">
   <el-dialog :visible.sync="$store.state.show_signup" :close-on-click-modal="true" v-loading="loading" @close="close">
       <div class="login-frame-content">
-        <p class="red-color XY-fz30 lineh36" style="margin-bottom:14px;">{{$t('message.Signup')}}</p>
+        <p class="red-color XY-fz30 lineh36" style="margin-bottom:14px;" @click="showHide='132'">{{$t('message.Signup')}}</p>
         <div class="input-text" v-if="$i18n.locale != 'cn'">
           <input type="text" :placeholder="$t('message.Firstname')"
             v-model="data.first_name" @blur="bindingVerify('fname', data.first_name)"/>
@@ -21,7 +21,7 @@
         <p class="warning" v-if="$i18n.locale == 'cn'" v-show="verify.indexOf('fname') !== -1">{{$t('message.Pleaseenterthecorrectname')}}</p>
 
         <div class="input-text">
-          <phoneInput v-model="data.email_address" @blur="bindingVerify('email', data.email_address)" ref="phoneInput"></phoneInput>
+          <phoneInput v-model="data.email_address" @blur="bindingVerify('email', data.email_address)" ref="phoneInput"  v-bind:showHide="showHide"></phoneInput>
           <!-- <input type="text" placeholder="Email address / Mobile number" v-model="data.email_address" @blur="bindingVerify('email', data.email_address)"/> -->
         </div>
         <div class="input-text">
@@ -118,7 +118,8 @@ export default {
       loading: false,
       verify: [],
       streng: '',
-      birthdate18old:false
+      birthdate18old:false,
+      showHide:true,
     }
   },
   created () {
@@ -193,6 +194,7 @@ export default {
 
           if (res.msg.code === 200) {
             this.$store.state.show_signup = false
+            this.$store.state.show_PhoneEmail = false
             this.$store.state.show_succ = true
             this.$store.commit('userUpdate', res.data)
             this.$emit('login')
@@ -236,9 +238,11 @@ export default {
       this.$store.state.show_signup = false
       this.$store.state.show_login = true
       this.$store.state.warning = ""
+      this.$store.state.show_PhoneEmail = false
     },
     toTerms () {
       this.$store.state.show_signup = false
+      this.$store.state.show_PhoneEmail = false
       this.$store.state.show_term = true
       this.$store.state.warning = ""
     },
@@ -285,6 +289,8 @@ export default {
         year: ''
       }
       this.$refs.phoneInput.number = ''
+      this.$refs.phoneInput.first = '+86'
+      this.$store.state.show_PhoneEmail = false
     }
   }
 }

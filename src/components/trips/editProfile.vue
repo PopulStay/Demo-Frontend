@@ -83,7 +83,7 @@
       <h2>{{$t('message.Setyourprofilephoto')}}</h2>
       <el-upload class="avatar-uploader" :show-file-list="false"
         accept="image/jpeg, image/png"
-        action="https://testapi.image.populstay.com/image?dir=populstay_placeimage"
+        action="http://testapi.image.populstay.com/image?dir=populstay_user"
         name="img"
         :on-progress="handleAvatarProgress"
         :on-success="handleAvatarSuccess"
@@ -172,8 +172,13 @@ export default {
   methods: {
     // 图片上传成功
     handleAvatarSuccess (res, file) {
-      this.imageUrl = res.data.bigUrl
-      this.loading = false
+      if(res.data){
+        this.imageUrl = res.data.bigUrl
+        this.loading = false
+      }else{
+        this.handleAvatarError()
+      }
+
     },
     handleAvatarError (errs, file, fileList) {
       this.loading = false

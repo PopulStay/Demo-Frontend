@@ -518,10 +518,8 @@ $red-color: #F4436C;
       border: none;
       font-size: 16px;
       font-family: Roboto-Regular;
-      color: #B1B3B6;
       letter-spacing: 0;
       width: 100%;
-      color: #B1B3B6;
       box-sizing: border-box;
     }
   }

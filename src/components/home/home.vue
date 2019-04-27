@@ -90,10 +90,11 @@
     <!-- 列表  -->
     <div class="list home-list">
       <h3>{{$t('message.Recommendedforyou')}}</h3>
-      <div class="listitem left"  v-for="(item, index) in HouseList">
+      <div class="listitem left"  v-for="(item, index) in HouseList" v-if="HouseList.length != 0">
         <House-Item :key="index" :houselist="item"></House-Item>
       </div>
-      <p class="more" @click="toSearchAll">{{$t('message.Showall')}} &nbsp;<i class="el-icon-arrow-right"></i></p>
+      <p class="more" @click="toSearchAll" v-if="HouseList.length != 0">{{$t('message.Showall')}} &nbsp;<i class="el-icon-arrow-right"></i></p>
+      <div class="loading" v-if="HouseList.length == 0"><i class="el-icon-loading"></i></div>
     </div>
     <!-- 国家  -->
     <div class="state-list">
@@ -572,6 +573,13 @@ $red-color: #F4436C;
         /*background-image: url(../../assets/images/index/pink/singapore-pink.svg);*/
       /*}*/
     }
+  }
+}
+
+.loading{
+  i{
+    font-size: 30px;
+    color: #f4436c;
   }
 }
 

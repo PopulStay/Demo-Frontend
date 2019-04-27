@@ -6,7 +6,7 @@
       <p class="red-color">{{$t('message.BacktoSignup')}}</p>
     </div>
     <div class="succ-div">
-      <p class="fz16 red-color terms-p">{{$t('message.TermsofService')}}</p>
+      <p class="fz16 red-color terms-p">{{$t('message.TermsofServiceA')}}</p>
       <div style="height:500px;">
         <el-scrollbar :native="false" wrapStyle="" wrapClass="" viewClass="" viewStyle="" noresize="false" tag="section" style="height:100%;">
           <p class="scroll-p">{{$t('message.Terms1')}}</p>
@@ -79,10 +79,12 @@ $red-color: #f4436c;
       color: $red-color;
       margin: 15px 0 20px 0;
     }
-    .scroll-p{
-      line-height: 19px;
+    .scroll-p {
+      line-height: 1.9;
       color: #4A4A4A;
       text-align: justify;
+      margin-right: 15px;
+      margin-bottom: 20px;
     }
     .el-dialog__body{
       position: relative;
