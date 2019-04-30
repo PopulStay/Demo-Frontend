@@ -480,6 +480,7 @@ header {
   box-sizing: border-box;
   width: 150px;
   padding: 20px;
+  height: 150px !important;
 }
 .photo_popper.el-popper[x-placement^=bottom] {
   margin-top: 20px;

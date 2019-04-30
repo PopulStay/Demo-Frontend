@@ -122,7 +122,7 @@ export default {
   },
   data () {
     return {
-      action:'http://testapi.image.populstay.com/image?dir=populstay_user',
+      action:'https://testapi.image.populstay.com/image?dir=populstay_user',
       states: 'United States',
       frontImageUrl: '',
       handImageUrl: '',

@@ -91,7 +91,7 @@ const cn = {
     Showall:"显示全部",
     Populardestinations:"热门目的地",
     pernighten:"",
-    pernightcn:"每晚",
+    pernightcn:"/ 晚",
 
     // search
     Pricepernight:"每晚价格",
@@ -285,6 +285,7 @@ const cn = {
     Successfultransfer:"转账成功",
     Thepasswordisincorrect:"密码不正确",
     Optional:"（可选）",
+    SetasDefault:"",
 
     // Feedback
     Whatsyourfeedbackabout:"您的反馈是什么？",

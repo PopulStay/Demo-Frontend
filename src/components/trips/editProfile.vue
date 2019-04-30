@@ -83,7 +83,7 @@
       <h2>{{$t('message.Setyourprofilephoto')}}</h2>
       <el-upload class="avatar-uploader" :show-file-list="false"
         accept="image/jpeg, image/png"
-        action="http://testapi.image.populstay.com/image?dir=populstay_user"
+        action="https://testapi.image.populstay.com/image?dir=populstay_user"
         name="img"
         :on-progress="handleAvatarProgress"
         :on-success="handleAvatarSuccess"

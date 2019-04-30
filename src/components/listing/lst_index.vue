@@ -171,7 +171,7 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
-            <p class="top-wrap-p"><em>{{this.data.prices ? this.data.prices[0].bestPrice : 0}} {{CurrentCurrency}}</em> {{$t('message.pernighten')}} {{$t('message.pernightcn')}}</p>
+            <p class="top-wrap-p"><em>{{this.data.prices ? this.data.prices[0].bestPrice : 0}} {{CurrentCurrency}}</em>{{$t('message.pernightcn')}} {{$t('message.pernighten')}}</p>
           </div>
           <div class="select-time flex-wrap">
             <div class="select-time-start flex-1">

@@ -3,7 +3,7 @@
     <div class="houseimg" :style="{backgroundImage: 'url(' + houselist.picture[0].smallPictureUrl +')'}" ></div>
     <p class="city">{{city}}</p>
     <p class="title">{{houselist.placeName}}</p>
-    <p class="number">{{$t('message.pernightcn')}} {{houselist.prices[0].bestPrice}} pps {{$t('message.pernighten')}}</p>
+    <p class="number">{{houselist.prices[0].bestPrice}}PPS {{$t('message.pernightcn')}} {{$t('message.pernighten')}}</p>
     <el-rate  v-model="value" disabled show-score :colors="['#99A9BF', '#f4436C', '#FF9900']" text-color="#4A4A4A" score-template="5">
     </el-rate>
   </div>

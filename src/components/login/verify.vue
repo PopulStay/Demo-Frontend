@@ -67,14 +67,13 @@ export default {
         }
 
         if (this.canClick && this.$store.state.warning==""){
+          this.canClick = false
           this.$post(this.userUrl + '/user', {
             action: 'sendUserUpdatePasswordVerificationCode',
             data: data
           }).then((res) => {
             if (res.msg.code === 200) {
-              this.canClick = false
               this.content = this.totalTime + 's'
-              console.log(this.content)
               this.clock = window.setInterval(() => {
                 this.totalTime--
                 this.content = this.totalTime + 's'
@@ -86,6 +85,7 @@ export default {
                 }
               }, 1000)
             } else {
+              this.canClick = true
               this.$notify({
                 title: this.$t('message.Warning'),
                 message: this.$t('message.Operationfailedpleasetrylater'),

@@ -3,23 +3,30 @@
     <!--<button @click="toCreate">Create</button>-->
     <!-- <button class="imp" @click="toImport">Import</button> -->
     <div>
-        <div class="wallet-list" v-for='(item,index) in walletList' :key="index">
-            <div class="wallet-wrap-top flex-wrap flex-align-center" :class="item.primary===1?'flex-center-between':'flex-content-end'">
-                <div class="top-left" v-if="item.primary===1">{{$t('message.Defaultwallet')}}</div>
+        <div class="wallet-list">
+            <div class="wallet-wrap-top flex-wrap flex-align-center" :class="walletList.user_wallets[0].primary===1?'flex-center-between':'flex-content-end'">
+                <div class="top-left" v-if="walletList.user_wallets[0].primary===1">{{$t('message.Defaultwallet')}}</div>
                 <div class="top-right">
                   <span @click="toWalletDetail(index)">{{$t('message.Edit')}}</span>
-                  <span v-if="item.primary!==1" @click="setDefault($event)" :name="item.name" :id="item.user_wallet_id">{{$t('message.SetasDefault')}}</span>
+                  <!--<span v-if="walletList.user_wallets[0].primary!==1" @click="setDefault($event)" :name="walletList.user_wallets[0].name" :id="walletList.user_wallets[0].user_wallet_id">{{$t('message.SetasDefault')}}</span>-->
                 </div>
             </div>
           <div class="wallet-wrap-down flex-wrap flex-center-between">
-            <div class="down-left">{{item.name}}</div>
+            <div class="down-left">{{walletList.user_wallets[0].name}}</div>
             <div class="down-right">
-              <span class="pps-price">{{item.balance}}</span>
+              <span class="pps-price">{{walletList.user_wallets[0].balance}}</span>
               <span class="pps-pps">PPS</span>
             </div>
           </div>
           <div class="wallet-wrap-down flex-wrap flex-center-between">
-            <div class="down-left">{{item.address}}</div>
+            <div class="down-left"></div>
+            <div class="down-right">
+              <span class="pps-price">{{walletList.eth_balance}}</span>
+              <span class="pps-pps">ETH</span>
+            </div>
+          </div>
+          <div class="wallet-wrap-down flex-wrap flex-center-between">
+            <div class="down-left">{{walletList.user_wallets[0].address}}</div>
             <button @click="towalletTransfer(index)">{{$t('message.Transfer')}}</button>
           </div>
         </div>
@@ -56,7 +63,7 @@ export default {
           if (res.data.user_wallets.length === 0) {
             this.$router.replace('create')
           } else {
-            var newData = res.data.user_wallets
+            var newData = res.data
             if (res.data.user_wallets.length === 1) {
               this.walletList = newData
             } else {
