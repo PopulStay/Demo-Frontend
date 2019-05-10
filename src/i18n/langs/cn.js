@@ -53,6 +53,7 @@ const cn = {
     Theemailaddressisalreadyregistered:"邮箱已被注册",
     Pleaseconfirmwhethertoregisterornot:"请确认是否注册",
     Passwordoremailinputerror:"密码或邮箱输入错误",
+    Passwordorphoneinputerror:"密码或手机输入错误",
     Send:"获取",
     Verificationcode:"验证码",
     Verifyyouridentity:"验证您的身份",
@@ -113,7 +114,7 @@ const cn = {
     Spaces:"空间",
     noresult:"没有结果",
     Toseemoreresults:"可以试着调整您的搜索范围，比如更改入住日期、删除筛选条件或拓宽地图显示范围。",
-    Loading:"记载中",
+    Loading:"加载中",
 
     // trips
     Myaccount:"我的帐户",

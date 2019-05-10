@@ -6,11 +6,11 @@
     </el-dialog>
     <!-- <e-header></e-header> -->
     <!-- 轮播  -->
-    <div class="banner-wrap">
+    <div class="banner-wrap" v-if="picture.length == 1 && picture[0].status != 200 ? false : true">
       <div class="banner-img">
         <el-carousel indicator-position="outside">
-          <el-carousel-item v-for="item in data.picture" :key="item.pictureId">
-           <img :src="item.bigPictureUrl" alt="">
+          <el-carousel-item v-for="item in picture" :key="item.pictureId" v-if="item.status == 200">
+            <img :src="item.bigPictureUrl" alt="">
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -381,7 +381,7 @@ export default {
   data () {
     return {
       isLogin: false,
-      img: [],
+      picture: [],
       time: '',
       place_id: '',
       listName: '',
@@ -590,6 +590,27 @@ export default {
         placeId: id
       }).then((res) => {
         if (res.code === 200) {
+          res.data.picture.forEach((val, key) => {
+            val.status = 0
+
+            let newImg = new Image()
+            newImg.src = val.bigPictureUrl
+
+            newImg.onload = () => {
+              val.status = 200
+            }
+
+            newImg.onerror = () => {
+              val.status = 400
+            }
+            console.log(val)
+
+
+            this.picture = res.data.picture
+
+          })
+
+
           if (res.data.prices.length === 0) res.data.prices.push([{bestPrice: 0}])
           var citycode = res.data.citycode
           that.getName(citycode)
@@ -600,6 +621,10 @@ export default {
           this.data.safeAmenitiesLen = res.data.safeAmenities.length
           this.data.spacesLen = res.data.spaces.length
           this.data.rulesLen = res.data.rules.length
+
+
+
+
         }
 
         this.GetHostImg(res.data.hostId)

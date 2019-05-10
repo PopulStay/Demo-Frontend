@@ -295,6 +295,8 @@
                 res.data.booking_list[i].status = this.$t('message.Pending')
                 break
             }
+            var end_time = new Date(res.data.booking_list[i].end_time).getTime() + 86400000
+            res.data.booking_list[i].end_time = moment(end_time).locale("en-au").format('DD MMM YYYY')
             res.data.booking_list[i].cha_time = ((new Date(res.data.booking_list[i].end_time).getTime() - new Date(res.data.booking_list[i].start_time).getTime())/ 1000 / 60 / 60 / 24) + this.$t('message.night')
           }
           this.tripsList = res.data.booking_list;

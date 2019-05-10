@@ -52,6 +52,7 @@ const en = {
     Thephonenumberhasbeenregistered:"The phone number has been registered",
     Theemailaddressisalreadyregistered:"The email address is already registered",
     Pleaseconfirmwhethertoregisterornot:"Please confirm whether to register or not",
+    Passwordorphoneinputerror:"Password or phone input error",
     Passwordoremailinputerror:"Password or email input error",
     Send:"Send",
     Verificationcode:"Verification code",

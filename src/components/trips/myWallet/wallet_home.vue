@@ -1,5 +1,5 @@
 <template>
-  <div class="wallet-home" v-if="walletList!==''"  v-loading.fullscreen.lock="walletLoading">
+  <div class="wallet-home" v-if="walletList.user_wallets[0].user_wallet_id != ''"  v-loading.fullscreen.lock="walletLoading">
     <!--<button @click="toCreate">Create</button>-->
     <!-- <button class="imp" @click="toImport">Import</button> -->
     <div>
@@ -40,7 +40,19 @@ export default {
   data () {
     return {
       tripsTabTitle: 'All',
-      walletList: {},
+      walletList: {
+        user_wallets: [
+          {
+            user_wallet_id: 0,
+            address: "",
+            password_prompt: "",
+            name: "",
+            primary: 1,
+            balance: "0"
+          }
+        ],
+        eth_balance: ""
+      },
       walletLoading:true
     }
   },

@@ -78,7 +78,7 @@
 
         <el-popover placement="bottom-start" width="300" trigger="manual" v-model="guests.show" popper-class="s-popover">
           <div slot="reference" class="item" :class="guests.adults + guests.children != 1 || guests.infants != 0 ? 'redborder' :null" @click="guests.show = !guests.show,rating.show = false,price.show = false,more.show = false">
-            {{guests.adults + guests.children == 0 ? 'Guests' : guests.adults + guests.children + ' Guests' }}
+            {{guests.adults + guests.children == 0 ? $t('message.Guests') : guests.adults + guests.children + ' '+ $t('message.Guests') }}
           </div>
           <div class="popover">
             <ul class="rooms guests search-guests">

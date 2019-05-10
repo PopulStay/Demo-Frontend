@@ -7,7 +7,6 @@
       <li v-for="(item, index) in dataList" :key="index">
 
         <div class="imgWrap" :style="{backgroundImage:(item.picture[0] ? 'url(' + item.picture[0].smallPictureUrl +')' :'url('+Placechart+')')}">
-        <!--<div class="imgWrap" :style="{backgroundImage: 'url(' + item.picture[0].smallPictureUrl +')'}">-->
           <div class="hover" v-if="hostsTabTitle == $t('message.Published')">
             <div slot="reference" class="modification">
               <ul class="popover-content">
@@ -22,7 +21,7 @@
         </div>
 
         <p class="text" @click="toListing(item.placeId)">{{ item.placeName}}</p>
-        <p class="number" @click="toListing(item.placeId)">{{$t('message.pernightcn')}} {{ item.prices[0].bestPrice }} {{ item.prices[0].currency }} {{$t('message.pernighten')}}</p>
+        <p class="number" @click="toListing(item.placeId)"> {{ item.prices[0].bestPrice }} {{ item.prices[0].currency }} {{$t('message.pernightcn')}} {{$t('message.pernighten')}}</p>
       </li>
       <div v-if="!dataList.length" class="no-data">{{$t('message.Nodata')}}</div>
     </ul>
@@ -44,7 +43,7 @@
         <p class="text" v-if="item.host.placeName">{{ item.host.placeName }}</p>
         <p class="text" v-else>{{$t('message.Notitlehasbeensetyet')}}</p>
 
-        <p class="number" v-if="item.host.prices[0].bestPrice">{{$t('message.pernightcn')}} {{item.host.prices[0].bestPrice}} {{item.host.prices[0].currency}} {{$t('message.pernighten')}}</p>
+        <p class="number" v-if="item.host.prices[0].bestPrice"> {{item.host.prices[0].bestPrice}} {{item.host.prices[0].currency}} {{$t('message.pernightcn')}} {{$t('message.pernighten')}}</p>
         <p class="number" v-else>{{$t('message.Nopricesetyet')}}</p>
 
       </li>
@@ -68,6 +67,8 @@
         <el-button @click="ImportCalendarShow = false">{{$t('message.Cancel')}}</el-button>
       </div>
     </el-dialog>
+
+    <p v-if="$i18n.locale != language ? onloading() : null"></p>
 
   </div>
 </template>
@@ -120,6 +121,7 @@ export default {
       this.hostsLoading = true
       this.$get(this.placeUrl + '/places', {
         hostId: this.user.user_id
+        // hostId: 2790
       }).then((res) => {
         this.hostsLoading = false
         if(res.code == 200){
@@ -223,7 +225,7 @@ export default {
     },
     ImportCalendar(){
       if(this.calendarName != "" && this.calendarUrl != ""){
-        this.$post('http://testapi.calendar.populstay.com' + '/api/v1/extcalendars', {
+        this.$post(this.calendarUrl + '/api/v1/extcalendars', {
           calendarName: this.calendarName,
           calendarUrl: this.calendarUrl,
           placeId: this.ImportCalendarplaceId
@@ -234,7 +236,7 @@ export default {
 
     },
     ExportCalendar(placeId){
-      this.$get('http://testapi.calendar.populstay.com' + '/api/v1/calendars/'+placeId).then((res) => {
+      this.$get(this.calendarUrl + '/api/v1/calendars/'+placeId).then((res) => {
 
         this.$confirm(res.calendarUrl, this.$t('message.Exportcalendar'), {
           confirmButtonText: this.$t('message.Confirm'),

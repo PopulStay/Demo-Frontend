@@ -72,18 +72,19 @@ export default {
     },
     countDown () {
       if (!this.canClick || this.data.number === '') return false
+
       let data = {}
       if (this.$refs.phoneInput.type === 'phone') {
         data = {phone_number: this.$refs.phoneInput.first + this.data.number, send_method: 'phone'}
       } else {
         data = {email_address: this.data.number, send_method: 'email'}
       }
+      this.canClick = false
       this.$post(this.userUrl + '/user', {
         action: 'sendUserLogInCode',
         data: data
       }).then((res) => {
         if (res.msg.code === 200) {
-          this.canClick = false
           this.content = this.totalTime + 's'
           this.clock = window.setInterval(() => {
             this.totalTime--
@@ -167,11 +168,21 @@ export default {
           this.$store.state.show_login = false
         } else {
 
-          this.$notify({
-            title: this.$t('message.Warning'),
-            message: this.$t('message.Passwordoremailinputerror'),
-            type: 'warning'
-          });
+          if (this.data.number.indexOf('@') === -1){
+            this.$notify({
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Passwordorphoneinputerror'),
+              type: 'warning'
+            });
+          }else{
+            this.$notify({
+              title: this.$t('message.Warning'),
+              message: this.$t('message.Passwordoremailinputerror'),
+              type: 'warning'
+            });
+          }
+
+
         }
       })
     },
