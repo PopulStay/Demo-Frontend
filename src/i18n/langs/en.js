@@ -144,6 +144,7 @@ const en = {
     All:"All",
     Pending:"Pending",
     Upcoming:"Upcoming",
+    Paymentfailed:"Payment failed",
     Checkedin:"Checked-in",
     Collect:"Collect",
     Completed:"Completed",

@@ -33,7 +33,7 @@
             </div>
 
             <!--支付-->
-            <div class="OrderButton" v-if="item.status == $t('message.Pending') && item.currency != 'CNY'" @click="PaymentShow = true; bookingID = item.booking_id">{{$t('message.Pay')}}</div>
+            <div class="OrderButton" v-if="item.status == $t('message.Pending') && item.currency != 'CNY' || item.status == $t('message.Paymentfailed') " @click="PaymentShow = true; bookingID = item.booking_id">{{$t('message.Pay')}}</div>
             <div class="OrderButton" v-if="item.status == $t('message.Pending') && item.currency == 'CNY'" @click="qr_codeshow = true; bookingID = item.booking_id;CNYPayment(); numprice = item.price; currency = item.currency">{{$t('message.Pay')}}</div>
 
             <!--入住-->
@@ -290,6 +290,9 @@
                 break
               case 'pending_for_refund':
                 res.data.booking_list[i].status = this.$t('message.Refund')
+                break
+              case 'payment_fail':
+                res.data.booking_list[i].status = this.$t('message.Paymentfailed')
                 break
               default:
                 res.data.booking_list[i].status = this.$t('message.Pending')

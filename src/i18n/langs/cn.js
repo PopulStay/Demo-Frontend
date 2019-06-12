@@ -144,6 +144,7 @@ const cn = {
     Submit:"提交",
     All:"全部",
     Pending:"待付款",
+    Paymentfailed:"支付失败",
     Upcoming:"即将入住",
     Checkedin:"已入住",
     Collect:"退房",
